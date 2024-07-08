@@ -11,7 +11,7 @@ INTEGRATE_UI::INTEGRATE_UI(QObject *parent):QObject(parent)
 
     //    mobile_status_socket -> connectToHost(QHostAddress(IP),PORT2);
     connect(ui_com,SIGNAL(connected()),this, SLOT(onUIConnected()));
-    connect(ui_com,SIGNAL(disconn1ected()),this, SLOT(onUIdisConnected()));
+    connect(ui_com,SIGNAL(disconnected()),this, SLOT(onUIdisConnected()));
 
     connect(mobile_status_socket,SIGNAL(connected()),this, SLOT(onMobileStatusConnected()));
     connect(mobile_status_socket,SIGNAL(disconnected()),this, SLOT(onMobileStatusDisConnected()));

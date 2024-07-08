@@ -368,37 +368,6 @@ struct MOBILE_POSE
     }
 };
 
-/*struct MOBILE_STATUS
-{
-    bool is_ok = false;
-
-    uint8_t connection_m0 = 0;
-    uint8_t connection_m1 = 0;
-
-    uint8_t status_m0 = 0;
-    uint8_t status_m1 = 0;
-
-    uint8_t temp_m0 = 0;
-    uint8_t temp_m1 = 0;
-
-    uint8_t temp_ex_m0 = 0;
-    uint8_t temp_ex_m1 = 0;
-
-    uint8_t cur_m0 = 0;
-    uint8_t cur_m1 = 0;
-
-    uint8_t charge_state = 0;
-    uint8_t power_state = 0;
-    uint8_t emo_state = 0;
-    uint8_t remote_state = 0;
-
-    float bat_in = 0;
-    float bat_out = 0;
-    float bat_current = 0;
-    float power = 0;
-    float total_power = 0;
-};*/
-
 struct MOBILE_STATUS
 {
     bool is_ok = false;

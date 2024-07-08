@@ -124,6 +124,8 @@ MainWindow::MainWindow(QWidget *parent)
     init();
 
     logger.write("[MAIN] Initilized", true);
+
+    qDebug()<<"imworking";
 }
 
 MainWindow::~MainWindow()
@@ -289,10 +291,10 @@ void MainWindow::init()
         backThread = new std::thread(&MainWindow::backLoop, this);
     }
 
-    // not used LOC_STATUS
-    IPC::LOC_STATUS loc;
-    memset(loc.serving, 1, 255);
-    ipc.set_loc_status(loc);
+//    // not used LOC_STATUS
+//    IPC::LOC_STATUS loc;
+//    memset(loc.serving, 1, 255);
+//    ipc.set_loc_status(loc);
 }
 
 void MainWindow::make_sim_virtualObs()

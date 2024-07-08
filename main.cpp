@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include <QApplication>
+#include <QtGui/QIcon>
 
 Q_DECLARE_METATYPE(cv::Mat)
 Q_DECLARE_METATYPE(cv::Vec3d)
@@ -855,6 +856,7 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
     MainWindow w;
+    w.setWindowIcon(QIcon(":/img/resource/Pin_Map_Vector.png"));
     w.show();
     return a.exec();
 }
