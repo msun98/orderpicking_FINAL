@@ -1,0 +1,209 @@
+2024-08-05 14:05:40 [MAIN] program start
+2024-08-05 14:05:40 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-05 14:05:40 robot config loaded
+2024-08-05 14:05:41 l2c loop2 start
+2024-08-05 14:05:41 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-05 14:05:41 [L2C] connected
+2024-08-05 14:05:41 l2c loop start
+2024-08-05 14:05:41 [UNIMAP] cloud loaded
+2024-08-05 14:05:41 [UNIMAP] map load, spent time: 0.117875
+2024-08-05 14:05:41 [MAIN] Initilized
+2024-08-05 14:08:59 [SLAM] save cloud num: 159422
+
+2024-08-05 14:09:09 [LOC] try manual init
+2024-08-05 14:09:09 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:09 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:10 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:10 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:11 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:11 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:11 [LOC] try manual init
+2024-08-05 14:09:11 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:12 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:12 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:12 [WATCHDOG] LOC failed, ir:0.000000, ie:0.000000
+2024-08-05 14:09:12 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:13 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:13 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:13 [LOC] try manual init
+2024-08-05 14:09:13 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:14 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:14 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:15 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:15 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:15 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:16 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:16 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:16 [LOC] try manual init
+2024-08-05 14:09:16 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:16 [WATCHDOG] LOC failed, ir:0.000000, ie:0.000000
+2024-08-05 14:09:17 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:17 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:17 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:18 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:18 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:18 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:19 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:19 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:20 [AUTOINIT2] not enough map_pts. size:0
+2024-08-05 14:09:20 [UNIMAP] cloud loaded
+2024-08-05 14:09:20 [UNIMAP] map load, spent time: 0.189104
+2024-08-05 14:09:21 [LOC] try manual init
+2024-08-05 14:11:02 [AUTO] start
+2024-08-05 14:11:02 [AUTO] ref path found
+2024-08-05 14:11:02 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-05 14:11:02 [AUTO] loop time drift, dt:0.160033
+
+2024-08-05 14:11:03 [AUTO] FIRST_ALIGN -> STATE_PP, err_th: 2.97/3.00
+2024-08-05 14:11:21 [AUTO] STATE_PP -> FINAL_ALIGN, err_d: 0.10/0.10
+2024-08-05 14:11:25 [AUTO] FINAL_ALIGN -> GOAL_REACHED, err_th: -0.24/3.00
+2024-08-05 14:12:40 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-05 14:12:40 robot config loaded
+2024-08-05 14:12:43 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-05 14:12:43 robot config loaded
+2024-08-05 14:12:51 [CMD] hard map re-loaded
+2024-08-05 14:12:54 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-05 14:12:54 robot config loaded
+2024-08-05 14:12:57 [UNIMAP] map load, spent time: 0.017604
+2024-08-05 14:12:57 [CMD] soft map re-loaded
+2024-08-05 14:14:31 [MAIN] program dead (destructor)
+2024-08-05 14:14:32 [LIDAR] mobile pose time drift, front, dt: 0.009264
+2024-08-05 14:14:32 [LIDAR] mobile pose time drift, back, dt: 0.549578
+2024-08-05 14:14:34 [MAIN] program start
+2024-08-05 14:14:34 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-05 14:14:34 robot config loaded
+2024-08-05 14:14:35 l2c loop2 start
+2024-08-05 14:14:35 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-05 14:14:35 [L2C] connected
+2024-08-05 14:14:35 l2c loop start
+2024-08-05 14:14:35 [UNIMAP] cloud loaded
+2024-08-05 14:14:35 [UNIMAP] map load, spent time: 0.097160
+2024-08-05 14:14:35 [MAIN] Initilized
+2024-08-05 14:24:20 [UNIMAP] cloud loaded
+2024-08-05 14:24:20 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0805/topo.json loaded size:0
+2024-08-05 14:24:20 [UNIMAP] map load, spent time: 0.246940
+2024-08-05 14:24:27 [LOC] try manual init
+2024-08-05 14:24:29 [LOC] try manual init
+2024-08-05 14:24:30 [WATCHDOG] LOC failed, ir:0.196450, ie:0.020073
+2024-08-05 14:24:33 [LOC] try manual init
+2024-08-05 14:24:52 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-05 14:24:52 robot config loaded
+2024-08-05 14:24:55 [UNIMAP] map load, spent time: 0.013758
+2024-08-05 14:24:55 [CMD] soft map re-loaded
+2024-08-05 14:40:14 [AUTO] start
+2024-08-05 14:40:14 [AUTO] ref path found
+2024-08-05 14:40:14 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-05 14:40:14 [AUTO] loop time drift, dt:0.130304
+
+2024-08-05 14:40:14 [AUTO] FIRST_ALIGN -> STATE_PP, err_th: 2.92/3.00
+2024-08-05 14:40:18 [AUTO] STATE_PP -> FINAL_ALIGN, err_d: 0.10/0.10
+2024-08-05 14:40:20 [AUTO] FINAL_ALIGN -> GOAL_REACHED, err_th: 0.45/3.00
+2024-08-05 15:30:40 [AUTO] start
+2024-08-05 15:30:40 [AUTO] ref path found
+2024-08-05 15:30:40 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-05 15:30:40 [AUTO] loop time drift, dt:0.135206
+
+2024-08-05 15:30:43 [AUTO] FIRST_ALIGN -> STATE_PP, err_th: -2.93/3.00
+2024-08-05 15:31:04 [AUTO] STATE_PP -> FINAL_ALIGN, err_d: 0.09/0.10
+2024-08-05 15:31:06 [AUTO] FINAL_ALIGN -> GOAL_REACHED, err_th: 0.29/3.00
+2024-08-05 15:37:35 [AUTO] start
+2024-08-05 15:37:35 [AUTO] ref path found
+2024-08-05 15:37:35 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-05 15:37:35 [AUTO] loop time drift, dt:0.130891
+
+2024-08-05 15:37:37 [AUTO] FIRST_ALIGN -> STATE_PP, err_th: 3.00/3.00
+2024-08-05 15:37:50 [AUTO] STATE_PP -> FINAL_ALIGN, err_d: 0.10/0.10
+2024-08-05 15:37:52 [AUTO] FINAL_ALIGN -> GOAL_REACHED, err_th: 0.23/3.00
+2024-08-05 15:42:51 [UNIMAP] map load, spent time: 0.013630
+2024-08-05 15:42:51 [CMD] soft map re-loaded
+2024-08-05 15:53:09 [AUTO] start
+2024-08-05 15:53:09 [AUTO] ref path found
+2024-08-05 15:53:09 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-05 15:53:09 [AUTO] loop time drift, dt:0.129922
+
+2024-08-05 15:53:11 [AUTO] FIRST_ALIGN -> STATE_PP, err_th: 2.95/3.00
+2024-08-05 15:53:30 [AUTO] STATE_PP -> FINAL_ALIGN, err_d: 0.10/0.10
+2024-08-05 15:53:32 [AUTO] FINAL_ALIGN -> GOAL_REACHED, err_th: -0.25/3.00
+2024-08-05 15:53:56 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-05 15:53:56 robot config loaded
+2024-08-05 15:54:00 [UNIMAP] map load, spent time: 0.012922
+2024-08-05 15:54:00 [CMD] soft map re-loaded
+2024-08-05 15:58:21 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-05 15:58:21 robot config loaded
+2024-08-05 15:58:25 [UNIMAP] map load, spent time: 0.014189
+2024-08-05 15:58:37 [MAIN] program start
+2024-08-05 15:58:37 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-05 15:58:37 robot config loaded
+2024-08-05 15:58:37 l2c loop2 start
+2024-08-05 15:58:37 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-05 15:58:37 [L2C] connected
+2024-08-05 15:58:37 l2c loop start
+2024-08-05 15:58:37 [UNIMAP] cloud loaded
+2024-08-05 15:58:37 [UNIMAP] map load, spent time: 0.097301
+2024-08-05 15:58:37 [MAIN] Initilized
+2024-08-05 15:58:51 [UNIMAP] cloud loaded
+2024-08-05 15:58:51 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0805/topo.json loaded size:0
+2024-08-05 15:58:51 [UNIMAP] map load, spent time: 0.219105
+2024-08-05 15:58:57 [MAIN] program start
+2024-08-05 15:58:57 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-05 15:58:57 robot config loaded
+2024-08-05 15:58:57 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-05 15:58:57 l2c loop2 start
+2024-08-05 15:58:57 [L2C] connected
+2024-08-05 15:58:57 l2c loop start
+2024-08-05 15:58:57 [UNIMAP] cloud loaded
+2024-08-05 15:58:57 [UNIMAP] map load, spent time: 0.083555
+2024-08-05 15:58:58 [MAIN] Initilized
+2024-08-05 15:59:10 [UNIMAP] cloud loaded
+2024-08-05 15:59:10 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0805/topo.json loaded size:0
+2024-08-05 15:59:10 [UNIMAP] map load, spent time: 0.219784
+2024-08-05 15:59:31 [MAIN] program start
+2024-08-05 15:59:31 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-05 15:59:31 robot config loaded
+2024-08-05 15:59:31 l2c loop2 start
+2024-08-05 15:59:31 l2c loop2 start
+2024-08-05 15:59:31 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-05 15:59:31 l2c loop start
+2024-08-05 15:59:31 [UNIMAP] cloud loaded
+2024-08-05 15:59:31 [UNIMAP] map load, spent time: 0.080382
+2024-08-05 15:59:31 [MAIN] Initilized
+2024-08-05 15:59:36 [UNIMAP] cloud loaded
+2024-08-05 15:59:36 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0805/topo.json loaded size:0
+2024-08-05 15:59:36 [UNIMAP] map load, spent time: 0.217386
+2024-08-05 15:59:41 [LOC] try semi-auto init
+2024-08-05 15:59:44 [AUTOINIT_SEMI] finished
+2024-08-05 15:59:48 [LOC] busy
+2024-08-05 15:59:49 [WATCHDOG] LOC init failed, ir:0.316595, ie:0.010855
+2024-08-05 15:59:51 [LOC] try manual init
+2024-08-05 16:24:36 [MAIN] program dead (destructor)
+2024-08-05 16:24:42 [MAIN] program start
+2024-08-05 16:24:42 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-05 16:24:42 robot config loaded
+2024-08-05 16:24:42 l2c loop2 start
+2024-08-05 16:24:42 l2c loop2 start
+2024-08-05 16:24:42 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-05 16:24:42 l2c loop start
+2024-08-05 16:24:43 [UNIMAP] cloud loaded
+2024-08-05 16:24:43 [UNIMAP] map load, spent time: 0.087160
+2024-08-05 16:24:43 [MAIN] Initilized
+2024-08-05 16:25:02 [UNIMAP] cloud loaded
+2024-08-05 16:25:02 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0805/topo.json loaded size:0
+2024-08-05 16:25:02 [UNIMAP] map load, spent time: 0.230808
+2024-08-05 16:25:07 [LOC] try manual init
+2024-08-05 20:45:14 [AUTO] start
+2024-08-05 20:45:14 [AUTO] ref path found
+2024-08-05 20:45:14 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-05 20:45:14 [AUTO] loop time drift, dt:0.132167
+
+2024-08-05 20:45:15 [AUTO] FIRST_ALIGN -> STATE_PP, err_th: 2.83/3.00
+2024-08-05 20:45:33 [AUTO] STATE_PP -> FINAL_ALIGN, err_d: 0.10/0.10
+2024-08-05 20:45:35 [AUTO] FINAL_ALIGN -> GOAL_REACHED, err_th: -0.01/3.00
+2024-08-05 20:58:36 [AUTO] start
+2024-08-05 20:58:36 [AUTO] ref path found
+2024-08-05 20:58:36 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-05 20:58:36 [AUTO] loop time drift, dt:0.130642
+
+2024-08-05 20:58:43 [AUTO] FIRST_ALIGN -> STATE_PP, err_th: -2.92/3.00
+2024-08-05 20:59:00 [AUTO] STATE_PP -> FINAL_ALIGN, err_d: 0.10/0.10
+2024-08-05 20:59:04 [AUTO] FINAL_ALIGN -> GOAL_REACHED, err_th: -0.33/3.00
+2024-08-05 20:59:53 [MAIN] program dead (destructor)

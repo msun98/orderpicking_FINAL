@@ -1,0 +1,350 @@
+2024-08-06 14:26:10 [MAIN] program start
+2024-08-06 14:26:10 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 14:26:10 robot config loaded
+2024-08-06 14:26:10 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 14:26:10 l2c loop2 start
+2024-08-06 14:26:10 [L2C] connected
+2024-08-06 14:26:10 l2c loop start
+2024-08-06 14:26:10 [UNIMAP] cloud loaded
+2024-08-06 14:26:10 [UNIMAP] map load, spent time: 0.116256
+2024-08-06 14:26:10 [MAIN] Initilized
+2024-08-06 14:26:17 [UNIMAP] cloud loaded
+2024-08-06 14:26:17 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0805/topo.json loaded size:0
+2024-08-06 14:26:17 [UNIMAP] map load, spent time: 0.215706
+2024-08-06 14:26:23 [LOC] try manual init
+2024-08-06 14:26:26 [WATCHDOG] LOC failed, ir:0.273337, ie:0.018050
+2024-08-06 14:26:50 [MOBILE] send motor init
+2024-08-06 14:27:04 [LOC] try manual init
+2024-08-06 14:27:07 [WATCHDOG] LOC failed, ir:0.455596, ie:0.010957
+2024-08-06 14:28:15 [LOC] try manual init
+2024-08-06 14:29:17 [AUTO] start
+2024-08-06 14:29:18 [AUTO] ref path found
+2024-08-06 14:29:18 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-06 14:29:18 [AUTO] loop time drift, dt:0.137459
+
+2024-08-06 14:29:22 [WATCHDOG] LOC failed, ir:0.275485, ie:0.026024
+2024-08-06 14:29:22 [AUTO] auto failed (localization failed)
+2024-08-06 14:29:22 [AUTO] everything fine check failed -> FAILED
+2024-08-06 14:29:41 [LOC] try manual init
+2024-08-06 14:29:44 [LOC] try manual init
+2024-08-06 14:29:45 [WATCHDOG] LOC failed, ir:0.319952, ie:0.020444
+2024-08-06 14:29:49 [LOC] try manual init
+2024-08-06 14:29:55 [AUTO] start
+2024-08-06 14:29:55 [AUTO] ref path found
+2024-08-06 14:29:55 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-06 14:29:55 [AUTO] loop time drift, dt:0.137897
+
+2024-08-06 14:29:58 [AUTO] FIRST_ALIGN -> STATE_PP, err_th: 2.99/3.00
+2024-08-06 14:29:59 [WATCHDOG] LOC failed, ir:0.410180, ie:0.016716
+2024-08-06 14:29:59 [AUTO] auto failed (localization failed)
+2024-08-06 14:29:59 [AUTO] everything fine check failed -> FAILED
+2024-08-06 14:30:13 [LOC] try manual init
+2024-08-06 14:30:16 [LOC] try manual init
+2024-08-06 14:30:20 [LOC] try manual init
+2024-08-06 14:30:29 [AUTO] start
+2024-08-06 14:30:30 [AUTO] ref path found
+2024-08-06 14:30:30 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-06 14:30:30 [AUTO] loop time drift, dt:0.134580
+
+2024-08-06 14:30:31 [AUTO] FIRST_ALIGN -> STATE_PP, err_th: 2.97/3.00
+2024-08-06 14:30:34 [AUTO] STATE_STOPPED
+2024-08-06 14:30:35 [WATCHDOG] LOC failed, ir:0.277358, ie:0.014247
+2024-08-06 14:31:35 [MAIN] program dead (destructor)
+2024-08-06 14:31:36 [LIDAR] mobile pose time drift, back, dt: 0.000397
+2024-08-06 14:32:45 [MAIN] program start
+2024-08-06 14:32:45 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 14:32:45 robot config loaded
+2024-08-06 14:32:46 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 14:32:46 l2c loop2 start
+2024-08-06 14:32:46 [L2C] connected
+2024-08-06 14:32:46 l2c loop start
+2024-08-06 14:32:46 [UNIMAP] cloud loaded
+2024-08-06 14:32:46 [UNIMAP] map load, spent time: 0.090832
+2024-08-06 14:32:46 [MAIN] Initilized
+2024-08-06 14:32:57 [UNIMAP] cloud loaded
+2024-08-06 14:32:57 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0805/topo.json loaded size:0
+2024-08-06 14:32:57 [UNIMAP] map load, spent time: 0.218745
+2024-08-06 14:32:58 [LOC] try manual init
+2024-08-06 14:33:01 [WATCHDOG] LOC failed, ir:0.182364, ie:0.025249
+2024-08-06 14:33:01 [LOC] try manual init
+2024-08-06 14:33:04 [LOC] try manual init
+2024-08-06 14:33:08 [LOC] try manual init
+2024-08-06 14:33:17 [WATCHDOG] LOC failed, ir:0.408897, ie:0.017176
+2024-08-06 14:35:49 [MAIN] program start
+2024-08-06 14:35:49 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 14:35:49 robot config loaded
+2024-08-06 14:35:50 l2c loop2 start
+2024-08-06 14:35:50 l2c loop2 start
+2024-08-06 14:35:50 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 14:35:50 l2c loop start
+2024-08-06 14:35:50 [UNIMAP] cloud loaded
+2024-08-06 14:35:50 [UNIMAP] map load, spent time: 0.091934
+2024-08-06 14:35:50 [MAIN] Initilized
+2024-08-06 14:36:21 [MAIN] program start
+2024-08-06 14:36:21 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 14:36:21 robot config loaded
+2024-08-06 14:36:21 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 14:36:21 l2c loop2 start
+2024-08-06 14:36:21 [L2C] connected
+2024-08-06 14:36:21 l2c loop start
+2024-08-06 14:36:21 [UNIMAP] cloud loaded
+2024-08-06 14:36:21 [UNIMAP] map load, spent time: 0.094601
+2024-08-06 14:36:21 [MAIN] Initilized
+2024-08-06 14:36:59 [MOBILE] send motor init
+2024-08-06 14:37:02 [MOBILE] send motor init
+2024-08-06 14:37:03 [MOBILE] send motor init
+2024-08-06 14:37:03 [MOBILE] send motor init
+2024-08-06 14:37:03 [MOBILE] send motor init
+2024-08-06 14:38:07 [MAIN] program start
+2024-08-06 14:38:07 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 14:38:07 robot config loaded
+2024-08-06 14:38:07 l2c loop2 start
+2024-08-06 14:38:07 l2c loop2 start
+2024-08-06 14:38:07 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 14:38:07 l2c loop start
+2024-08-06 14:38:07 [UNIMAP] cloud loaded
+2024-08-06 14:38:07 [UNIMAP] map load, spent time: 0.093360
+2024-08-06 14:38:07 [MAIN] Initilized
+2024-08-06 14:38:26 [MAIN] program start
+2024-08-06 14:38:26 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 14:38:26 robot config loaded
+2024-08-06 14:38:27 l2c loop2 start
+2024-08-06 14:38:27 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 14:38:27 [L2C] connected
+2024-08-06 14:38:27 l2c loop start
+2024-08-06 14:38:27 [UNIMAP] cloud loaded
+2024-08-06 14:38:27 [UNIMAP] map load, spent time: 0.086167
+2024-08-06 14:38:27 [MAIN] Initilized
+2024-08-06 14:38:31 [MOBILE] send motor init
+2024-08-06 14:38:51 [UNIMAP] cloud loaded
+2024-08-06 14:38:51 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0805/topo.json loaded size:0
+2024-08-06 14:38:51 [UNIMAP] map load, spent time: 0.261288
+2024-08-06 14:38:56 [LOC] try manual init
+2024-08-06 14:39:38 [MAIN] program start
+2024-08-06 14:39:38 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 14:39:38 robot config loaded
+2024-08-06 14:39:39 l2c loop2 start
+2024-08-06 14:39:39 l2c loop2 start
+2024-08-06 14:39:39 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 14:39:39 l2c loop start
+2024-08-06 14:39:39 [UNIMAP] cloud loaded
+2024-08-06 14:39:39 [UNIMAP] map load, spent time: 0.087804
+2024-08-06 14:39:39 [MAIN] Initilized
+2024-08-06 14:39:53 [MOBILE] send motor init
+2024-08-06 14:39:54 [MOBILE] send motor init
+2024-08-06 14:39:54 [MOBILE] send motor init
+2024-08-06 14:39:54 [MOBILE] send motor init
+2024-08-06 14:39:54 [MOBILE] send motor init
+2024-08-06 14:40:33 [MAIN] program start
+2024-08-06 14:40:33 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 14:40:33 robot config loaded
+2024-08-06 14:40:33 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 14:40:33 l2c loop2 start
+2024-08-06 14:40:33 [L2C] connected
+2024-08-06 14:40:33 l2c loop start
+2024-08-06 14:40:33 [UNIMAP] cloud loaded
+2024-08-06 14:40:33 [UNIMAP] map load, spent time: 0.087471
+2024-08-06 14:40:33 [MAIN] Initilized
+2024-08-06 14:40:36 [MOBILE] send motor init
+2024-08-06 14:40:38 [MOBILE] send motor init
+2024-08-06 14:40:38 [MOBILE] send motor init
+2024-08-06 14:40:53 [MAIN] program start
+2024-08-06 14:40:53 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 14:40:53 robot config loaded
+2024-08-06 14:40:53 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 14:40:53 l2c loop2 start
+2024-08-06 14:40:53 [L2C] connected
+2024-08-06 14:40:53 l2c loop start
+2024-08-06 14:40:53 [UNIMAP] cloud loaded
+2024-08-06 14:40:53 [UNIMAP] map load, spent time: 0.087561
+2024-08-06 14:40:53 [MAIN] Initilized
+2024-08-06 14:40:55 [MOBILE] send motor init
+2024-08-06 14:40:55 [MOBILE] send motor init
+2024-08-06 14:40:56 [MOBILE] send motor init
+2024-08-06 14:40:56 [MOBILE] send motor init
+2024-08-06 14:40:56 [MOBILE] send motor init
+2024-08-06 14:41:22 [LOC] try manual init
+2024-08-06 14:44:03 [MAIN] program start
+2024-08-06 14:44:03 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 14:44:03 robot config loaded
+2024-08-06 14:44:03 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 14:44:03 [L2C] connected
+2024-08-06 14:44:03 l2c loop start
+2024-08-06 14:44:03 l2c loop2 start
+2024-08-06 14:44:03 [UNIMAP] cloud loaded
+2024-08-06 14:44:03 [UNIMAP] map load, spent time: 0.099023
+2024-08-06 14:44:03 [MAIN] Initilized
+2024-08-06 14:49:17 [MAIN] program start
+2024-08-06 14:49:17 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 14:49:17 robot config loaded
+2024-08-06 14:49:17 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 14:49:17 l2c loop2 start
+2024-08-06 14:49:17 [L2C] connected
+2024-08-06 14:49:17 l2c loop start
+2024-08-06 14:49:17 [UNIMAP] cloud loaded
+2024-08-06 14:49:17 [UNIMAP] map load, spent time: 0.123435
+2024-08-06 14:49:17 [MAIN] Initilized
+2024-08-06 14:49:27 [UNIMAP] cloud loaded
+2024-08-06 14:49:27 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0805/topo.json loaded size:0
+2024-08-06 14:49:27 [UNIMAP] map load, spent time: 0.238059
+2024-08-06 14:49:30 [LOC] try manual init
+2024-08-06 14:49:34 [LOC] try manual init
+2024-08-06 14:49:37 [WATCHDOG] LOC failed, ir:0.445616, ie:0.016384
+2024-08-06 14:49:38 [LOC] try manual init
+2024-08-06 14:49:42 [LOC] try manual init
+2024-08-06 14:49:48 [LOC] try manual init
+2024-08-06 14:49:51 [LOC] try manual init
+2024-08-06 14:49:52 [WATCHDOG] LOC failed, ir:0.456579, ie:0.020498
+2024-08-06 14:49:57 [MOBILE] send motor init
+2024-08-06 14:50:00 [MOBILE] send motor init
+2024-08-06 14:50:14 [MOBILE] send motor init
+2024-08-06 14:50:14 [MOBILE] send motor init
+2024-08-06 14:50:54 [MAIN] program start
+2024-08-06 14:50:54 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 14:50:54 robot config loaded
+2024-08-06 14:50:54 l2c loop2 start
+2024-08-06 14:50:54 l2c loop2 start
+2024-08-06 14:50:54 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 14:50:54 l2c loop start
+2024-08-06 14:50:54 [UNIMAP] cloud loaded
+2024-08-06 14:50:54 [UNIMAP] map load, spent time: 0.100694
+2024-08-06 14:50:54 [MAIN] Initilized
+2024-08-06 14:51:00 [UNIMAP] cloud loaded
+2024-08-06 14:51:00 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0805/topo.json loaded size:0
+2024-08-06 14:51:00 [UNIMAP] map load, spent time: 0.232048
+2024-08-06 14:51:03 [LOC] try manual init
+2024-08-06 14:51:09 [LOC] try manual init
+2024-08-06 14:51:13 [LOC] try manual init
+2024-08-06 14:51:22 [AUTO] start
+2024-08-06 14:51:22 [AUTO] ref path found
+2024-08-06 14:51:22 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-06 14:51:22 [AUTO] loop time drift, dt:0.139388
+
+2024-08-06 14:51:25 [AUTO] FIRST_ALIGN -> STATE_PP, err_th: -2.80/3.00
+2024-08-06 14:51:45 [AUTO] STATE_STOPPED
+2024-08-06 14:51:45 [AUTO] start
+2024-08-06 14:51:45 [AUTO] ref path found
+2024-08-06 14:51:45 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-06 14:51:45 [AUTO] loop time drift, dt:0.132593
+
+2024-08-06 14:51:47 [AUTO] FIRST_ALIGN -> STATE_PP, err_th: -2.78/3.00
+2024-08-06 14:51:47 [AUTO] STATE_PP -> FINAL_ALIGN, err_d: 0.10/0.10
+2024-08-06 14:51:53 [AUTO] FINAL_ALIGN -> GOAL_REACHED, err_th: 0.40/3.00
+2024-08-06 14:55:09 [AUTO] start
+2024-08-06 14:55:09 [AUTO] ref path found
+2024-08-06 14:55:09 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-06 14:55:09 [AUTO] loop time drift, dt:0.148992
+
+2024-08-06 14:55:11 [AUTO] FIRST_ALIGN -> STATE_PP, err_th: 2.79/3.00
+2024-08-06 14:55:17 [AUTO] STATE_PP -> FINAL_ALIGN, err_d: 0.10/0.10
+2024-08-06 14:55:20 [AUTO] FINAL_ALIGN -> GOAL_REACHED, err_th: 0.38/3.00
+2024-08-06 18:32:33 [MAIN] program start
+2024-08-06 18:32:33 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 18:32:33 robot config loaded
+2024-08-06 18:32:33 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 18:32:33 l2c loop2 start
+2024-08-06 18:32:33 [L2C] connected
+2024-08-06 18:32:33 l2c loop start
+2024-08-06 18:32:33 [UNIMAP] cloud loaded
+2024-08-06 18:32:33 [UNIMAP] map load, spent time: 0.102481
+2024-08-06 18:32:33 [MAIN] Initilized
+2024-08-06 18:32:43 [UNIMAP] cloud loaded
+2024-08-06 18:32:43 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0805/topo.json loaded size:0
+2024-08-06 18:32:43 [UNIMAP] map load, spent time: 0.226975
+2024-08-06 18:32:47 [LOC] try manual init
+2024-08-06 18:35:37 [MAIN] program start
+2024-08-06 18:35:37 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 18:35:37 robot config loaded
+2024-08-06 18:35:37 l2c loop2 start
+2024-08-06 18:35:37 l2c loop2 start
+2024-08-06 18:35:37 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 18:35:37 l2c loop start
+2024-08-06 18:35:38 [UNIMAP] cloud loaded
+2024-08-06 18:35:38 [UNIMAP] map load, spent time: 0.113616
+2024-08-06 18:35:38 [MAIN] Initilized
+2024-08-06 18:35:54 [UNIMAP] cloud loaded
+2024-08-06 18:35:54 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0805/topo.json loaded size:0
+2024-08-06 18:35:54 [UNIMAP] map load, spent time: 0.221138
+2024-08-06 18:35:59 [LOC] try manual init
+2024-08-06 18:36:15 [AUTO] start
+2024-08-06 18:36:28 [AUTO] ref path found
+2024-08-06 18:36:28 [AUTO] PATH_FINDING -> FIRST_ALIGN
+2024-08-06 18:36:28 [AUTO] loop time drift, dt:12.979331
+
+2024-08-06 18:36:34 [AUTO] FIRST_ALIGN -> STATE_PP, err_th: -2.93/3.00
+2024-08-06 18:36:56 [AUTO] STATE_PP -> FINAL_ALIGN, err_d: 0.10/0.10
+2024-08-06 18:36:59 [AUTO] FINAL_ALIGN -> GOAL_REACHED, err_th: -0.34/3.00
+2024-08-06 18:37:12 [SERVER] successfully transferred using rsync..
+2024-08-06 18:37:13 [FMS] map send, server: 192.168.2.91, map_path: /home/rainbow/RB_MOBILE/maps/0723
+2024-08-06 18:43:58 [MAIN] program start
+2024-08-06 18:43:58 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 18:43:58 robot config loaded
+2024-08-06 18:43:59 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 18:43:59 l2c loop2 start
+2024-08-06 18:43:59 [L2C] connected
+2024-08-06 18:43:59 l2c loop start
+2024-08-06 18:43:59 [UNIMAP] cloud loaded
+2024-08-06 18:43:59 [UNIMAP] map load, spent time: 0.100783
+2024-08-06 18:43:59 [MAIN] Initilized
+2024-08-06 18:44:09 [SERVER] successfully transferred using rsync..
+2024-08-06 18:44:09 [FMS] map send, server: 192.168.2.91, map_path: /home/rainbow/RB_MOBILE/maps/0723
+2024-08-06 18:45:04 [MAIN] program start
+2024-08-06 18:45:04 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 18:45:04 robot config loaded
+2024-08-06 18:45:04 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 18:45:04 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 18:45:04 l2c loop2 start
+op start
+2024-08-06 18:45:04 [UNIMAP] cloud loaded
+2024-08-06 18:45:04 [UNIMAP] map load, spent time: 0.086843
+2024-08-06 18:45:04 [MAIN] Initilized
+2024-08-06 18:45:27 [SERVER] successfully transferred using rsync..
+2024-08-06 18:45:27 [FMS] map send, server: 192.168.2.91, map_path: /home/rainbow/RB_MOBILE/maps/0723
+2024-08-06 18:46:50 [MAIN] program start
+2024-08-06 18:46:50 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 18:46:50 robot config loaded
+2024-08-06 18:46:50 l2c loop2 start
+2024-08-06 18:46:50 l2c loop2 start
+2024-08-06 18:46:50 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 18:46:50 l2c loop start
+2024-08-06 18:46:50 [UNIMAP] cloud loaded
+2024-08-06 18:46:50 [UNIMAP] map load, spent time: 0.094421
+2024-08-06 18:46:50 [MAIN] Initilized
+2024-08-06 18:46:54 [SERVER] successfully transferred using rsync..
+2024-08-06 18:46:54 [FMS] map send, server: 192.168.2.91, map_path: /home/rainbow/RB_MOBILE/maps/0723
+2024-08-06 18:47:37 [MAIN] program start
+2024-08-06 18:47:37 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 18:47:37 robot config loaded
+2024-08-06 18:47:37 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 18:47:37 l2c loop2 start
+2024-08-06 18:47:37 [L2C] connected
+2024-08-06 18:47:37 l2c loop start
+2024-08-06 18:47:37 [UNIMAP] cloud loaded
+2024-08-06 18:47:38 [UNIMAP] map load, spent time: 0.104190
+2024-08-06 18:47:38 [MAIN] Initilized
+2024-08-06 18:47:40 [SERVER] successfully transferred using rsync..
+2024-08-06 18:47:40 [FMS] map send, server: 192.168.2.91, map_path: /home/rainbow/RB_MOBILE/maps/0723
+2024-08-06 18:49:47 [MAIN] program start
+2024-08-06 18:49:47 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 18:49:47 robot config loaded
+2024-08-06 18:49:47 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 18:49:47 [L2C] connected
+2024-08-06 18:49:47 l2c loop start
+2024-08-06 18:49:47 l2c loop2 start
+2024-08-06 18:49:47 [UNIMAP] cloud loaded
+2024-08-06 18:49:47 [UNIMAP] map load, spent time: 0.102481
+2024-08-06 18:49:47 [MAIN] Initilized
+2024-08-06 18:49:52 [SERVER] successfully transferred using rsync..
+2024-08-06 18:49:53 [FMS] map send, server: 192.168.2.91, map_path: /home/rainbow/RB_MOBILE/maps/0723
+2024-08-06 18:52:24 [MAIN] program start
+2024-08-06 18:52:24 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-06 18:52:24 robot config loaded
+2024-08-06 18:52:24 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-06 18:52:24 l2c loop2 start
+2024-08-06 18:52:24 [L2C] connected
+2024-08-06 18:52:24 l2c loop start
+2024-08-06 18:52:24 [UNIMAP] cloud loaded
+2024-08-06 18:52:24 [UNIMAP] map load, spent time: 0.101813
+2024-08-06 18:52:24 [MAIN] Initilized
+2024-08-06 18:53:22 [SERVER] successfully transferred using rsync..
+2024-08-06 18:53:22 [FMS] map send, server: 192.168.2.91, map_path: /home/rainbow/RB_MOBILE/maps/0723

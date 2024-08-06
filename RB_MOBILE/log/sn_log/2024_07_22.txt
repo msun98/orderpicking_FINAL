@@ -1,0 +1,787 @@
+2024-07-22 11:04:57 [MAIN] program start
+2024-07-22 11:04:57 [SETTING] robot_obs_decel_gain doesn't exist
+2024-07-22 11:04:57 robot config loaded
+2024-07-22 11:04:58 try to connect LAN2CAN 192.168.2.100:1977
+2024-07-22 11:04:58 l2c loop2 start
+2024-07-22 11:04:58 [L2C] connected
+2024-07-22 11:04:58 l2c loop start
+2024-07-22 11:04:58 [UNIMAP] cloud loaded
+2024-07-22 11:04:58 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0703/topo.json loaded size:0
+2024-07-22 11:04:58 [UNIMAP] map load, spent time: 0.253627
+2024-07-22 11:04:58 [MAIN] Initilized
+2024-07-22 11:04:58 [LIDAR] mobile pose time drift, back, dt: 0.653234
+2024-07-22 11:04:59 [LIDAR] mobile pose time drift, front, dt: 1.197627
+2024-07-22 11:04:59 [LIDAR] mobile pose time drift, back, dt: 1.733158
+2024-07-22 11:05:00 [LIDAR] mobile pose time drift, front, dt: 2.268669
+2024-07-22 11:05:01 [LIDAR] mobile pose time drift, back, dt: 2.800487
+2024-07-22 11:05:01 [LIDAR] mobile pose time drift, front, dt: 3.333801
+2024-07-22 11:05:02 [LIDAR] mobile pose time drift, back, dt: 3.866333
+2024-07-22 11:05:02 [LIDAR] mobile pose time drift, front, dt: 4.404416
+2024-07-22 11:05:03 [LIDAR] mobile pose time drift, back, dt: 4.937930
+2024-07-22 11:05:03 [LIDAR] mobile pose time drift, front, dt: 5.472941
+2024-07-22 11:05:04 [LIDAR] mobile pose time drift, back, dt: 6.003881
+2024-07-22 11:05:04 [LIDAR] mobile pose time drift, front, dt: 6.538517
+2024-07-22 11:05:05 [LIDAR] mobile pose time drift, back, dt: 7.071397
+2024-07-22 11:05:05 [LIDAR] mobile pose time drift, front, dt: 7.608197
+2024-07-22 11:05:06 [LIDAR] mobile pose time drift, back, dt: 8.150353
+2024-07-22 11:05:06 [LIDAR] mobile pose time drift, front, dt: 8.684641
+2024-07-22 11:05:07 [LIDAR] mobile pose time drift, back, dt: 9.219042
+2024-07-22 11:05:07 [LIDAR] mobile pose time drift, front, dt: 9.756289
+2024-07-22 11:05:08 [LIDAR] mobile pose time drift, back, dt: 10.288541
+2024-07-22 11:05:09 [LIDAR] mobile pose time drift, front, dt: 10.821758
+2024-07-22 11:05:09 [LIDAR] mobile pose time drift, back, dt: 11.361991
+2024-07-22 11:05:10 [LIDAR] mobile pose time drift, front, dt: 11.897612
+2024-07-22 11:05:10 [LIDAR] mobile pose time drift, back, dt: 12.432151
+2024-07-22 11:05:11 [LIDAR] mobile pose time drift, front, dt: 12.964733
+2024-07-22 11:05:11 [LIDAR] mobile pose time drift, back, dt: 13.496725
+2024-07-22 11:05:12 [LIDAR] mobile pose time drift, front, dt: 14.031061
+2024-07-22 11:05:12 [LIDAR] mobile pose time drift, back, dt: 14.563256
+2024-07-22 11:05:13 [LIDAR] mobile pose time drift, front, dt: 15.097170
+2024-07-22 11:05:13 [LIDAR] mobile pose time drift, back, dt: 15.628761
+2024-07-22 11:05:14 [LIDAR] mobile pose time drift, front, dt: 16.165386
+2024-07-22 11:05:14 [LIDAR] mobile pose time drift, back, dt: 16.697078
+2024-07-22 11:05:15 [LIDAR] mobile pose time drift, front, dt: 17.233129
+2024-07-22 11:05:16 [LIDAR] mobile pose time drift, back, dt: 17.765612
+2024-07-22 11:05:16 [LIDAR] mobile pose time drift, front, dt: 18.298518
+2024-07-22 11:05:17 [LIDAR] mobile pose time drift, back, dt: 18.832963
+2024-07-22 11:05:17 [LIDAR] mobile pose time drift, front, dt: 19.366467
+2024-07-22 11:05:18 [LIDAR] mobile pose time drift, back, dt: 19.904282
+2024-07-22 11:05:18 [LIDAR] mobile pose time drift, front, dt: 20.438094
+2024-07-22 11:21:31 [MAIN] program start
+2024-07-22 11:21:31 [SETTING] robot_obs_decel_gain doesn't exist
+2024-07-22 11:21:31 robot config loaded
+2024-07-22 11:21:32 l2c loop2 start
+2024-07-22 11:21:32 try to connect LAN2CAN 192.168.2.100:1977
+2024-07-22 11:21:32 [L2C] connected
+2024-07-22 11:21:32 l2c loop start
+2024-07-22 11:21:32 [UNIMAP] cloud loaded
+2024-07-22 11:21:32 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0703/topo.json loaded size:0
+2024-07-22 11:21:32 [UNIMAP] map load, spent time: 0.221592
+2024-07-22 11:21:32 [MAIN] Initilized
+2024-07-22 11:21:33 [LIDAR] mobile pose time drift, front, dt: 0.637301
+2024-07-22 11:21:33 [LIDAR] mobile pose time drift, back, dt: 1.173836
+2024-07-22 11:21:34 [LIDAR] mobile pose time drift, front, dt: 1.710465
+2024-07-22 11:21:34 [LIDAR] mobile pose time drift, back, dt: 2.245194
+2024-07-22 11:21:35 [LIDAR] mobile pose time drift, front, dt: 2.780960
+2024-07-22 11:21:35 [LIDAR] mobile pose time drift, back, dt: 3.316413
+2024-07-22 11:21:36 [LIDAR] mobile pose time drift, front, dt: 3.850278
+2024-07-22 11:21:36 [LIDAR] mobile pose time drift, back, dt: 4.382350
+2024-07-22 11:21:37 [LIDAR] mobile pose time drift, front, dt: 4.921216
+2024-07-22 11:21:37 [LIDAR] mobile pose time drift, back, dt: 5.454816
+2024-07-22 11:21:38 [LIDAR] mobile pose time drift, front, dt: 5.991606
+2024-07-22 11:21:38 [LIDAR] mobile pose time drift, back, dt: 6.527581
+2024-07-22 11:21:39 [LIDAR] mobile pose time drift, front, dt: 7.059928
+2024-07-22 11:21:40 [LIDAR] mobile pose time drift, back, dt: 7.592133
+2024-07-22 11:21:40 [LIDAR] mobile pose time drift, front, dt: 8.127704
+2024-07-22 11:21:41 [LIDAR] mobile pose time drift, back, dt: 8.659397
+2024-07-22 11:21:41 [LIDAR] mobile pose time drift, front, dt: 9.192544
+2024-07-22 11:21:42 [LIDAR] mobile pose time drift, back, dt: 9.723516
+2024-07-22 11:21:42 [LIDAR] mobile pose time drift, front, dt: 10.257797
+2024-07-22 11:21:43 [LIDAR] mobile pose time drift, back, dt: 10.795900
+2024-07-22 11:21:43 [LIDAR] mobile pose time drift, front, dt: 11.331850
+2024-07-22 11:22:07 [MAIN] program start
+2024-07-22 11:22:07 [SETTING] robot_obs_decel_gain doesn't exist
+2024-07-22 11:22:07 robot config loaded
+2024-07-22 11:22:07 l2c loop2 start
+2024-07-22 11:22:07 try to connect LAN2CAN 192.168.2.100:1977
+2024-07-22 11:22:07 [L2C] connected
+2024-07-22 11:22:07 l2c loop start
+2024-07-22 11:22:08 [UNIMAP] cloud loaded
+2024-07-22 11:22:08 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0703/topo.json loaded size:0
+2024-07-22 11:22:08 [UNIMAP] map load, spent time: 0.266967
+2024-07-22 11:22:08 [MAIN] Initilized
+2024-07-22 11:22:08 [LIDAR] mobile pose time drift, front, dt: 0.686350
+2024-07-22 11:22:09 [LIDAR] mobile pose time drift, back, dt: 1.231048
+2024-07-22 11:22:09 [LIDAR] mobile pose time drift, front, dt: 1.771193
+2024-07-22 11:22:10 [LIDAR] mobile pose time drift, back, dt: 2.305905
+2024-07-22 11:22:10 [LIDAR] mobile pose time drift, front, dt: 2.842838
+2024-07-22 11:22:11 [LIDAR] mobile pose time drift, back, dt: 3.376935
+2024-07-22 11:22:12 [LIDAR] mobile pose time drift, front, dt: 3.913612
+2024-07-22 11:22:12 [LIDAR] mobile pose time drift, back, dt: 4.447560
+2024-07-22 11:22:13 [LIDAR] mobile pose time drift, front, dt: 4.981832
+2024-07-22 11:22:13 [LIDAR] mobile pose time drift, back, dt: 5.514482
+2024-07-22 11:22:14 [LIDAR] mobile pose time drift, front, dt: 6.050529
+2024-07-22 11:22:14 [LIDAR] mobile pose time drift, back, dt: 6.586098
+2024-07-22 11:22:15 [LIDAR] mobile pose time drift, front, dt: 7.121537
+2024-07-22 11:22:15 [LIDAR] mobile pose time drift, back, dt: 7.656119
+2024-07-22 11:23:50 [MAIN] program start
+2024-07-22 11:23:50 [SETTING] robot_obs_decel_gain doesn't exist
+2024-07-22 11:23:50 robot config loaded
+2024-07-22 11:23:50 try to connect LAN2CAN 192.168.2.100:1977
+2024-07-22 11:23:50 l2c loop2 start
+2024-07-22 11:23:50 [L2C] connected
+2024-07-22 11:23:50 l2c loop start
+2024-07-22 11:23:51 [UNIMAP] cloud loaded
+2024-07-22 11:23:51 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0703/topo.json loaded size:0
+2024-07-22 11:23:51 [UNIMAP] map load, spent time: 0.254684
+2024-07-22 11:23:51 [MAIN] Initilized
+2024-07-22 11:23:51 [LIDAR] mobile pose time drift, front, dt: 0.643812
+2024-07-22 11:23:52 [LIDAR] mobile pose time drift, back, dt: 1.181600
+2024-07-22 11:23:52 [LIDAR] mobile pose time drift, front, dt: 1.720613
+2024-07-22 11:23:53 [LIDAR] mobile pose time drift, back, dt: 2.255865
+2024-07-22 11:23:53 [LIDAR] mobile pose time drift, front, dt: 2.791515
+2024-07-22 11:23:54 [LIDAR] mobile pose time drift, back, dt: 3.325777
+2024-07-22 11:23:55 [LIDAR] mobile pose time drift, front, dt: 3.861101
+2024-07-22 11:23:55 [LIDAR] mobile pose time drift, back, dt: 4.395315
+2024-07-22 11:23:56 [LIDAR] mobile pose time drift, front, dt: 4.931292
+2024-07-22 11:23:56 [LIDAR] mobile pose time drift, back, dt: 5.464934
+2024-07-22 11:23:57 [LIDAR] mobile pose time drift, front, dt: 6.000993
+2024-07-22 11:23:57 [LIDAR] mobile pose time drift, back, dt: 6.535202
+2024-07-22 11:23:58 [LIDAR] mobile pose time drift, front, dt: 7.070829
+2024-07-22 11:23:58 [LIDAR] mobile pose time drift, back, dt: 7.605550
+2024-07-22 11:23:59 [LIDAR] mobile pose time drift, front, dt: 8.142713
+2024-07-22 11:23:59 [LIDAR] mobile pose time drift, back, dt: 8.676236
+2024-07-22 11:24:00 [LIDAR] mobile pose time drift, front, dt: 9.210925
+2024-07-22 11:24:00 [LIDAR] mobile pose time drift, back, dt: 9.746499
+2024-07-22 11:24:01 [LIDAR] mobile pose time drift, front, dt: 10.282459
+2024-07-22 11:24:01 [LIDAR] mobile pose time drift, back, dt: 10.818091
+2024-07-22 11:24:02 [LIDAR] mobile pose time drift, front, dt: 11.354804
+2024-07-22 11:24:03 [LIDAR] mobile pose time drift, back, dt: 11.887548
+2024-07-22 11:24:03 [LIDAR] mobile pose time drift, front, dt: 12.423300
+2024-07-22 11:24:04 [LIDAR] mobile pose time drift, back, dt: 12.956545
+2024-07-22 11:24:04 [LIDAR] mobile pose time drift, front, dt: 13.492496
+2024-07-22 11:24:05 [LIDAR] mobile pose time drift, back, dt: 14.026667
+2024-07-22 11:24:05 [LIDAR] mobile pose time drift, front, dt: 14.562244
+2024-07-22 11:24:06 [LIDAR] mobile pose time drift, back, dt: 15.095259
+2024-07-22 11:24:06 [LIDAR] mobile pose time drift, front, dt: 15.630483
+2024-07-22 11:24:07 [LIDAR] mobile pose time drift, back, dt: 16.168774
+2024-07-22 11:24:07 [LIDAR] mobile pose time drift, front, dt: 16.706005
+2024-07-22 11:24:08 [LIDAR] mobile pose time drift, back, dt: 17.240208
+2024-07-22 11:24:08 [LIDAR] mobile pose time drift, front, dt: 17.775874
+2024-07-22 11:24:37 [MAIN] program start
+2024-07-22 11:24:37 [SETTING] robot_obs_decel_gain doesn't exist
+2024-07-22 11:24:37 robot config loaded
+2024-07-22 11:24:37 try to connect LAN2CAN 192.168.2.100:1977
+2024-07-22 11:24:37 l2c loop2 start
+2024-07-22 11:24:37 [L2C] connected
+2024-07-22 11:24:37 l2c loop start
+2024-07-22 11:24:37 [UNIMAP] cloud loaded
+2024-07-22 11:24:38 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0703/topo.json loaded size:0
+2024-07-22 11:24:38 [UNIMAP] map load, spent time: 0.257322
+2024-07-22 11:24:38 [MAIN] Initilized
+2024-07-22 11:24:38 [LIDAR] mobile pose time drift, back, dt: 0.675766
+2024-07-22 11:24:39 [LIDAR] mobile pose time drift, front, dt: 1.237108
+2024-07-22 11:24:39 [LIDAR] mobile pose time drift, back, dt: 1.775773
+2024-07-22 11:24:40 [LIDAR] mobile pose time drift, front, dt: 2.311483
+2024-07-22 11:24:40 [LIDAR] mobile pose time drift, back, dt: 2.846535
+2024-07-22 11:24:41 [LIDAR] mobile pose time drift, front, dt: 3.381349
+2024-07-22 11:24:41 [LIDAR] mobile pose time drift, back, dt: 3.917037
+2024-07-22 11:24:42 [LIDAR] mobile pose time drift, front, dt: 4.455065
+2024-07-22 11:24:42 [LIDAR] mobile pose time drift, back, dt: 4.989492
+2024-07-22 11:24:43 [LIDAR] mobile pose time drift, front, dt: 5.526857
+2024-07-22 11:24:44 [LIDAR] mobile pose time drift, back, dt: 6.063461
+2024-07-22 11:24:44 [LIDAR] mobile pose time drift, front, dt: 6.598040
+2024-07-22 11:24:45 [LIDAR] mobile pose time drift, back, dt: 7.134937
+2024-07-22 11:24:45 [LIDAR] mobile pose time drift, front, dt: 7.670658
+2024-07-22 11:24:46 [LIDAR] mobile pose time drift, back, dt: 8.207266
+2024-07-22 11:24:46 [LIDAR] mobile pose time drift, front, dt: 8.743882
+2024-07-22 11:24:47 [LIDAR] mobile pose time drift, back, dt: 9.280799
+2024-07-22 11:24:47 [LIDAR] mobile pose time drift, front, dt: 9.816448
+2024-07-22 11:24:48 [LIDAR] mobile pose time drift, back, dt: 10.355108
+2024-07-22 11:24:48 [LIDAR] mobile pose time drift, front, dt: 10.892269
+2024-07-22 11:24:49 [LIDAR] mobile pose time drift, back, dt: 11.429981
+2024-07-22 11:24:49 [LIDAR] mobile pose time drift, front, dt: 11.967101
+2024-07-22 11:24:50 [LIDAR] mobile pose time drift, back, dt: 12.505586
+2024-07-22 11:24:51 [LIDAR] mobile pose time drift, front, dt: 13.040857
+2024-07-22 11:24:51 [LIDAR] mobile pose time drift, back, dt: 13.576075
+2024-07-22 11:24:52 [LIDAR] mobile pose time drift, front, dt: 14.111862
+2024-07-22 11:24:52 [LIDAR] mobile pose time drift, back, dt: 14.647599
+2024-07-22 11:24:53 [LIDAR] mobile pose time drift, front, dt: 15.183392
+2024-07-22 11:24:53 [LIDAR] mobile pose time drift, back, dt: 15.718225
+2024-07-22 11:24:54 [LIDAR] mobile pose time drift, front, dt: 16.256593
+2024-07-22 11:24:54 [LIDAR] mobile pose time drift, back, dt: 16.793369
+2024-07-22 11:24:55 [LIDAR] mobile pose time drift, front, dt: 17.329563
+2024-07-22 11:24:55 [LIDAR] mobile pose time drift, back, dt: 17.866329
+2024-07-22 11:24:56 [LIDAR] mobile pose time drift, front, dt: 18.402619
+2024-07-22 11:24:56 [LIDAR] mobile pose time drift, back, dt: 18.938707
+2024-07-22 11:24:57 [LIDAR] mobile pose time drift, front, dt: 19.475370
+2024-07-22 11:24:57 [LIDAR] mobile pose time drift, back, dt: 20.010156
+2024-07-22 11:24:58 [LIDAR] mobile pose time drift, front, dt: 20.547117
+2024-07-22 11:24:59 [LIDAR] mobile pose time drift, back, dt: 21.083570
+2024-07-22 11:24:59 [LIDAR] mobile pose time drift, front, dt: 21.623050
+2024-07-22 11:25:00 [LIDAR] mobile pose time drift, back, dt: 22.159724
+2024-07-22 11:25:00 [LIDAR] mobile pose time drift, front, dt: 22.696012
+2024-07-22 11:25:01 [LIDAR] mobile pose time drift, back, dt: 23.230426
+2024-07-22 11:25:01 [LIDAR] mobile pose time drift, front, dt: 23.764864
+2024-07-22 11:25:02 [LIDAR] mobile pose time drift, back, dt: 24.299181
+2024-07-22 11:25:02 [LIDAR] mobile pose time drift, front, dt: 24.833668
+2024-07-22 11:25:03 [LIDAR] mobile pose time drift, back, dt: 25.369866
+2024-07-22 11:25:03 [LIDAR] mobile pose time drift, front, dt: 25.905383
+2024-07-22 11:25:04 [LIDAR] mobile pose time drift, back, dt: 26.439788
+2024-07-22 11:25:04 [LIDAR] mobile pose time drift, front, dt: 26.974558
+2024-07-22 11:25:05 [LIDAR] mobile pose time drift, back, dt: 27.508467
+2024-07-22 11:25:06 [LIDAR] mobile pose time drift, front, dt: 28.044734
+2024-07-22 11:25:06 [LIDAR] mobile pose time drift, back, dt: 28.578216
+2024-07-22 11:25:07 [LIDAR] mobile pose time drift, front, dt: 29.113311
+2024-07-22 11:25:07 [LIDAR] mobile pose time drift, back, dt: 29.645257
+2024-07-22 11:25:08 [LIDAR] mobile pose time drift, front, dt: 30.179802
+2024-07-22 11:25:08 [LIDAR] mobile pose time drift, back, dt: 30.713028
+2024-07-22 11:25:09 [LIDAR] mobile pose time drift, front, dt: 31.246271
+2024-07-22 11:25:09 [LIDAR] mobile pose time drift, back, dt: 31.780568
+2024-07-22 11:25:10 [LIDAR] mobile pose time drift, front, dt: 32.315201
+2024-07-22 11:25:10 [LIDAR] mobile pose time drift, back, dt: 32.850691
+2024-07-22 11:25:11 [LIDAR] mobile pose time drift, front, dt: 33.384043
+2024-07-22 11:25:11 [LIDAR] mobile pose time drift, back, dt: 33.919853
+2024-07-22 11:25:12 [LIDAR] mobile pose time drift, front, dt: 34.453303
+2024-07-22 11:25:12 [LIDAR] mobile pose time drift, back, dt: 34.985186
+2024-07-22 11:25:13 [LIDAR] mobile pose time drift, front, dt: 35.517859
+2024-07-22 11:25:14 [LIDAR] mobile pose time drift, back, dt: 36.051640
+2024-07-22 11:25:14 [LIDAR] mobile pose time drift, front, dt: 36.582702
+2024-07-22 11:25:15 [LIDAR] mobile pose time drift, back, dt: 37.116735
+2024-07-22 11:25:15 [LIDAR] mobile pose time drift, front, dt: 37.652966
+2024-07-22 11:25:16 [LIDAR] mobile pose time drift, back, dt: 38.189457
+2024-07-22 11:25:16 [LIDAR] mobile pose time drift, front, dt: 38.726089
+2024-07-22 11:25:17 [LIDAR] mobile pose time drift, back, dt: 39.260649
+2024-07-22 11:25:17 [LIDAR] mobile pose time drift, front, dt: 39.793809
+2024-07-22 11:25:18 [LIDAR] mobile pose time drift, back, dt: 40.329229
+2024-07-22 11:25:18 [LIDAR] mobile pose time drift, front, dt: 40.861314
+2024-07-22 11:25:19 [LIDAR] mobile pose time drift, back, dt: 41.393023
+2024-07-22 11:25:19 [LIDAR] mobile pose time drift, front, dt: 41.928568
+2024-07-22 11:25:20 [LIDAR] mobile pose time drift, back, dt: 42.464407
+2024-07-22 11:25:20 [LIDAR] mobile pose time drift, front, dt: 42.998968
+2024-07-22 11:25:21 [LIDAR] mobile pose time drift, back, dt: 43.533104
+2024-07-22 11:25:22 [LIDAR] mobile pose time drift, front, dt: 44.067593
+2024-07-22 11:25:22 [LIDAR] mobile pose time drift, back, dt: 44.598976
+2024-07-22 11:25:23 [LIDAR] mobile pose time drift, front, dt: 45.136197
+2024-07-22 11:25:23 [LIDAR] mobile pose time drift, back, dt: 45.672082
+2024-07-22 11:25:24 [LIDAR] mobile pose time drift, front, dt: 46.205411
+2024-07-22 11:25:24 [LIDAR] mobile pose time drift, back, dt: 46.735836
+2024-07-22 11:25:25 [LIDAR] mobile pose time drift, front, dt: 47.271016
+2024-07-22 11:25:25 [LIDAR] mobile pose time drift, back, dt: 47.809790
+2024-07-22 11:25:26 [LIDAR] mobile pose time drift, front, dt: 48.341748
+2024-07-22 11:25:26 [LIDAR] mobile pose time drift, back, dt: 48.876163
+2024-07-22 11:25:27 [LIDAR] mobile pose time drift, front, dt: 49.409587
+2024-07-22 11:25:27 [LIDAR] mobile pose time drift, back, dt: 49.941228
+2024-07-22 11:25:28 [LIDAR] mobile pose time drift, front, dt: 50.473006
+2024-07-22 11:25:28 [LIDAR] mobile pose time drift, back, dt: 51.003895
+2024-07-22 11:25:29 [LIDAR] mobile pose time drift, front, dt: 51.536906
+2024-07-22 11:25:30 [LIDAR] mobile pose time drift, back, dt: 52.068764
+2024-07-22 11:25:30 [LIDAR] mobile pose time drift, front, dt: 52.601687
+2024-07-22 11:25:31 [LIDAR] mobile pose time drift, back, dt: 53.135482
+2024-07-22 11:25:31 [LIDAR] mobile pose time drift, front, dt: 53.669668
+2024-07-22 11:25:32 [LIDAR] mobile pose time drift, back, dt: 54.204762
+2024-07-22 11:25:32 [LIDAR] mobile pose time drift, front, dt: 54.739298
+2024-07-22 11:25:33 [LIDAR] mobile pose time drift, back, dt: 55.270919
+2024-07-22 11:25:33 [LIDAR] mobile pose time drift, front, dt: 55.802055
+2024-07-22 11:25:34 [LIDAR] mobile pose time drift, back, dt: 56.333353
+2024-07-22 11:25:34 [LIDAR] mobile pose time drift, front, dt: 56.869532
+2024-07-22 11:25:35 [LIDAR] mobile pose time drift, back, dt: 57.401343
+2024-07-22 11:25:35 [LIDAR] mobile pose time drift, front, dt: 57.936474
+2024-07-22 11:25:36 [LIDAR] mobile pose time drift, back, dt: 58.469799
+2024-07-22 11:25:36 [LIDAR] mobile pose time drift, front, dt: 59.002524
+2024-07-22 11:25:37 [LIDAR] mobile pose time drift, back, dt: 59.534296
+2024-07-22 11:25:38 [LIDAR] mobile pose time drift, front, dt: 60.065156
+2024-07-22 11:25:38 [LIDAR] mobile pose time drift, back, dt: 60.600338
+2024-07-22 11:25:39 [LIDAR] mobile pose time drift, front, dt: 61.133696
+2024-07-22 11:25:39 [LIDAR] mobile pose time drift, back, dt: 61.665535
+2024-07-22 11:25:40 [LIDAR] mobile pose time drift, front, dt: 62.197502
+2024-07-22 11:25:40 [LIDAR] mobile pose time drift, back, dt: 62.731277
+2024-07-22 11:25:41 [LIDAR] mobile pose time drift, front, dt: 63.269180
+2024-07-22 11:25:41 [LIDAR] mobile pose time drift, back, dt: 63.800396
+2024-07-22 11:25:42 [LIDAR] mobile pose time drift, front, dt: 64.335602
+2024-07-22 11:25:42 [LIDAR] mobile pose time drift, back, dt: 64.868644
+2024-07-22 11:25:43 [LIDAR] mobile pose time drift, front, dt: 65.407045
+2024-07-22 11:25:43 [LIDAR] mobile pose time drift, back, dt: 65.941237
+2024-07-22 11:25:44 [LIDAR] mobile pose time drift, front, dt: 66.472817
+2024-07-22 11:25:44 [LIDAR] mobile pose time drift, back, dt: 67.004677
+2024-07-22 11:25:45 [LIDAR] mobile pose time drift, front, dt: 67.535983
+2024-07-22 11:25:46 [LIDAR] mobile pose time drift, back, dt: 68.068494
+2024-07-22 11:25:46 [LIDAR] mobile pose time drift, front, dt: 68.601054
+2024-07-22 11:25:47 [LIDAR] mobile pose time drift, back, dt: 69.135345
+2024-07-22 11:25:47 [LIDAR] mobile pose time drift, front, dt: 69.667732
+2024-07-22 11:25:48 [LIDAR] mobile pose time drift, back, dt: 70.203898
+2024-07-22 11:25:48 [LIDAR] mobile pose time drift, front, dt: 70.738539
+2024-07-22 11:25:49 [LIDAR] mobile pose time drift, back, dt: 71.274762
+2024-07-22 11:25:49 [LIDAR] mobile pose time drift, front, dt: 71.807847
+2024-07-22 11:25:50 [LIDAR] mobile pose time drift, back, dt: 72.339756
+2024-07-22 11:25:50 [LIDAR] mobile pose time drift, front, dt: 72.875924
+2024-07-22 11:25:51 [LIDAR] mobile pose time drift, back, dt: 73.406487
+2024-07-22 11:25:51 [LIDAR] mobile pose time drift, front, dt: 73.937900
+2024-07-22 11:25:52 [LIDAR] mobile pose time drift, back, dt: 74.473507
+2024-07-22 11:25:52 [LIDAR] mobile pose time drift, front, dt: 75.007966
+2024-07-22 11:25:53 [LIDAR] mobile pose time drift, back, dt: 75.540407
+2024-07-22 11:25:54 [LIDAR] mobile pose time drift, front, dt: 76.078020
+2024-07-22 11:25:54 [LIDAR] mobile pose time drift, back, dt: 76.612750
+2024-07-22 11:25:55 [LIDAR] mobile pose time drift, front, dt: 77.148767
+2024-07-22 11:25:55 [LIDAR] mobile pose time drift, back, dt: 77.683046
+2024-07-22 11:25:56 [LIDAR] mobile pose time drift, front, dt: 78.218025
+2024-07-22 11:25:56 [LIDAR] mobile pose time drift, back, dt: 78.751901
+2024-07-22 11:25:57 [LIDAR] mobile pose time drift, front, dt: 79.287302
+2024-07-22 11:25:57 [LIDAR] mobile pose time drift, back, dt: 79.820300
+2024-07-22 11:25:58 [LIDAR] mobile pose time drift, front, dt: 80.350319
+2024-07-22 11:25:58 [LIDAR] mobile pose time drift, back, dt: 80.883066
+2024-07-22 11:25:59 [LIDAR] mobile pose time drift, front, dt: 81.418003
+2024-07-22 11:25:59 [LIDAR] mobile pose time drift, back, dt: 81.949677
+2024-07-22 11:26:00 [LIDAR] mobile pose time drift, front, dt: 82.485547
+2024-07-22 11:26:01 [LIDAR] mobile pose time drift, back, dt: 83.019336
+2024-07-22 11:26:01 [LIDAR] mobile pose time drift, front, dt: 83.558560
+2024-07-22 11:26:02 [LIDAR] mobile pose time drift, back, dt: 84.097738
+2024-07-22 11:26:02 [LIDAR] mobile pose time drift, front, dt: 84.628427
+2024-07-22 11:26:03 [LIDAR] mobile pose time drift, back, dt: 85.163613
+2024-07-22 11:26:03 [LIDAR] mobile pose time drift, front, dt: 85.703429
+2024-07-22 11:26:04 [LIDAR] mobile pose time drift, back, dt: 86.234194
+2024-07-22 11:26:04 [LIDAR] mobile pose time drift, front, dt: 86.772830
+2024-07-22 11:26:05 [LIDAR] mobile pose time drift, back, dt: 87.305426
+2024-07-22 11:26:05 [LIDAR] mobile pose time drift, front, dt: 87.841542
+2024-07-22 11:26:06 [LIDAR] mobile pose time drift, back, dt: 88.380914
+2024-07-22 11:26:06 [LIDAR] mobile pose time drift, front, dt: 88.913802
+2024-07-22 11:26:07 [LIDAR] mobile pose time drift, back, dt: 89.445965
+2024-07-22 11:26:07 [LIDAR] mobile pose time drift, front, dt: 89.985703
+2024-07-22 11:26:08 [LIDAR] mobile pose time drift, back, dt: 90.520414
+2024-07-22 11:26:09 [LIDAR] mobile pose time drift, front, dt: 91.052121
+2024-07-22 11:26:09 [LIDAR] mobile pose time drift, back, dt: 91.585882
+2024-07-22 11:26:10 [LIDAR] mobile pose time drift, front, dt: 92.120800
+2024-07-22 11:26:10 [LIDAR] mobile pose time drift, back, dt: 92.655389
+2024-07-22 11:26:11 [LIDAR] mobile pose time drift, front, dt: 93.188243
+2024-07-22 11:26:11 [LIDAR] mobile pose time drift, back, dt: 93.721996
+2024-07-22 11:26:12 [LIDAR] mobile pose time drift, front, dt: 94.256377
+2024-07-22 11:26:12 [LIDAR] mobile pose time drift, back, dt: 94.788804
+2024-07-22 11:26:13 [LIDAR] mobile pose time drift, front, dt: 95.323319
+2024-07-22 11:26:13 [LIDAR] mobile pose time drift, back, dt: 95.854555
+2024-07-22 11:26:14 [LIDAR] mobile pose time drift, front, dt: 96.388572
+2024-07-22 11:26:14 [LIDAR] mobile pose time drift, back, dt: 96.920270
+2024-07-22 11:26:15 [LIDAR] mobile pose time drift, front, dt: 97.455901
+2024-07-22 11:26:15 [LIDAR] mobile pose time drift, back, dt: 97.993426
+2024-07-22 11:26:16 [LIDAR] mobile pose time drift, front, dt: 98.525629
+2024-07-22 11:26:17 [LIDAR] mobile pose time drift, back, dt: 99.061709
+2024-07-22 11:26:17 [LIDAR] mobile pose time drift, front, dt: 99.596064
+2024-07-22 11:26:18 [LIDAR] mobile pose time drift, back, dt: 100.129418
+2024-07-22 11:26:18 [LIDAR] mobile pose time drift, front, dt: 100.660025
+2024-07-22 11:26:19 [LIDAR] mobile pose time drift, back, dt: 101.194190
+2024-07-22 11:26:19 [LIDAR] mobile pose time drift, front, dt: 101.729317
+2024-07-22 11:26:20 [LIDAR] mobile pose time drift, back, dt: 102.264702
+2024-07-22 11:26:20 [LIDAR] mobile pose time drift, front, dt: 102.806072
+2024-07-22 11:26:21 [LIDAR] mobile pose time drift, back, dt: 103.338635
+2024-07-22 11:26:21 [LIDAR] mobile pose time drift, front, dt: 103.871779
+2024-07-22 11:26:22 [LIDAR] mobile pose time drift, back, dt: 104.406115
+2024-07-22 11:26:22 [LIDAR] mobile pose time drift, front, dt: 104.942171
+2024-07-22 11:26:23 [LIDAR] mobile pose time drift, back, dt: 105.473566
+2024-07-22 11:26:23 [LIDAR] mobile pose time drift, front, dt: 106.007262
+2024-07-22 11:26:24 [LIDAR] mobile pose time drift, back, dt: 106.542123
+2024-07-22 11:26:25 [LIDAR] mobile pose time drift, front, dt: 107.076023
+2024-07-22 11:26:25 [LIDAR] mobile pose time drift, back, dt: 107.607184
+2024-07-22 11:26:26 [LIDAR] mobile pose time drift, front, dt: 108.139468
+2024-07-22 11:26:26 [LIDAR] mobile pose time drift, back, dt: 108.677676
+2024-07-22 11:26:27 [LIDAR] mobile pose time drift, front, dt: 109.211848
+2024-07-22 11:26:27 [LIDAR] mobile pose time drift, back, dt: 109.746562
+2024-07-22 11:26:28 [LIDAR] mobile pose time drift, front, dt: 110.280420
+2024-07-22 11:26:28 [LIDAR] mobile pose time drift, back, dt: 110.814749
+2024-07-22 11:26:29 [LIDAR] mobile pose time drift, front, dt: 111.350876
+2024-07-22 11:26:29 [LIDAR] mobile pose time drift, back, dt: 111.880799
+2024-07-22 11:26:30 [LIDAR] mobile pose time drift, front, dt: 112.412844
+2024-07-22 11:26:30 [LIDAR] mobile pose time drift, back, dt: 112.943857
+2024-07-22 11:26:31 [LIDAR] mobile pose time drift, front, dt: 113.478173
+2024-07-22 11:26:31 [LIDAR] mobile pose time drift, back, dt: 114.010122
+2024-07-22 11:26:32 [LIDAR] mobile pose time drift, front, dt: 114.542312
+2024-07-22 11:26:33 [LIDAR] mobile pose time drift, back, dt: 115.073879
+2024-07-22 11:26:33 [LIDAR] mobile pose time drift, front, dt: 115.605911
+2024-07-22 11:26:34 [LIDAR] mobile pose time drift, back, dt: 116.142517
+2024-07-22 11:26:34 [LIDAR] mobile pose time drift, front, dt: 116.677899
+2024-07-22 11:26:35 [LIDAR] mobile pose time drift, back, dt: 117.207795
+2024-07-22 11:26:35 [LIDAR] mobile pose time drift, front, dt: 117.738526
+2024-07-22 11:26:36 [LIDAR] mobile pose time drift, back, dt: 118.274055
+2024-07-22 11:26:36 [LIDAR] mobile pose time drift, front, dt: 118.809516
+2024-07-22 11:26:37 [LIDAR] mobile pose time drift, back, dt: 119.343694
+2024-07-22 11:26:37 [LIDAR] mobile pose time drift, front, dt: 119.880236
+2024-07-22 11:26:38 [LIDAR] mobile pose time drift, back, dt: 120.410869
+2024-07-22 11:26:38 [LIDAR] mobile pose time drift, front, dt: 120.945897
+2024-07-22 11:26:39 [LIDAR] mobile pose time drift, back, dt: 121.478847
+2024-07-22 11:26:39 [LIDAR] mobile pose time drift, front, dt: 122.016399
+2024-07-22 11:26:40 [LIDAR] mobile pose time drift, back, dt: 122.547801
+2024-07-22 11:26:41 [LIDAR] mobile pose time drift, front, dt: 123.080559
+2024-07-22 11:26:41 [LIDAR] mobile pose time drift, back, dt: 123.612515
+2024-07-22 11:26:42 [LIDAR] mobile pose time drift, front, dt: 124.146183
+2024-07-22 11:26:42 [LIDAR] mobile pose time drift, back, dt: 124.678271
+2024-07-22 11:26:43 [LIDAR] mobile pose time drift, front, dt: 125.213192
+2024-07-22 11:26:43 [LIDAR] mobile pose time drift, back, dt: 125.746490
+2024-07-22 11:26:44 [LIDAR] mobile pose time drift, front, dt: 126.282189
+2024-07-22 11:26:44 [LIDAR] mobile pose time drift, back, dt: 126.813371
+2024-07-22 11:26:45 [LIDAR] mobile pose time drift, front, dt: 127.349457
+2024-07-22 11:26:45 [LIDAR] mobile pose time drift, back, dt: 127.882156
+2024-07-22 11:26:46 [LIDAR] mobile pose time drift, front, dt: 128.418519
+2024-07-22 11:26:46 [LIDAR] mobile pose time drift, back, dt: 128.955905
+2024-07-22 11:26:47 [LIDAR] mobile pose time drift, front, dt: 129.487191
+2024-07-22 11:26:48 [LIDAR] mobile pose time drift, back, dt: 130.023606
+2024-07-22 11:26:48 [LIDAR] mobile pose time drift, front, dt: 130.557937
+2024-07-22 11:26:49 [LIDAR] mobile pose time drift, back, dt: 131.089062
+2024-07-22 11:26:49 [LIDAR] mobile pose time drift, front, dt: 131.621589
+2024-07-22 11:26:50 [LIDAR] mobile pose time drift, back, dt: 132.154842
+2024-07-22 11:26:50 [LIDAR] mobile pose time drift, front, dt: 132.692657
+2024-07-22 11:26:51 [LIDAR] mobile pose time drift, back, dt: 133.225963
+2024-07-22 11:26:51 [LIDAR] mobile pose time drift, front, dt: 133.767136
+2024-07-22 11:26:52 [LIDAR] mobile pose time drift, back, dt: 134.299219
+2024-07-22 11:26:52 [LIDAR] mobile pose time drift, front, dt: 134.834839
+2024-07-22 11:26:53 [LIDAR] mobile pose time drift, back, dt: 135.370020
+2024-07-22 11:26:53 [LIDAR] mobile pose time drift, front, dt: 135.900001
+2024-07-22 11:26:54 [LIDAR] mobile pose time drift, back, dt: 136.433358
+2024-07-22 11:26:54 [LIDAR] mobile pose time drift, front, dt: 136.973532
+2024-07-22 11:26:55 [LIDAR] mobile pose time drift, back, dt: 137.513013
+2024-07-22 11:26:56 [LIDAR] mobile pose time drift, front, dt: 138.049010
+2024-07-22 11:26:56 [LIDAR] mobile pose time drift, back, dt: 138.585679
+2024-07-22 11:26:57 [LIDAR] mobile pose time drift, front, dt: 139.118803
+2024-07-22 11:26:57 [LIDAR] mobile pose time drift, back, dt: 139.652323
+2024-07-22 11:26:58 [LIDAR] mobile pose time drift, front, dt: 140.191808
+2024-07-22 11:26:58 [LIDAR] mobile pose time drift, back, dt: 140.724483
+2024-07-22 11:26:59 [LIDAR] mobile pose time drift, front, dt: 141.260259
+2024-07-22 11:26:59 [LIDAR] mobile pose time drift, back, dt: 141.793666
+2024-07-22 11:27:00 [LIDAR] mobile pose time drift, front, dt: 142.325608
+2024-07-22 11:27:00 [LIDAR] mobile pose time drift, back, dt: 142.857459
+2024-07-22 11:27:01 [LIDAR] mobile pose time drift, front, dt: 143.391152
+2024-07-22 11:27:01 [LIDAR] mobile pose time drift, back, dt: 143.924384
+2024-07-22 11:27:02 [LIDAR] mobile pose time drift, front, dt: 144.461633
+2024-07-22 11:27:02 [LIDAR] mobile pose time drift, back, dt: 144.992455
+2024-07-22 11:27:03 [LIDAR] mobile pose time drift, front, dt: 145.523920
+2024-07-22 11:27:04 [LIDAR] mobile pose time drift, back, dt: 146.055015
+2024-07-22 11:27:04 [LIDAR] mobile pose time drift, front, dt: 146.588891
+2024-07-22 11:27:05 [LIDAR] mobile pose time drift, back, dt: 147.125865
+2024-07-22 11:27:05 [LIDAR] mobile pose time drift, front, dt: 147.658531
+2024-07-22 11:27:06 [LIDAR] mobile pose time drift, back, dt: 148.194561
+2024-07-22 11:27:06 [LIDAR] mobile pose time drift, front, dt: 148.725661
+2024-07-22 11:27:07 [LIDAR] mobile pose time drift, back, dt: 149.257650
+2024-07-22 11:27:07 [LIDAR] mobile pose time drift, front, dt: 149.793130
+2024-07-22 11:27:08 [LIDAR] mobile pose time drift, back, dt: 150.322947
+2024-07-22 11:27:08 [LIDAR] mobile pose time drift, front, dt: 150.861645
+2024-07-22 11:27:09 [LIDAR] mobile pose time drift, back, dt: 151.395043
+2024-07-22 11:27:09 [LIDAR] mobile pose time drift, front, dt: 151.928201
+2024-07-22 11:27:10 [LIDAR] mobile pose time drift, back, dt: 152.460512
+2024-07-22 11:27:10 [LIDAR] mobile pose time drift, front, dt: 152.996839
+2024-07-22 11:27:11 [LIDAR] mobile pose time drift, back, dt: 153.535649
+2024-07-22 11:27:12 [LIDAR] mobile pose time drift, front, dt: 154.068931
+2024-07-22 11:27:12 [LIDAR] mobile pose time drift, back, dt: 154.606469
+2024-07-22 11:27:13 [LIDAR] mobile pose time drift, front, dt: 155.140108
+2024-07-22 11:27:13 [LIDAR] mobile pose time drift, back, dt: 155.670379
+2024-07-22 11:27:14 [LIDAR] mobile pose time drift, front, dt: 156.202348
+2024-07-22 11:27:14 [LIDAR] mobile pose time drift, back, dt: 156.735036
+2024-07-22 11:27:15 [LIDAR] mobile pose time drift, front, dt: 157.270932
+2024-07-22 11:27:15 [LIDAR] mobile pose time drift, back, dt: 157.807371
+2024-07-22 11:27:16 [LIDAR] mobile pose time drift, front, dt: 158.346369
+2024-07-22 11:27:16 [LIDAR] mobile pose time drift, back, dt: 158.885328
+2024-07-22 11:27:17 [LIDAR] mobile pose time drift, front, dt: 159.422639
+2024-07-22 11:27:17 [LIDAR] mobile pose time drift, back, dt: 159.958350
+2024-07-22 11:27:18 [LIDAR] mobile pose time drift, front, dt: 160.492588
+2024-07-22 11:27:19 [LIDAR] mobile pose time drift, back, dt: 161.023535
+2024-07-22 11:27:19 [LIDAR] mobile pose time drift, front, dt: 161.554103
+2024-07-22 11:27:20 [LIDAR] mobile pose time drift, back, dt: 162.084225
+2024-07-22 11:27:20 [LIDAR] mobile pose time drift, front, dt: 162.617854
+2024-07-22 11:27:21 [LIDAR] mobile pose time drift, back, dt: 163.148769
+2024-07-22 11:27:21 [LIDAR] mobile pose time drift, front, dt: 163.681694
+2024-07-22 11:27:22 [LIDAR] mobile pose time drift, back, dt: 164.213404
+2024-07-22 11:27:22 [LIDAR] mobile pose time drift, front, dt: 164.747722
+2024-07-22 11:27:23 [LIDAR] mobile pose time drift, back, dt: 165.281415
+2024-07-22 11:27:23 [LIDAR] mobile pose time drift, front, dt: 165.815553
+2024-07-22 11:27:24 [LIDAR] mobile pose time drift, back, dt: 166.353210
+2024-07-22 11:27:24 [LIDAR] mobile pose time drift, front, dt: 166.884467
+2024-07-22 11:27:25 [LIDAR] mobile pose time drift, back, dt: 167.418716
+2024-07-22 11:27:25 [LIDAR] mobile pose time drift, front, dt: 167.954563
+2024-07-22 11:27:26 [LIDAR] mobile pose time drift, back, dt: 168.490180
+2024-07-22 11:27:27 [LIDAR] mobile pose time drift, front, dt: 169.026910
+2024-07-22 11:27:27 [LIDAR] mobile pose time drift, back, dt: 169.557282
+2024-07-22 11:27:28 [LIDAR] mobile pose time drift, front, dt: 170.092114
+2024-07-22 11:27:28 [LIDAR] mobile pose time drift, back, dt: 170.627831
+2024-07-22 11:27:29 [LIDAR] mobile pose time drift, front, dt: 171.161817
+2024-07-22 11:27:29 [LIDAR] mobile pose time drift, back, dt: 171.698921
+2024-07-22 11:27:30 [LIDAR] mobile pose time drift, front, dt: 172.233879
+2024-07-22 11:27:30 [LIDAR] mobile pose time drift, back, dt: 172.767919
+2024-07-22 11:27:31 [LIDAR] mobile pose time drift, front, dt: 173.301194
+2024-07-22 11:27:31 [LIDAR] mobile pose time drift, back, dt: 173.833544
+2024-07-22 11:27:32 [LIDAR] mobile pose time drift, front, dt: 174.366638
+2024-07-22 11:27:32 [LIDAR] mobile pose time drift, back, dt: 174.902836
+2024-07-22 11:27:33 [LIDAR] mobile pose time drift, front, dt: 175.438880
+2024-07-22 11:27:33 [LIDAR] mobile pose time drift, back, dt: 175.973708
+2024-07-22 11:27:34 [LIDAR] mobile pose time drift, front, dt: 176.511700
+2024-07-22 11:27:35 [LIDAR] mobile pose time drift, back, dt: 177.048241
+2024-07-22 11:27:35 [LIDAR] mobile pose time drift, front, dt: 177.585042
+2024-07-22 11:27:36 [LIDAR] mobile pose time drift, back, dt: 178.117999
+2024-07-22 11:27:36 [LIDAR] mobile pose time drift, front, dt: 178.653099
+2024-07-22 11:27:37 [LIDAR] mobile pose time drift, back, dt: 179.182713
+2024-07-22 11:27:37 [LIDAR] mobile pose time drift, front, dt: 179.716398
+2024-07-22 11:27:38 [LIDAR] mobile pose time drift, back, dt: 180.248859
+2024-07-22 11:27:38 [LIDAR] mobile pose time drift, front, dt: 180.785336
+2024-07-22 11:27:39 [LIDAR] mobile pose time drift, back, dt: 181.326342
+2024-07-22 11:27:39 [LIDAR] mobile pose time drift, front, dt: 181.859302
+2024-07-22 11:27:40 [LIDAR] mobile pose time drift, back, dt: 182.391879
+2024-07-22 11:27:40 [LIDAR] mobile pose time drift, front, dt: 182.926255
+2024-07-22 11:27:41 [LIDAR] mobile pose time drift, back, dt: 183.459214
+2024-07-22 11:27:41 [LIDAR] mobile pose time drift, front, dt: 183.993619
+2024-07-22 11:27:42 [LIDAR] mobile pose time drift, back, dt: 184.530454
+2024-07-22 11:27:43 [LIDAR] mobile pose time drift, front, dt: 185.064927
+2024-07-22 11:27:43 [LIDAR] mobile pose time drift, back, dt: 185.601660
+2024-07-22 11:27:44 [LIDAR] mobile pose time drift, front, dt: 186.137102
+2024-07-22 11:27:44 [LIDAR] mobile pose time drift, back, dt: 186.668007
+2024-07-22 11:27:45 [LIDAR] mobile pose time drift, front, dt: 187.202730
+2024-07-22 11:27:45 [LIDAR] mobile pose time drift, back, dt: 187.741190
+2024-07-22 11:27:46 [LIDAR] mobile pose time drift, front, dt: 188.277379
+2024-07-22 11:27:46 [LIDAR] mobile pose time drift, back, dt: 188.808873
+2024-07-22 11:27:47 [LIDAR] mobile pose time drift, front, dt: 189.343096
+2024-07-22 11:27:47 [LIDAR] mobile pose time drift, back, dt: 189.876493
+2024-07-22 11:27:48 [LIDAR] mobile pose time drift, front, dt: 190.412552
+2024-07-22 11:27:48 [LIDAR] mobile pose time drift, back, dt: 190.947679
+2024-07-22 11:27:49 [LIDAR] mobile pose time drift, front, dt: 191.479064
+2024-07-22 11:27:49 [LIDAR] mobile pose time drift, back, dt: 192.010129
+2024-07-22 11:27:50 [LIDAR] mobile pose time drift, front, dt: 192.544980
+2024-07-22 11:27:51 [LIDAR] mobile pose time drift, back, dt: 193.077551
+2024-07-22 11:27:51 [LIDAR] mobile pose time drift, front, dt: 193.616775
+2024-07-22 11:27:52 [LIDAR] mobile pose time drift, back, dt: 194.150709
+2024-07-22 11:27:52 [LIDAR] mobile pose time drift, front, dt: 194.686426
+2024-07-22 11:27:53 [LIDAR] mobile pose time drift, back, dt: 195.221750
+2024-07-22 11:27:53 [LIDAR] mobile pose time drift, front, dt: 195.755741
+2024-07-22 11:27:54 [LIDAR] mobile pose time drift, back, dt: 196.293023
+2024-07-22 11:27:54 [LIDAR] mobile pose time drift, front, dt: 196.831622
+2024-07-22 11:27:55 [LIDAR] mobile pose time drift, back, dt: 197.362141
+2024-07-22 11:27:55 [LIDAR] mobile pose time drift, front, dt: 197.897731
+2024-07-22 11:27:56 [LIDAR] mobile pose time drift, back, dt: 198.432209
+2024-07-22 11:27:56 [LIDAR] mobile pose time drift, front, dt: 198.967311
+2024-07-22 11:27:57 [LIDAR] mobile pose time drift, back, dt: 199.501718
+2024-07-22 11:27:58 [LIDAR] mobile pose time drift, front, dt: 200.034841
+2024-07-22 11:27:58 [LIDAR] mobile pose time drift, back, dt: 200.569819
+2024-07-22 11:27:59 [LIDAR] mobile pose time drift, front, dt: 201.107746
+2024-07-22 11:27:59 [LIDAR] mobile pose time drift, back, dt: 201.643530
+2024-07-22 11:28:00 [LIDAR] mobile pose time drift, front, dt: 202.176917
+2024-07-22 11:28:00 [LIDAR] mobile pose time drift, back, dt: 202.708814
+2024-07-22 11:28:01 [LIDAR] mobile pose time drift, front, dt: 203.241851
+2024-07-22 11:28:01 [LIDAR] mobile pose time drift, back, dt: 203.775067
+2024-07-22 11:28:02 [LIDAR] mobile pose time drift, front, dt: 204.307805
+2024-07-22 11:28:02 [LIDAR] mobile pose time drift, back, dt: 204.837653
+2024-07-22 11:28:03 [LIDAR] mobile pose time drift, front, dt: 205.369626
+2024-07-22 11:28:03 [LIDAR] mobile pose time drift, back, dt: 205.906489
+2024-07-22 11:28:04 [LIDAR] mobile pose time drift, front, dt: 206.443864
+2024-07-22 11:28:04 [LIDAR] mobile pose time drift, back, dt: 206.977401
+2024-07-22 11:28:05 [LIDAR] mobile pose time drift, front, dt: 207.509113
+2024-07-22 11:28:06 [LIDAR] mobile pose time drift, back, dt: 208.041438
+2024-07-22 11:28:06 [LIDAR] mobile pose time drift, front, dt: 208.579619
+2024-07-22 11:28:07 [LIDAR] mobile pose time drift, back, dt: 209.114163
+2024-07-22 11:28:07 [LIDAR] mobile pose time drift, front, dt: 209.646999
+2024-07-22 11:28:08 [LIDAR] mobile pose time drift, back, dt: 210.180024
+2024-07-22 11:28:08 [LIDAR] mobile pose time drift, front, dt: 210.713306
+2024-07-22 11:28:09 [LIDAR] mobile pose time drift, back, dt: 211.249931
+2024-07-22 11:28:09 [LIDAR] mobile pose time drift, front, dt: 211.781478
+2024-07-22 11:28:10 [LIDAR] mobile pose time drift, back, dt: 212.315182
+2024-07-22 11:28:10 [LIDAR] mobile pose time drift, front, dt: 212.851143
+2024-07-22 11:28:11 [LIDAR] mobile pose time drift, back, dt: 213.382855
+2024-07-22 11:28:11 [LIDAR] mobile pose time drift, front, dt: 213.919368
+2024-07-22 11:28:12 [LIDAR] mobile pose time drift, back, dt: 214.453253
+2024-07-22 11:28:12 [LIDAR] mobile pose time drift, front, dt: 214.987254
+2024-07-22 11:28:13 [LIDAR] mobile pose time drift, back, dt: 215.525015
+2024-07-22 11:28:14 [LIDAR] mobile pose time drift, front, dt: 216.059234
+2024-07-22 11:28:14 [LIDAR] mobile pose time drift, back, dt: 216.591857
+2024-07-22 11:28:15 [LIDAR] mobile pose time drift, front, dt: 217.125035
+2024-07-22 11:28:15 [LIDAR] mobile pose time drift, back, dt: 217.657557
+2024-07-22 11:28:16 [LIDAR] mobile pose time drift, front, dt: 218.191628
+2024-07-22 11:28:16 [LIDAR] mobile pose time drift, back, dt: 218.722932
+2024-07-22 11:28:17 [LIDAR] mobile pose time drift, front, dt: 219.254648
+2024-07-22 11:28:17 [LIDAR] mobile pose time drift, back, dt: 219.789995
+2024-07-22 11:28:18 [LIDAR] mobile pose time drift, front, dt: 220.325334
+2024-07-22 11:28:18 [LIDAR] mobile pose time drift, back, dt: 220.859090
+2024-07-22 11:28:19 [LIDAR] mobile pose time drift, front, dt: 221.392757
+2024-07-22 11:28:19 [LIDAR] mobile pose time drift, back, dt: 221.927859
+2024-07-22 11:28:20 [LIDAR] mobile pose time drift, front, dt: 222.462434
+2024-07-22 11:28:20 [LIDAR] mobile pose time drift, back, dt: 222.994139
+2024-07-22 11:28:21 [LIDAR] mobile pose time drift, front, dt: 223.527070
+2024-07-22 11:28:22 [LIDAR] mobile pose time drift, back, dt: 224.059806
+2024-07-22 11:28:22 [LIDAR] mobile pose time drift, front, dt: 224.595578
+2024-07-22 11:28:23 [LIDAR] mobile pose time drift, back, dt: 225.130592
+2024-07-22 11:28:23 [LIDAR] mobile pose time drift, front, dt: 225.667380
+2024-07-22 11:28:24 [LIDAR] mobile pose time drift, back, dt: 226.199709
+2024-07-22 11:28:24 [LIDAR] mobile pose time drift, front, dt: 226.732287
+2024-07-22 11:28:25 [LIDAR] mobile pose time drift, back, dt: 227.267125
+2024-07-22 11:28:25 [LIDAR] mobile pose time drift, front, dt: 227.799451
+2024-07-22 11:28:26 [LIDAR] mobile pose time drift, back, dt: 228.331711
+2024-07-22 11:28:26 [LIDAR] mobile pose time drift, front, dt: 228.866409
+2024-07-22 11:28:27 [LIDAR] mobile pose time drift, back, dt: 229.399251
+2024-07-22 11:28:27 [LIDAR] mobile pose time drift, front, dt: 229.931285
+2024-07-22 11:28:28 [LIDAR] mobile pose time drift, back, dt: 230.464528
+2024-07-22 11:28:28 [LIDAR] mobile pose time drift, front, dt: 230.998474
+2024-07-22 11:28:29 [LIDAR] mobile pose time drift, back, dt: 231.530769
+2024-07-22 11:28:30 [LIDAR] mobile pose time drift, front, dt: 232.065037
+2024-07-22 11:28:30 [LIDAR] mobile pose time drift, back, dt: 232.598262
+2024-07-22 11:28:31 [LIDAR] mobile pose time drift, front, dt: 233.132946
+2024-07-22 11:28:31 [LIDAR] mobile pose time drift, back, dt: 233.668846
+2024-07-22 11:28:32 [LIDAR] mobile pose time drift, front, dt: 234.207271
+2024-07-22 11:28:32 [LIDAR] mobile pose time drift, back, dt: 234.741771
+2024-07-22 11:28:33 [LIDAR] mobile pose time drift, front, dt: 235.277862
+2024-07-22 11:28:33 [LIDAR] mobile pose time drift, back, dt: 235.813119
+2024-07-22 11:28:34 [LIDAR] mobile pose time drift, front, dt: 236.349772
+2024-07-22 11:28:34 [LIDAR] mobile pose time drift, back, dt: 236.883518
+2024-07-22 11:28:35 [LIDAR] mobile pose time drift, front, dt: 237.418159
+2024-07-22 11:28:35 [LIDAR] mobile pose time drift, back, dt: 237.951407
+2024-07-22 11:28:36 [LIDAR] mobile pose time drift, front, dt: 238.486283
+2024-07-22 11:28:37 [LIDAR] mobile pose time drift, back, dt: 239.019923
+2024-07-22 11:28:37 [LIDAR] mobile pose time drift, front, dt: 239.559345
+2024-07-22 11:28:38 [LIDAR] mobile pose time drift, back, dt: 240.097985
+2024-07-22 11:28:38 [LIDAR] mobile pose time drift, front, dt: 240.635329
+2024-07-22 11:28:39 [LIDAR] mobile pose time drift, back, dt: 241.165917
+2024-07-22 11:28:39 [LIDAR] mobile pose time drift, front, dt: 241.699043
+2024-07-22 11:28:40 [LIDAR] mobile pose time drift, back, dt: 242.233012
+2024-07-22 11:28:40 [LIDAR] mobile pose time drift, front, dt: 242.767548
+2024-07-22 11:28:41 [LIDAR] mobile pose time drift, back, dt: 243.300702
+2024-07-22 11:28:41 [LIDAR] mobile pose time drift, front, dt: 243.835112
+2024-07-22 11:28:42 [LIDAR] mobile pose time drift, back, dt: 244.366278
+2024-07-22 11:28:42 [LIDAR] mobile pose time drift, front, dt: 244.901351
+2024-07-22 11:28:43 [LIDAR] mobile pose time drift, back, dt: 245.435305
+2024-07-22 11:28:43 [LIDAR] mobile pose time drift, front, dt: 245.968331
+2024-07-22 11:28:44 [LIDAR] mobile pose time drift, back, dt: 246.500261
+2024-07-22 11:28:45 [LIDAR] mobile pose time drift, front, dt: 247.035760
+2024-07-22 11:28:45 [LIDAR] mobile pose time drift, back, dt: 247.568648
+2024-07-22 11:28:46 [LIDAR] mobile pose time drift, front, dt: 248.103487
+2024-07-22 11:28:46 [LIDAR] mobile pose time drift, back, dt: 248.640150
+2024-07-22 11:28:47 [LIDAR] mobile pose time drift, front, dt: 249.174244
+2024-07-22 11:28:47 [LIDAR] mobile pose time drift, back, dt: 249.706287
+2024-07-22 11:28:48 [LIDAR] mobile pose time drift, front, dt: 250.240563
+2024-07-22 11:28:48 [MAIN] program start
+2024-07-22 11:28:48 [SETTING] robot_obs_decel_gain doesn't exist
+2024-07-22 11:28:48 robot config loaded
+2024-07-22 11:28:48 [LIDAR] mobile pose time drift, back, dt: 250.778105
+2024-07-22 11:28:48 l2c loop2 start
+2024-07-22 11:28:48 l2c loop2 start
+2024-07-22 11:28:48 try to connect LAN2CAN 192.168.2.100:1977
+oaded
+2024-07-22 11:28:49 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0703/topo.json loaded size:0
+2024-07-22 11:28:49 [UNIMAP] map load, spent time: 0.259974
+2024-07-22 11:28:49 [MAIN] Initilized
+2024-07-22 11:28:49 [LIDAR] mobile pose time drift, front, dt: 251.323862
+2024-07-22 11:28:49 [LIDAR] mobile pose time drift, front, dt: 0.693929
+2024-07-22 11:28:49 [LIDAR] mobile pose time drift, back, dt: 251.859283
+2024-07-22 11:28:50 [LIDAR] mobile pose time drift, back, dt: 1.241843
+2024-07-22 11:28:50 [LIDAR] mobile pose time drift, front, dt: 1.791590
+2024-07-22 11:28:51 [LIDAR] mobile pose time drift, back, dt: 2.325566
+2024-07-22 11:28:51 [LIDAR] mobile pose time drift, front, dt: 2.863000
+2024-07-22 11:28:52 [LIDAR] mobile pose time drift, back, dt: 3.396403
+2024-07-22 11:28:52 [LIDAR] mobile pose time drift, front, dt: 3.930298
+2024-07-22 11:28:53 [LIDAR] mobile pose time drift, back, dt: 4.460941
+2024-07-22 11:28:53 [LIDAR] mobile pose time drift, front, dt: 4.994320
+2024-07-22 11:28:54 [LIDAR] mobile pose time drift, back, dt: 5.527761
+2024-07-22 11:28:55 [LIDAR] mobile pose time drift, front, dt: 6.061603
+2024-07-22 11:28:55 [LIDAR] mobile pose time drift, front, dt: 257.972754
+2024-07-22 11:28:56 [LIDAR] mobile pose time drift, back, dt: 258.510529
+2024-07-22 11:28:57 [LIDAR] mobile pose time drift, front, dt: 259.046914
+2024-07-22 11:28:57 [LIDAR] mobile pose time drift, back, dt: 259.587890
+2024-07-22 11:28:58 [LIDAR] mobile pose time drift, front, dt: 260.124781
+2024-07-22 11:28:58 [LIDAR] mobile pose time drift, back, dt: 260.664658
+2024-07-22 11:28:59 [LIDAR] mobile pose time drift, front, dt: 261.205077
+2024-07-22 11:28:59 [LIDAR] mobile pose time drift, back, dt: 261.749660
+2024-07-22 11:29:03 [MAIN] program start
+2024-07-22 11:29:03 [SETTING] robot_obs_decel_gain doesn't exist
+2024-07-22 11:29:03 robot config loaded
+2024-07-22 11:29:03 l2c loop2 start
+2024-07-22 11:29:03 try to connect LAN2CAN 192.168.2.100:1977
+2024-07-22 11:29:03 [L2C] connected
+2024-07-22 11:29:03 l2c loop start
+2024-07-22 11:29:03 [UNIMAP] cloud loaded
+2024-07-22 11:29:03 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0703/topo.json loaded size:0
+2024-07-22 11:29:03 [UNIMAP] map load, spent time: 0.291342
+2024-07-22 11:29:04 [MAIN] Initilized
+2024-07-22 11:29:04 [LIDAR] mobile pose time drift, back, dt: 0.637735
+2024-07-22 11:29:04 [LIDAR] mobile pose time drift, front, dt: 1.196320
+2024-07-22 11:29:05 [LIDAR] mobile pose time drift, back, dt: 1.763415
+2024-07-22 11:29:06 [LIDAR] mobile pose time drift, front, dt: 2.307385
+2024-07-22 11:45:01 [MAIN] program start
+2024-07-22 11:45:01 [SETTING] robot_obs_decel_gain doesn't exist
+2024-07-22 11:45:01 robot config loaded
+2024-07-22 11:45:01 try to connect LAN2CAN 192.168.2.100:1977
+2024-07-22 11:45:01 l2c loop2 start
+2024-07-22 11:45:01 l2c loop2 start
+2024-07-22 11:45:01 [L2C] connected
+024-07-22 11:45:02 [UNIMAP] cloud loaded
+2024-07-22 11:45:02 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0703/topo.json loaded size:0
+2024-07-22 11:45:02 [UNIMAP] map load, spent time: 0.289788
+2024-07-22 11:45:02 [MAIN] Initilized
+2024-07-22 11:45:02 [LIDAR] mobile pose time drift, back, dt: 0.674623
+2024-07-22 11:45:03 [LIDAR] mobile pose time drift, front, dt: 1.212854
+2024-07-22 11:45:03 [LIDAR] mobile pose time drift, back, dt: 1.748703
+2024-07-22 11:45:04 [LIDAR] mobile pose time drift, front, dt: 2.283870
+2024-07-22 11:45:04 [LIDAR] mobile pose time drift, back, dt: 2.818480
+2024-07-22 11:45:05 [LIDAR] mobile pose time drift, front, dt: 3.353919
+2024-07-22 11:45:05 [LIDAR] mobile pose time drift, back, dt: 3.889392
+2024-07-22 11:45:06 [LIDAR] mobile pose time drift, front, dt: 4.425841
+2024-07-22 11:45:07 [LIDAR] mobile pose time drift, back, dt: 4.961377
+2024-07-22 11:45:07 [LIDAR] mobile pose time drift, front, dt: 5.496827
+2024-07-22 11:45:08 [LIDAR] mobile pose time drift, back, dt: 6.031223
+2024-07-22 11:45:08 [LIDAR] mobile pose time drift, front, dt: 6.568628
+2024-07-22 11:45:09 [LIDAR] mobile pose time drift, back, dt: 7.103419
+2024-07-22 11:45:09 [LIDAR] mobile pose time drift, front, dt: 7.638463
+2024-07-22 11:45:10 [LIDAR] mobile pose time drift, back, dt: 8.172085
+2024-07-22 11:45:10 [LIDAR] mobile pose time drift, front, dt: 8.711503
+2024-07-22 14:25:06 [MAIN] program start
+2024-07-22 14:25:06 [SETTING] robot_obs_decel_gain doesn't exist
+2024-07-22 14:25:06 robot config loaded
+2024-07-22 14:25:06 try to connect LAN2CAN 192.168.2.100:1977
+2024-07-22 14:25:06 l2c loop2 start
+2024-07-22 14:25:06 [L2C] connected
+2024-07-22 14:25:06 l2c loop start
+2024-07-22 14:25:06 [UNIMAP] cloud loaded
+2024-07-22 14:25:07 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0703/topo.json loaded size:0
+2024-07-22 14:25:07 [UNIMAP] map load, spent time: 0.270696
+2024-07-22 14:25:07 [MAIN] Initilized
+2024-07-22 14:25:07 [LIDAR] mobile pose time drift, back, dt: 0.589970
+2024-07-22 14:25:08 [LIDAR] mobile pose time drift, front, dt: 1.125393
+2024-07-22 14:25:08 [LIDAR] mobile pose time drift, back, dt: 1.660786
+2024-07-22 14:25:09 [LIDAR] mobile pose time drift, front, dt: 2.194880
+2024-07-22 14:25:09 [LIDAR] mobile pose time drift, back, dt: 2.728872
+2024-07-22 14:25:10 [LIDAR] mobile pose time drift, front, dt: 3.263789
+2024-07-22 14:25:10 [LIDAR] mobile pose time drift, back, dt: 3.799011
+2024-07-22 14:25:11 [LIDAR] mobile pose time drift, front, dt: 4.333642
+2024-07-22 14:25:11 [LIDAR] mobile pose time drift, back, dt: 4.868227
+2024-07-22 14:25:12 [LIDAR] mobile pose time drift, front, dt: 5.402436
+2024-07-22 14:25:12 [LIDAR] mobile pose time drift, back, dt: 5.937203
+2024-07-22 14:25:13 [LIDAR] mobile pose time drift, front, dt: 6.472820
+2024-07-22 14:25:13 [LIDAR] mobile pose time drift, back, dt: 7.006407
+2024-07-22 14:25:14 [LIDAR] mobile pose time drift, front, dt: 7.542301
+2024-07-22 14:25:15 [LIDAR] mobile pose time drift, back, dt: 8.076733
+2024-07-22 14:25:15 [LIDAR] mobile pose time drift, front, dt: 8.613376
+2024-07-22 14:25:16 [LIDAR] mobile pose time drift, back, dt: 9.149999
+2024-07-22 14:25:16 [LIDAR] mobile pose time drift, front, dt: 9.685430
+2024-07-22 14:25:17 [LIDAR] mobile pose time drift, back, dt: 10.219266
+2024-07-22 14:25:17 [LIDAR] mobile pose time drift, front, dt: 10.754368
+2024-07-22 14:25:18 [LIDAR] mobile pose time drift, back, dt: 11.289398
+2024-07-22 14:25:18 [LIDAR] mobile pose time drift, front, dt: 11.827517
+2024-07-22 14:25:19 [LIDAR] mobile pose time drift, back, dt: 12.362995
+2024-07-22 14:25:19 [LIDAR] mobile pose time drift, front, dt: 12.898030
+2024-07-22 14:25:20 [LIDAR] mobile pose time drift, back, dt: 13.432715
+2024-07-22 14:25:20 [LIDAR] mobile pose time drift, front, dt: 13.969115
+2024-07-22 14:25:21 [LIDAR] mobile pose time drift, back, dt: 14.504858
+2024-07-22 14:25:22 [LIDAR] mobile pose time drift, front, dt: 15.044137
+2024-07-22 14:25:22 [LIDAR] mobile pose time drift, back, dt: 15.577353
+2024-07-22 14:25:23 [LIDAR] mobile pose time drift, front, dt: 16.114923
+2024-07-22 14:25:23 [LIDAR] mobile pose time drift, back, dt: 16.648502
+2024-07-22 14:25:24 [LIDAR] mobile pose time drift, front, dt: 17.182480
+2024-07-22 14:25:24 [LIDAR] mobile pose time drift, back, dt: 17.716815
+2024-07-22 14:25:25 [LIDAR] mobile pose time drift, front, dt: 18.254579
+2024-07-22 14:25:25 [LIDAR] mobile pose time drift, back, dt: 18.789126
+2024-07-22 14:25:26 [LIDAR] mobile pose time drift, front, dt: 19.325971
+2024-07-22 14:25:26 [LIDAR] mobile pose time drift, back, dt: 19.861538
+2024-07-22 14:25:27 [LIDAR] mobile pose time drift, front, dt: 20.396966
+2024-07-22 14:25:27 [LIDAR] mobile pose time drift, back, dt: 20.931312
+2024-07-22 14:25:28 [LIDAR] mobile pose time drift, front, dt: 21.468784
+2024-07-22 14:25:28 [LIDAR] mobile pose time drift, back, dt: 22.004463
+2024-07-22 14:25:29 [LIDAR] mobile pose time drift, front, dt: 22.539721
+2024-07-22 14:25:30 [LIDAR] mobile pose time drift, back, dt: 23.075149
+2024-07-22 14:25:30 [LIDAR] mobile pose time drift, front, dt: 23.612148
+2024-07-22 14:25:31 [LIDAR] mobile pose time drift, back, dt: 24.147997
+2024-07-22 14:25:31 [MAIN] program dead (destructor)
+2024-07-22 14:25:31 [LIDAR] mobile pose time drift, front, dt: 24.683575
+2024-07-22 14:25:32 [LIDAR] mobile pose time drift, back, dt: 25.221827
+2024-07-22 14:26:11 [MAIN] program start
+2024-07-22 14:26:11 [SETTING] robot_obs_decel_gain doesn't exist
+2024-07-22 14:26:11 robot config loaded
+2024-07-22 14:26:11 l2c loop2 start
+2024-07-22 14:26:11 l2c loop2 start
+2024-07-22 14:26:11 try to connect LAN2CAN 192.168.2.100:1977
+2024-07-22 14:26:11 l2c loop start
+2024-07-22 14:26:11 [UNIMAP] cloud loaded
+2024-07-22 14:26:11 [UNIMAP] /home/rainbow/RB_MOBILE/maps/0703/topo.json loaded size:0
+2024-07-22 14:26:11 [UNIMAP] map load, spent time: 0.287949
+2024-07-22 14:26:11 [MAIN] Initilized
+2024-07-22 14:26:12 [LIDAR] mobile pose time drift, front, dt: 0.698268
+2024-07-22 14:26:12 [LIDAR] mobile pose time drift, back, dt: 1.237498
+2024-07-22 14:26:13 [LIDAR] mobile pose time drift, front, dt: 1.780279
+2024-07-22 14:26:13 [LIDAR] mobile pose time drift, back, dt: 2.316815
+2024-07-22 14:26:14 [LIDAR] mobile pose time drift, front, dt: 2.853465
+2024-07-22 14:26:15 [LIDAR] mobile pose time drift, back, dt: 3.387136
+2024-07-22 14:26:15 [LIDAR] mobile pose time drift, front, dt: 3.922298
+2024-07-22 14:26:16 [LIDAR] mobile pose time drift, back, dt: 4.456829
+2024-07-22 14:26:16 [LIDAR] mobile pose time drift, front, dt: 4.991239
+2024-07-22 14:26:17 [LIDAR] mobile pose time drift, back, dt: 5.526354
+2024-07-22 14:26:17 [LIDAR] mobile pose time drift, front, dt: 6.062125
+2024-07-22 14:26:18 [LIDAR] mobile pose time drift, back, dt: 6.595876
+2024-07-22 14:26:18 [LIDAR] mobile pose time drift, front, dt: 7.130940
+2024-07-22 14:26:19 [LIDAR] mobile pose time drift, back, dt: 7.664596

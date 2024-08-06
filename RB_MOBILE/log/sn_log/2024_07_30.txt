@@ -1,0 +1,142 @@
+2024-07-30 09:08:55 [MAIN] program start
+2024-07-30 09:08:55 [SETTING] robot_obs_decel_gain doesn't exist
+2024-07-30 09:08:55 robot config loaded
+2024-07-30 09:08:56 l2c loop2 start
+2024-07-30 09:08:56 try to connect LAN2CAN 192.168.2.100:1977
+2024-07-30 09:08:56 [L2C] connected
+2024-07-30 09:08:56 l2c loop start
+2024-07-30 09:08:56 [UNIMAP] cloud loaded
+2024-07-30 09:08:56 [UNIMAP] map load, spent time: 0.117013
+2024-07-30 09:08:56 [MAIN] Initilized
+2024-07-30 09:08:57 [LIDAR] mobile pose time drift, back, dt: 0.018082
+2024-07-30 09:08:58 [LIDAR] mobile pose time drift, front, dt: 0.551411
+2024-07-30 09:08:58 [LIDAR] mobile pose time drift, back, dt: 1.084353
+2024-07-30 09:08:59 [LIDAR] mobile pose time drift, front, dt: 1.621396
+2024-07-30 09:08:59 [LIDAR] mobile pose time drift, front, dt: 2.159542
+2024-07-30 09:09:00 [LIDAR] mobile pose time drift, front, dt: 2.694496
+2024-07-30 09:09:00 [LIDAR] mobile pose time drift, back, dt: 3.228453
+2024-07-30 09:09:01 [LIDAR] mobile pose time drift, front, dt: 3.765108
+2024-07-30 09:09:01 [LIDAR] mobile pose time drift, back, dt: 4.309381
+2024-07-30 09:09:02 [LIDAR] mobile pose time drift, front, dt: 4.844739
+2024-07-30 09:09:02 [LIDAR] mobile pose time drift, back, dt: 5.380015
+2024-07-30 09:09:03 [LIDAR] mobile pose time drift, front, dt: 5.913229
+2024-07-30 09:09:03 [LIDAR] mobile pose time drift, front, dt: 6.449315
+2024-07-30 09:09:04 [LIDAR] mobile pose time drift, back, dt: 7.191400
+2024-07-30 09:09:05 [LIDAR] mobile pose time drift, back, dt: 7.725491
+2024-07-30 09:09:05 [LIDAR] mobile pose time drift, front, dt: 8.261951
+2024-07-30 09:09:06 [LIDAR] mobile pose time drift, back, dt: 8.795916
+2024-07-30 09:09:06 [LIDAR] mobile pose time drift, front, dt: 9.331232
+2024-07-30 09:09:07 [LIDAR] mobile pose time drift, front, dt: 9.866041
+2024-07-30 09:09:07 [LIDAR] mobile pose time drift, back, dt: 10.404069
+2024-07-30 09:09:08 [LIDAR] mobile pose time drift, front, dt: 10.939627
+2024-07-30 09:09:08 [LIDAR] mobile pose time drift, back, dt: 11.480331
+2024-07-30 09:09:09 [LIDAR] mobile pose time drift, back, dt: 12.019779
+2024-07-30 09:09:10 [LIDAR] mobile pose time drift, back, dt: 12.560799
+2024-07-30 09:09:10 [LIDAR] mobile pose time drift, front, dt: 13.180283
+2024-07-30 09:09:11 [LIDAR] mobile pose time drift, front, dt: 13.716119
+2024-07-30 09:09:11 [SERVER] rsync command failed.
+2024-07-30 09:09:11 [FMS] map send, server: 192.168.2.92, map_path: /home/rainbow/RB_MOBILE/maps/0723
+2024-07-30 09:09:11 [LIDAR] mobile pose time drift, back, dt: 14.252213
+2024-07-30 09:09:12 [LIDAR] mobile pose time drift, front, dt: 14.789325
+2024-07-30 09:09:12 [LIDAR] mobile pose time drift, back, dt: 15.328967
+2024-07-30 09:09:13 [LIDAR] mobile pose time drift, front, dt: 15.864271
+2024-07-30 09:09:13 [LIDAR] mobile pose time drift, back, dt: 16.398661
+2024-07-30 09:09:14 [LIDAR] mobile pose time drift, front, dt: 16.934980
+2024-07-30 09:09:14 [LIDAR] mobile pose time drift, back, dt: 17.471342
+2024-07-30 09:09:15 [LIDAR] mobile pose time drift, back, dt: 18.004216
+2024-07-30 09:09:16 [LIDAR] mobile pose time drift, front, dt: 18.540735
+2024-07-30 09:09:16 [LIDAR] mobile pose time drift, back, dt: 19.075748
+2024-07-30 09:09:17 [LIDAR] mobile pose time drift, front, dt: 19.611155
+2024-07-30 09:09:17 [LIDAR] mobile pose time drift, back, dt: 20.144335
+2024-07-30 09:09:18 [LIDAR] mobile pose time drift, back, dt: 20.676391
+2024-07-30 09:09:18 [LIDAR] mobile pose time drift, front, dt: 21.212437
+2024-07-30 09:09:19 [LIDAR] mobile pose time drift, front, dt: 21.747060
+2024-07-30 09:09:19 [LIDAR] mobile pose time drift, back, dt: 22.284279
+2024-07-30 09:09:20 [LIDAR] mobile pose time drift, back, dt: 22.819360
+2024-07-30 09:09:20 [LIDAR] mobile pose time drift, front, dt: 23.357205
+2024-07-30 09:09:21 [LIDAR] mobile pose time drift, back, dt: 23.890846
+2024-07-30 09:09:21 [LIDAR] mobile pose time drift, front, dt: 24.425322
+2024-07-30 09:09:22 [LIDAR] mobile pose time drift, back, dt: 24.961535
+2024-07-30 09:09:22 [MAIN] program dead (destructor)
+2024-07-30 09:09:23 [LIDAR] mobile pose time drift, front, dt: 25.495892
+2024-07-30 09:11:07 [MAIN] program start
+2024-07-30 09:11:07 [SETTING] robot_obs_decel_gain doesn't exist
+2024-07-30 09:11:07 robot config loaded
+2024-07-30 09:11:08 l2c loop2 start
+2024-07-30 09:11:08 l2c loop2 start
+2024-07-30 09:11:08 try to connect LAN2CAN 192.168.2.100:1977
+oaded
+2024-07-30 09:11:08 [UNIMAP] map load, spent time: 0.089438
+2024-07-30 09:11:08 [MAIN] Initilized
+2024-07-30 09:11:08 [LIDAR] mobile pose time drift, back, dt: 0.653172
+2024-07-30 09:11:09 [L2C] connected
+2024-07-30 09:11:09 l2c loop start
+2024-07-30 09:11:11 [LIDAR] mobile pose time drift, back, dt: 1.364096
+2024-07-30 09:11:12 [SERVER] rsync command failed.
+2024-07-30 09:11:12 [FMS] map send, server: 192.168.2.91, map_path: /home/rainbow/RB_MOBILE/maps/0723
+2024-07-30 09:11:12 [LIDAR] mobile pose time drift, front, dt: 1.897619
+2024-07-30 09:11:12 [LIDAR] mobile pose time drift, back, dt: 2.430658
+2024-07-30 09:11:13 [LIDAR] mobile pose time drift, front, dt: 2.964410
+2024-07-30 09:11:13 [LIDAR] mobile pose time drift, back, dt: 3.499850
+2024-07-30 09:11:14 [LIDAR] mobile pose time drift, front, dt: 4.033237
+2024-07-30 09:11:14 [LIDAR] mobile pose time drift, back, dt: 4.566113
+2024-07-30 09:11:15 [LIDAR] mobile pose time drift, front, dt: 5.103117
+2024-07-30 09:11:15 [LIDAR] mobile pose time drift, back, dt: 5.636580
+2024-07-30 09:11:16 [LIDAR] mobile pose time drift, front, dt: 6.170465
+2024-07-30 09:11:17 [LIDAR] mobile pose time drift, back, dt: 6.709959
+2024-07-30 09:11:17 [LIDAR] mobile pose time drift, front, dt: 7.249888
+2024-07-30 09:11:18 [LIDAR] mobile pose time drift, back, dt: 7.782655
+2024-07-30 09:11:18 [LIDAR] mobile pose time drift, front, dt: 8.319692
+2024-07-30 09:11:19 [LIDAR] mobile pose time drift, back, dt: 8.850434
+2024-07-30 09:11:19 [LIDAR] mobile pose time drift, front, dt: 9.383456
+2024-07-30 09:11:20 [LIDAR] mobile pose time drift, back, dt: 9.918749
+2024-07-30 09:11:20 [LIDAR] mobile pose time drift, front, dt: 10.452089
+2024-07-30 09:11:21 [LIDAR] mobile pose time drift, back, dt: 10.982973
+2024-07-30 09:11:21 [LIDAR] mobile pose time drift, front, dt: 11.515212
+2024-07-30 09:11:22 [LIDAR] mobile pose time drift, back, dt: 12.049595
+2024-07-30 09:11:23 [LIDAR] mobile pose time drift, front, dt: 13.311161
+2024-07-30 09:11:24 [LIDAR] mobile pose time drift, back, dt: 13.846196
+2024-07-30 09:11:24 [LIDAR] mobile pose time drift, front, dt: 14.378092
+2024-07-30 09:11:25 [LIDAR] mobile pose time drift, back, dt: 14.909209
+2024-07-30 09:12:17 [MAIN] program start
+2024-07-30 09:12:17 [SETTING] robot_obs_decel_gain doesn't exist
+2024-07-30 09:12:17 robot config loaded
+2024-07-30 09:12:17 try to connect LAN2CAN 192.168.2.100:1977
+2024-07-30 09:12:17 l2c loop2 start
+2024-07-30 09:12:17 [UNIMAP] cloud loaded
+2024-07-30 09:12:17 [UNIMAP] map load, spent time: 0.119956
+2024-07-30 09:12:17 [MAIN] Initilized
+2024-07-30 09:12:21 [LIDAR] mobile pose time drift, back, dt: 3.856019
+2024-07-30 09:12:22 [LIDAR] mobile pose time drift, front, dt: 4.390850
+2024-07-30 09:12:22 [LIDAR] mobile pose time drift, back, dt: 4.922708
+2024-07-30 09:12:23 [LIDAR] mobile pose time drift, front, dt: 5.457557
+2024-07-30 09:12:23 [SERVER] rsync command failed.
+2024-07-30 09:12:23 [FMS] map send, server: 192.168.2.2, map_path: /home/rainbow/RB_MOBILE/maps/0723
+2024-07-30 09:12:23 [LIDAR] mobile pose time drift, back, dt: 5.995337
+2024-07-30 09:12:26 [LIDAR] mobile pose time drift, front, dt: 8.612593
+2024-07-30 09:12:26 [LIDAR] mobile pose time drift, back, dt: 9.143119
+2024-07-30 09:12:27 [LIDAR] mobile pose time drift, front, dt: 9.677182
+2024-07-30 09:12:27 [LIDAR] mobile pose time drift, back, dt: 10.211796
+2024-07-30 09:12:28 [LIDAR] mobile pose time drift, front, dt: 10.745789
+2024-07-30 09:12:28 [LIDAR] mobile pose time drift, back, dt: 11.279036
+2024-07-30 09:12:36 [LIDAR] mobile pose time drift, back, dt: 18.799667
+2024-07-30 09:12:36 [LIDAR] mobile pose time drift, front, dt: 19.332955
+2024-07-30 09:12:37 [LIDAR] mobile pose time drift, back, dt: 19.865944
+2024-07-30 09:12:38 [LIDAR] mobile pose time drift, front, dt: 20.401530
+2024-07-30 09:12:38 [LIDAR] mobile pose time drift, back, dt: 20.935432
+2024-07-30 09:12:39 [LIDAR] mobile pose time drift, front, dt: 21.469482
+2024-07-30 09:12:46 [LIDAR] mobile pose time drift, back, dt: 29.062641
+2024-07-30 09:12:47 [LIDAR] mobile pose time drift, front, dt: 29.593637
+2024-07-30 09:12:47 [LIDAR] mobile pose time drift, back, dt: 30.123955
+2024-07-30 09:12:48 [LIDAR] mobile pose time drift, front, dt: 30.655774
+2024-07-30 09:12:48 [LIDAR] mobile pose time drift, back, dt: 31.188885
+2024-07-30 09:12:49 [LIDAR] mobile pose time drift, front, dt: 31.720826
+2024-07-30 09:12:56 [LIDAR] mobile pose time drift, front, dt: 39.319629
+2024-07-30 09:12:57 [LIDAR] mobile pose time drift, back, dt: 39.847381
+2024-07-30 09:12:57 [LIDAR] mobile pose time drift, front, dt: 40.383439
+2024-07-30 09:12:58 [LIDAR] mobile pose time drift, back, dt: 40.918478
+2024-07-30 09:12:59 [LIDAR] mobile pose time drift, front, dt: 41.450709
+2024-07-30 09:12:59 [LIDAR] mobile pose time drift, back, dt: 41.984047
+2024-07-30 09:13:00 [SERVER] rsync command failed.
+2024-07-30 09:13:00 [FMS] map send, server: 192.168.2.2, map_path: /home/rainbow/RB_MOBILE/maps/0723
+2024-07-30 09:13:07 [LIDAR] mobile pose time drift, front, dt: 49.535694

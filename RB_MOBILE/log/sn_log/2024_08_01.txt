@@ -1,0 +1,29 @@
+2024-08-01 18:05:24 [MAIN] program start
+2024-08-01 18:05:24 [SETTING] robot_obs_decel_gain doesn't exist
+2024-08-01 18:05:24 robot config loaded
+2024-08-01 18:05:24 try to connect LAN2CAN 192.168.2.100:1977
+2024-08-01 18:05:24 l2c loop2 start
+2024-08-01 18:05:24 [L2C] connected
+2024-08-01 18:05:24 l2c loop start
+2024-08-01 18:05:24 [UNIMAP] cloud loaded
+2024-08-01 18:05:24 [UNIMAP] map load, spent time: 0.112697
+2024-08-01 18:05:24 [MAIN] Initilized
+2024-08-01 18:05:50 [LOC] try manual init
+2024-08-01 18:05:53 [LOC] try manual init
+2024-08-01 18:05:53 [WATCHDOG] LOC failed, ir:0.422961, ie:0.018662
+2024-08-01 18:05:57 [LOC] try manual init
+2024-08-01 18:06:00 [WATCHDOG] LOC failed, ir:0.417370, ie:0.021171
+2024-08-01 18:06:01 [LOC] try manual init
+2024-08-01 18:06:20 [AUTO] start
+2024-08-01 18:06:32 [PATH] astar no path
+2024-08-01 18:06:32 [AUTO] ref path found
+2024-08-01 18:06:32 [AUTO] Path finding failed, check travel line
+2024-08-01 18:06:36 [AUTO] start
+2024-08-01 18:06:49 [PATH] astar no path
+2024-08-01 18:06:49 [AUTO] ref path found
+2024-08-01 18:06:49 [AUTO] Path finding failed, check travel line
+2024-08-01 18:09:19 [AUTO] start
+2024-08-01 18:09:31 [PATH] astar no path
+2024-08-01 18:09:31 [AUTO] ref path found
+2024-08-01 18:09:31 [AUTO] Path finding failed, check travel line
+2024-08-01 18:15:23 [MAIN] program dead (destructor)

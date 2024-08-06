@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>resource/Pin_Map_Vector.png</file>
+    </qresource>
+</RCC>
