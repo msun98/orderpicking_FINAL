@@ -8,7 +8,7 @@ L2C::L2C(QObject *parent) : QObject(parent)
 
 L2C::~L2C()
 {
-    // send last message    
+    // send last message
     msg_que.clear();
     SendLinearAngularVel(0,0);
     is_connected = false;
@@ -37,7 +37,7 @@ void L2C::init()
     {
         commFlag = true;
         commThread = new std::thread(&L2C::commLoop, this);
-    } 
+    }
 
     if (commThread2 == NULL)
     {
@@ -73,9 +73,9 @@ void L2C::commLoop()
         return;
     }
 
-    // connected    
+    // connected
     emit connected();
-    is_connected = true;    
+    is_connected = true;
     logger.write("[L2C] connected", true);
 
     // variable init
@@ -109,10 +109,10 @@ void L2C::commLoop()
         {
             is_fine = true;
         }
-
         // parsing
         while((int)buf.size() >= packet_size)
         {
+
             uchar *_buf = (uchar*)buf.data();
             if(_buf[0] == 0x24 && _buf[5] == 0xA2 && _buf[packet_size-1] == 0x25)
             {
@@ -158,11 +158,11 @@ void L2C::commLoop()
                 temp_m0 = _buf[index];     index=index+dlc;
                 temp_m1 = _buf[index];     index=index+dlc;
 
-                #ifdef USE_EX_TEMP
+#ifdef USE_EX_TEMP
                 uint8_t temp_ex_m0, temp_ex_m1;
                 temp_ex_m0 = _buf[index];     index=index+dlc;
                 temp_ex_m1 = _buf[index];     index=index+dlc;
-                #endif
+#endif
 
                 uint8_t cur_m0, cur_m1;
                 cur_m0 = _buf[index];     index=index+dlc;
@@ -181,7 +181,7 @@ void L2C::commLoop()
                 memcpy(&power, &_buf[index], dlc_f);                index=index+dlc_f;
                 memcpy(&total_used_power, &_buf[index], dlc_f);     index=index+dlc_f;
 
-                uint32_t recv_tick, return_time;
+                uint32_t recv_tick, return_time;// return_time is pc_time?
                 memcpy(&recv_tick, &_buf[index], dlc_f);     index=index+dlc_f;
                 memcpy(&return_time, &_buf[index], dlc_f);     index=index+dlc_f;
 
@@ -241,7 +241,7 @@ void L2C::commLoop()
                 mobile_pose.vel = cv::Vec3d(x_dot, y_dot, th_dot);
                 mobile_pose.vw = cv::Vec2d(local_v, local_w);
 
-                #ifndef USE_SIM
+#ifndef USE_SIM
                 pose_que.push(mobile_pose);
 
                 if(pose_que.unsafe_size() > 50)
@@ -249,7 +249,7 @@ void L2C::commLoop()
                     MOBILE_POSE dummy;
                     pose_que.try_pop(dummy);
                 }
-                #endif
+#endif
 
                 //emit pose_received(mobile_pose);
 
@@ -309,14 +309,14 @@ void L2C::commLoop()
                 mobile_status.imu_acc_y = imu_acc_y * ACC_G;
                 mobile_status.imu_acc_z = imu_acc_z * ACC_G;
 
-                #ifndef USE_SIM
+#ifndef USE_SIM
                 status_que.push(mobile_status);
                 if(status_que.unsafe_size() > 50)
                 {
                     MOBILE_STATUS dummy;
                     status_que.try_pop(dummy);
                 }
-                #endif
+#endif
 
                 //emit status_received(mobile_status);
             }
@@ -477,7 +477,7 @@ void L2C::commLoop()
                 //emit status_received(mobile_status);
             }
 
-            buf.erase(buf.begin(), buf.begin() + packet_size);            
+            buf.erase(buf.begin(), buf.begin() + packet_size);
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -496,9 +496,9 @@ void L2C::commLoop2()
             std::vector<uchar> msg;
             if(msg_que.try_pop(msg))
             {
-                #ifndef USE_SIM
-                ::send(fd, msg.data(), msg.size(), 0);                
-                #endif
+#ifndef USE_SIM
+                ::send(fd, msg.data(), msg.size(), 0);
+#endif
                 //continue;
             }
         }

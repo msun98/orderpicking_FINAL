@@ -19,7 +19,7 @@
 
 //#define IP "10.108.1.68" //
 //#define IP "192.168.2.92" //
-#define IP "10.108.2.92" //
+#define IP "10.108.2.91" //
 #define PORT1 7799
 #define PORT2 7788
 #define MAP_PORT 5555
@@ -78,7 +78,7 @@ public:
     tbb::concurrent_queue<cv::Vec3d> command_path_que;
     std::queue<QByteArray> send_mobile_status;
 
-    QString change_map_name;
+    QString                     change_map_name;
 
     bool change_map_flag = false;
     QByteArray new_AMR_status;

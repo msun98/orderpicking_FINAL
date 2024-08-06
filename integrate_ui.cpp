@@ -8,7 +8,6 @@ INTEGRATE_UI::INTEGRATE_UI(QObject *parent):QObject(parent)
     mobile_status_socket = new QTcpSocket();
     map_socket = new QTcpSocket();
 
-
     //    mobile_status_socket -> connectToHost(QHostAddress(IP),PORT2);
     connect(ui_com,SIGNAL(connected()),this, SLOT(onUIConnected()));
     connect(ui_com,SIGNAL(disconnected()),this, SLOT(onUIdisConnected()));
@@ -34,6 +33,7 @@ INTEGRATE_UI::INTEGRATE_UI(QObject *parent):QObject(parent)
 
     path_timer.start(100);
     connect(&path_timer,SIGNAL(timeout()),this, SLOT(publish_path()));
+
 }
 
 void INTEGRATE_UI::onUIConnected()
@@ -226,7 +226,8 @@ void INTEGRATE_UI::onMobileStatusCmdRead() //map data 달라고 할 때 사용�
     if(json_input["MSG_TYPE"] == "DOWNLOAD INI"){
         QString ini_path = "/home/rainbow/RB_MOBILE/config";
 
-        QString destination_path = "/home/" + setting_config.fms_id + "/RB_MOBILE";
+        //        QString destination_path = "/home/" + setting_config.fms_id + "/RB_MOBILE";
+        QString destination_path = "/home/" + setting_config.fms_id ;
         qDebug()<<"destination_path : "<<destination_path;
 
         QString cmd = "sshpass -p " + pw + " rsync -avz -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' " + ini_path + " " + id + "@" + ip + ":" + destination_path;
@@ -265,7 +266,8 @@ void INTEGRATE_UI::onMobileStatusCmdRead() //map data 달라고 할 때 사용�
 
     else if(json_input["MSG_TYPE"] == "DOWNLOAD MAP"){
         QString maps_path = "/home/rainbow/RB_MOBILE/maps";
-        QString destination_path = "/home/" + setting_config.fms_id + "/RB_MOBILE";
+        //        QString destination_path = "/home/" + setting_config.fms_id + "/RB_MOBILE";
+        QString destination_path = "/home/" + setting_config.fms_id;
 
         QString cmd = "sshpass -p " + pw + " rsync -avz -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' " + maps_path + " " + id + "@" + ip + ":" + destination_path;
         qDebug()<<cmd;
@@ -283,7 +285,7 @@ void INTEGRATE_UI::onMobileStatusCmdRead() //map data 달라고 할 때 사용�
             json_output["MSG_TYPE"] = "MAP_SEND_DONE";
 
             QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
-            //            onMobileStatusSocketWrite(json_string);
+            onMobileStatusSocketWrite(json_string);
 
             std::cout<<"file transfer done!"<<std::endl;
             logger.write("[SERVER] successfully transferred using rsync..", true);
@@ -335,6 +337,7 @@ void INTEGRATE_UI::onReadyCmdRead() //nuc 에게 로봇 상태를 시간에 맞�
         int preset_idx = PRESET_SPEED_NORMAL;
         ctrl->run_pick(cv::Vec3d(move_x,move_y,move_th), preset_idx);
 
+        //        std::cout<<"eeeeeeeeeeeeeeeeee"<<std::endl;
         qDebug()<<move_x<<move_y<<move_th;
     }
 

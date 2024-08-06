@@ -124,8 +124,6 @@ MainWindow::MainWindow(QWidget *parent)
     init();
 
     logger.write("[MAIN] Initilized", true);
-
-    qDebug()<<"imworking";
 }
 
 MainWindow::~MainWindow()
@@ -1182,7 +1180,9 @@ void MainWindow::bt_SendMaps()
     }
 
     QString send_path = QDir::homePath() + "/RB_MOBILE/maps";
+//    QString send_path = QDir::homePath() + "/maps";
     QString destination_path = "/home/" + id + "/RB_MOBILE";
+//    QString destination_path = "/home/" + id;
 
     QString cmd = "sshpass -p " + pw + " rsync -avz -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'" + send_path + " " + id + "@" + ip + ":" + destination_path;
     int result = system(cmd.toStdString().c_str());
