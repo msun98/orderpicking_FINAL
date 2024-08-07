@@ -1971,6 +1971,8 @@ void MainWindow::plot_loop()
         else if(mctrl.fsm_state == STATE_AUTO_GOAL_REACHED)
         {
             ui->lb_AutoFsmState->setText("STATE_AUTO_GOAL_REACHED");
+
+
         }
         else if(mctrl.fsm_state == STATE_AUTO_OBSTACLE)
         {
@@ -1989,34 +1991,42 @@ void MainWindow::plot_loop()
     {
         if(ctrl.fsm_state == STATE_AUTO_PATH_FINDING)
         {
+            fsm_state=STATE_AUTO_PATH_FINDING;
             ui->lb_AutoFsmState->setText("STATE_AUTO_PATH_FINDING");
         }
         else if(ctrl.fsm_state == STATE_AUTO_FIRST_ALIGN)
         {
+            fsm_state=STATE_AUTO_FIRST_ALIGN;
             ui->lb_AutoFsmState->setText("STATE_AUTO_FIRST_ALIGN");
         }
         else if(ctrl.fsm_state == STATE_AUTO_PURE_PURSUIT)
         {
+            fsm_state=STATE_AUTO_PURE_PURSUIT;
             ui->lb_AutoFsmState->setText("STATE_AUTO_PURE_PURSUIT");
         }
         else if(ctrl.fsm_state == STATE_AUTO_FINAL_ALIGN)
         {
+            fsm_state=STATE_AUTO_FINAL_ALIGN;
             ui->lb_AutoFsmState->setText("STATE_AUTO_FINAL_ALIGN");
         }
         else if(ctrl.fsm_state == STATE_AUTO_GOAL_REACHED)
         {
+            fsm_state=STATE_AUTO_GOAL_REACHED;
             ui->lb_AutoFsmState->setText("STATE_AUTO_GOAL_REACHED");
         }
         else if(ctrl.fsm_state == STATE_AUTO_OBSTACLE)
         {
+            fsm_state=STATE_AUTO_OBSTACLE;
             ui->lb_AutoFsmState->setText("STATE_AUTO_OBSTACLE");
         }
         else if(ctrl.fsm_state == STATE_AUTO_PAUSE)
         {
+            fsm_state=STATE_AUTO_PAUSE;
             ui->lb_AutoFsmState->setText("STATE_AUTO_PAUSE");
         }
         else if(ctrl.fsm_state == STATE_AUTO_FAILED)
         {
+            fsm_state=STATE_AUTO_FAILED;
             ui->lb_AutoFsmState->setText("STATE_AUTO_FAILED");
         }
     }
@@ -2211,6 +2221,7 @@ void MainWindow::plot_loop()
     QJsonObject json_output;
     json_output["MSG_TYPE"] = "MOBILE_POSE";
     UI_LOC_STATE status(integrate_status);
+    AUTO_FSM_STATE fsm_status(fsm_state);
 
     json_output["STATUS"] = status;
     json_output["Pose_x"] = cur_pose[0];
@@ -2218,6 +2229,7 @@ void MainWindow::plot_loop()
     json_output["Pose_th"] = cur_pose[2]*R2D;
     json_output["battery"] = mobile_status.bat_in;
     json_output["charge_state"] = mobile_status.charge_state;
+    json_output["FSM STATUS"] = fsm_status;
 
     QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
 //    integrate_ui.mtx.lock();

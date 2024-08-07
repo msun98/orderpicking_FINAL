@@ -69,7 +69,7 @@ void AUTOCONTROL::run_pick(cv::Vec3d _goal, int _preset_idx)
         fsm_thread = NULL;
     }
 
-    // set speed
+    // set speedxt
     preset_idx = _preset_idx;
     goal = _goal;
 
@@ -94,8 +94,23 @@ void AUTOCONTROL::run_ext(std::vector<cv::Vec3d> waypoints, int _preset_idx)
     // set align th
     path.back().th = waypoints.back()[2];
 
+    if(path.size() == 0)
+    {
+        printf("[AUTO] path finding failed\n");
+        return;
+    }
+
     // set path
+    //    cur_path = path;
+
+    // set storage
+    mtx.lock();
     cur_path = path;
+    //    cur_path = _cur_path;
+    mtx.unlock();
+
+    goal = cv::Vec3d(cur_path.back().pt[0], cur_path.back().pt[1], cur_path.back().th);
+
 
     // start fsm
     if(fsm_flag == false)
@@ -299,7 +314,7 @@ std::vector<PATH_POINT> AUTOCONTROL::calc_no_travel_path(cv::Vec3d st_pose, cv::
     cv::Vec2i st_uv = unimap->xy_uv(cv::Vec2d(st_pose[0], st_pose[1]));
     cv::Vec2i ed_uv = unimap->xy_uv(cv::Vec2d(ed_pose[0], ed_pose[1]));
 
-    // set obs_map   
+    // set obs_map
     cv::Mat extended_obs_map = unimap->get_map_extended_static_obs();
     cv::Mat thin_map;
     cv::ximgproc::thinning(~extended_obs_map, thin_map, cv::ximgproc::THINNING_ZHANGSUEN);
@@ -962,15 +977,12 @@ std::vector<PATH_POINT> AUTOCONTROL::waypoints_to_path(std::vector<cv::Vec3d> wa
     for(size_t p = 0; p < path_xy.size(); p++)
     {
         int _preset_idx = preset_idx;
-        std::cout<<"ccccccccccccccccccc"<<std::endl;
 
         if(is_resting != true)
         {
-            std::cout<<"aaaaaaaaaaaaaaaa"<<std::endl;
             int map_preset_idx = unimap->get_preset_idx(path_xy[p]);
             if(map_preset_idx < preset_idx && map_preset_idx != NORMAL_ZONE)
             {
-                std::cout<<"bbbbbbbbbbbbbbbbbbbbbb"<<std::endl;
                 _preset_idx = map_preset_idx;
             }
         }
@@ -981,14 +993,14 @@ std::vector<PATH_POINT> AUTOCONTROL::waypoints_to_path(std::vector<cv::Vec3d> wa
         path.push_back(ppt);
     }
 
-//    // set result
-//       std::vector<PATH_POINT> path;
-//       for(size_t p = 0; p < path_xy.size(); p++)
-//       {
-//           PATH_POINT ppt;
-//           ppt.pt = path_xy[p];
-//           path.push_back(ppt);
-//       }
+    //    // set result
+    //       std::vector<PATH_POINT> path;
+    //       for(size_t p = 0; p < path_xy.size(); p++)
+    //       {
+    //           PATH_POINT ppt;
+    //           ppt.pt = path_xy[p];
+    //           path.push_back(ppt);
+    //       }
 
 
     // set path params
@@ -2370,6 +2382,8 @@ int AUTOCONTROL::get_cur_idx(cv::Vec2d cur_pos, std::vector<PATH_POINT> path)
     for(size_t p = 0; p < path.size()-1; p++)
     {
         double d = cv::norm(path[p].pt - cur_pos);
+        //        std::cout<<"d :" <<d<<std::endl;
+        //        std::cout<<"min_d :" <<min_d<<std::endl;
         if(d < min_d)
         {
             min_d = d;
@@ -2397,6 +2411,8 @@ void AUTOCONTROL::fsm_loop()
     double pre_loop_time = get_time();
     double fine_dt = 0;
     bool is_pp_first = true;
+
+    static int timeout = 0;
 
     // params
     double max_ld = update_config.robot_look_ahead_dist;
@@ -2665,13 +2681,13 @@ void AUTOCONTROL::fsm_loop()
             double err_d = std::sqrt(dx*dx + dy*dy);
             double err_th = deltaRad(std::atan2(dy,dx), cur_th) * 2.0;
 
-//            // return to first align
-//            if(goal_err_d > update_config.robot_goal_dist && std::abs(err_th) > 90.0*D2R)
-//            {
-//                fsm_state = STATE_AUTO_FIRST_ALIGN;
-//                printf("[AUTO] PP -> FIRST_ALIGN, idx:%d, %d, err:%f, %f\n", cur_idx, tgt_idx, goal_err_d, err_th*R2D);
-//                continue;
-//            }
+            //            // return to first align
+            //            if(goal_err_d > update_config.robot_goal_dist && std::abs(err_th) > 90.0*D2R)
+            //            {
+            //                fsm_state = STATE_AUTO_FIRST_ALIGN;
+            //                printf("[AUTO] PP -> FIRST_ALIGN, idx:%d, %d, err:%f, %f\n", cur_idx, tgt_idx, goal_err_d, err_th*R2D);
+            //                continue;
+            //            }
 
             double v = 0;
             double w = 0;
@@ -3173,13 +3189,13 @@ void AUTOCONTROL::fsm_loop_pick()
             double err_d = std::sqrt(dx*dx + dy*dy);
             double err_th = deltaRad(std::atan2(dy,dx), cur_th) * 2.0;
 
-//            // return to first align
-//            if(goal_err_d > update_config.robot_goal_dist && std::abs(err_th) > 90.0*D2R)
-//            {
-//                fsm_state = STATE_AUTO_FIRST_ALIGN;
-//                printf("[AUTO] PP -> FIRST_ALIGN, idx:%d, %d, err:%f, %f\n", cur_idx, tgt_idx, goal_err_d, err_th*R2D);
-//                continue;
-//            }
+            //            // return to first align
+            //            if(goal_err_d > update_config.robot_goal_dist && std::abs(err_th) > 90.0*D2R)
+            //            {
+            //                fsm_state = STATE_AUTO_FIRST_ALIGN;
+            //                printf("[AUTO] PP -> FIRST_ALIGN, idx:%d, %d, err:%f, %f\n", cur_idx, tgt_idx, goal_err_d, err_th*R2D);
+            //                continue;
+            //            }
 
             double v = 0;
             double w = 0;
@@ -3653,13 +3669,13 @@ void AUTOCONTROL::fsm_loop_ext()
             double err_d = std::sqrt(dx*dx + dy*dy);
             double err_th = deltaRad(std::atan2(dy,dx), cur_th) * 2.0;
 
-//            // return to first align
-//            if(goal_err_d > update_config.robot_goal_dist && std::abs(err_th) > 90.0*D2R)
-//            {
-//                fsm_state = STATE_AUTO_FIRST_ALIGN;
-//                printf("[AUTO] PP -> FIRST_ALIGN, idx:%d, %d, err:%f, %f\n", cur_idx, tgt_idx, goal_err_d, err_th*R2D);
-//                continue;
-//            }
+            //            // return to first align
+            //            if(goal_err_d > update_config.robot_goal_dist && std::abs(err_th) > 90.0*D2R)
+            //            {
+            //                fsm_state = STATE_AUTO_FIRST_ALIGN;
+            //                printf("[AUTO] PP -> FIRST_ALIGN, idx:%d, %d, err:%f, %f\n", cur_idx, tgt_idx, goal_err_d, err_th*R2D);
+            //                continue;
+            //            }
 
             double v = 0;
             double w = 0;
@@ -3728,9 +3744,13 @@ void AUTOCONTROL::fsm_loop_ext()
                 w = saturation(kp_w*err_th + kd_w*w0, min_w, max_w);
             }*/
 
+            count += 1;
+
             // goal check
-            if(goal_err_d < update_config.robot_goal_dist)
+            if(goal_err_d < update_config.robot_goal_dist && count>80)
             {
+
+                std::cout<<count<<std::endl;
                 //fine_dt += dt;
                 //double fine_t = std::max<double>(goal_err_d/0.01, 2.0);
                 //if(fine_dt > fine_t || is_pp_first)
@@ -3799,6 +3819,8 @@ void AUTOCONTROL::fsm_loop_ext()
                     // thread flag clear
                     fsm_state = STATE_AUTO_GOAL_REACHED;
                     fsm_flag = false;
+
+                    count = 0;
 
                     QString str;
                     str.sprintf("[AUTO] FINAL_ALIGN -> GOAL_REACHED, err_th: %.2f/%.2f", goal_err_th*R2D, update_config.robot_goal_th*R2D);
@@ -4134,13 +4156,13 @@ void AUTOCONTROL::fsm_loop_ext2()
             double err_d = std::sqrt(dx*dx + dy*dy);
             double err_th = deltaRad(std::atan2(dy,dx), cur_th) * 2.0;
 
-//            // return to first align
-//            if(goal_err_d > update_config.robot_goal_dist && std::abs(err_th) > 90.0*D2R)
-//            {
-//                fsm_state = STATE_AUTO_FIRST_ALIGN;
-//                printf("[AUTO] PP -> FIRST_ALIGN, idx:%d, %d, err:%f, %f\n", cur_idx, tgt_idx, goal_err_d, err_th*R2D);
-//                continue;
-//            }
+            //            // return to first align
+            //            if(goal_err_d > update_config.robot_goal_dist && std::abs(err_th) > 90.0*D2R)
+            //            {
+            //                fsm_state = STATE_AUTO_FIRST_ALIGN;
+            //                printf("[AUTO] PP -> FIRST_ALIGN, idx:%d, %d, err:%f, %f\n", cur_idx, tgt_idx, goal_err_d, err_th*R2D);
+            //                continue;
+            //            }
 
             double v = 0;
             double w = 0;

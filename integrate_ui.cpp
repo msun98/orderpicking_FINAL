@@ -285,7 +285,11 @@ void INTEGRATE_UI::onMobileStatusCmdRead() //map data 달라고 할 때 사용�
             json_output["MSG_TYPE"] = "MAP_SEND_DONE";
 
             QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
-            onMobileStatusSocketWrite(json_string);
+//            onMobileStatusSocketWrite(json_string);
+
+            mtx.lock();
+            send_mobile_status.push(json_string);
+            mtx.unlock();
 
             std::cout<<"file transfer done!"<<std::endl;
             logger.write("[SERVER] successfully transferred using rsync..", true);
@@ -343,23 +347,25 @@ void INTEGRATE_UI::onReadyCmdRead() //nuc 에게 로봇 상태를 시간에 맞�
 
     else if(json_input["MSG_TYPE"] == "MOVE_EXT"){
 
+
         QJsonArray move_path = json_input["PATH"].toArray();
-        QJsonObject pose;
         cv::Vec3d path;
         std::vector<cv::Vec3d> waypoints;
 
         for(int p = 0; p < move_path.size(); p++)
         {
             QJsonObject move_path_obj = move_path[p].toObject();
-            pose = move_path_obj["pose"].toObject();
-            path[0] = pose["x"].toDouble();
-            path[1] = pose["y"].toDouble();
-            path[2] = pose["theta"].toDouble();
+
+            path[0] = move_path_obj["x"].toDouble();
+            path[1] = move_path_obj["y"].toDouble();
+            path[2] = move_path_obj["theta"].toDouble();
 
             //            qDebug()<<path[0];
             //            command_path_que.push(path);
             waypoints.push_back(cv::Vec3d(path[0],path[1],path[2]));
+            std::cout<<path[0]<<","<<path[1]<<","<<path[2]<<std::endl;
         }
+
         //        zcommand_path_que.tryz_pop(1);z
 
         //yujin robot get preset_idx

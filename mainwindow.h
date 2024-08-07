@@ -113,6 +113,7 @@ public:
     QTimer integrateUI_timer;
     QByteArray IMGByte2;
     enum UI_LOC_STATE integrate_status;
+    enum AUTO_FSM_STATE fsm_state;
 
     // background loop
     std::atomic<bool> backFlag;

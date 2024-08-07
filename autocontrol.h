@@ -107,6 +107,8 @@ public:
     void fsm_loop_ext();
     void fsm_loop_ext2();
 
+    int count = 0;
+
 private:
     MOBILE *mobile = NULL;
     SLAM_2D *slam = NULL;
