@@ -226,8 +226,8 @@ void INTEGRATE_UI::onMobileStatusCmdRead() //map data 달라고 할 때 사용�
     if(json_input["MSG_TYPE"] == "DOWNLOAD INI"){
         QString ini_path = "/home/rainbow/RB_MOBILE/config";
 
-        //        QString destination_path = "/home/" + setting_config.fms_id + "/RB_MOBILE";
-        QString destination_path = "/home/" + setting_config.fms_id ;
+        QString destination_path = "/home/" + setting_config.fms_id + "/RB_MOBILE";
+        //        QString destination_path = "/home/" + setting_config.fms_id ;
         qDebug()<<"destination_path : "<<destination_path;
 
         QString cmd = "sshpass -p " + pw + " rsync -avz -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' " + ini_path + " " + id + "@" + ip + ":" + destination_path;
@@ -285,7 +285,7 @@ void INTEGRATE_UI::onMobileStatusCmdRead() //map data 달라고 할 때 사용�
             json_output["MSG_TYPE"] = "MAP_SEND_DONE";
 
             QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
-//            onMobileStatusSocketWrite(json_string);
+            //            onMobileStatusSocketWrite(json_string);
 
             mtx.lock();
             send_mobile_status.push(json_string);
