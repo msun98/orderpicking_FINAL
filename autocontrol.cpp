@@ -3749,7 +3749,6 @@ void AUTOCONTROL::fsm_loop_ext()
             // goal check
             if(goal_err_d < update_config.robot_goal_dist && count>80)
             {
-
                 std::cout<<count<<std::endl;
                 //fine_dt += dt;
                 //double fine_t = std::max<double>(goal_err_d/0.01, 2.0);

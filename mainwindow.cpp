@@ -2232,9 +2232,9 @@ void MainWindow::plot_loop()
     json_output["FSM STATUS"] = fsm_status;
 
     QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
-//    integrate_ui.mtx.lock();
+    integrate_ui.mtx.lock();
     integrate_ui.send_mobile_status.push(json_string);
-//    integrate_ui.mtx.unlock();
+    integrate_ui.mtx.unlock();
 
 //    /    integrate_ui.onMobileStatusSocketWrite(json_string);
 //    integrate_ui.newk_AMR_status = json_string;

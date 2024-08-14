@@ -117,13 +117,20 @@ void INTEGRATE_UI::onUIdisConnected()
 {
     onSocketWrite("tcp disconnected");
     qDebug()<<"tcp disconnected";
-    ui_com ->close();
+    ui_com -> close();
+
+    while(!send_mobile_status.empty())
+    {
+        qDebug()<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+//        mtx.lock();
+        send_mobile_status.pop();
+//        mtx.unlock();
+    }
 }
 
 void INTEGRATE_UI::onMobileStatusDisConnected()
 {
     mobile_status_socket ->close();
-
 }
 
 void INTEGRATE_UI::onMapIMGDISConnected()
@@ -138,6 +145,7 @@ void INTEGRATE_UI::sendUIStatus()
     {
         QByteArray json_string = send_mobile_status.front();
         onMobileStatusSocketWrite(json_string);
+
         mtx.lock();
         send_mobile_status.pop();
         mtx.unlock();
