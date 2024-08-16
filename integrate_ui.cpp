@@ -38,7 +38,7 @@ INTEGRATE_UI::INTEGRATE_UI(QObject *parent):QObject(parent)
 
 void INTEGRATE_UI::onUIConnected()
 {
-    qDebug("connecting........");
+    //    qDebug("connecting........");
     ui_com -> connectToHost(QHostAddress(IP),PORT1);
     ui_com -> setSocketOption(QAbstractSocket::LowDelayOption,1);
 
@@ -59,7 +59,7 @@ void INTEGRATE_UI::onUIConnected()
 
 void INTEGRATE_UI::onMobileStatusConnected()
 {
-    qDebug("map connecting........");
+    //    qDebug("map connecting........");
     mobile_status_socket -> connectToHost(QHostAddress(IP),PORT2);
     mobile_status_socket -> setSocketOption(QAbstractSocket::LowDelayOption,1);
 
@@ -74,7 +74,7 @@ void INTEGRATE_UI::onMobileStatusConnected()
 
 void INTEGRATE_UI::onMapIMGConnected()
 {
-    qDebug("map img connecting........");
+    //    qDebug("map img connecting........");
     map_socket -> connectToHost(QHostAddress(IP),MAP_PORT);
     map_socket -> setSocketOption(QAbstractSocket::LowDelayOption,1);
 
@@ -90,7 +90,7 @@ void INTEGRATE_UI::onMapIMGConnected()
 
 void INTEGRATE_UI::onReconnectToClients()
 {
-    qDebug()<<"reconnecting to clients";
+    //    qDebug()<<"reconnecting to clients";
     onUIConnected();
     onMobileStatusConnected();
     onMapIMGConnected();
@@ -122,9 +122,9 @@ void INTEGRATE_UI::onUIdisConnected()
     while(!send_mobile_status.empty())
     {
         qDebug()<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-//        mtx.lock();
+        //        mtx.lock();
         send_mobile_status.pop();
-//        mtx.unlock();
+        //        mtx.unlock();
     }
 }
 
@@ -161,8 +161,10 @@ void INTEGRATE_UI::sendUIStatus()
 
 void INTEGRATE_UI::publish_path()
 {
-    //    qDebug()<<mobile_moving_status;
-    if(mobile_moving_status == 2){
+    //    qDebug()<<"mobile_moving_status :"<<mobile_moving_status;
+    //    if(mobile_moving_status == 1||mobile_moving_status == 2||mobile_moving_status == 3)
+    if(mobile_moving_status == 2)
+    {
         // get path
         std::vector<PATH_POINT> path = ctrl->get_cur_path();
         if(path.size() == 0)
@@ -443,5 +445,8 @@ void INTEGRATE_UI::onMobileStatusSocketWrite(QString socketmsg)
 
 void INTEGRATE_UI::onMapImageSocketWrite(QByteArray map_msg)
 {
-    map_socket->write(map_msg);
+    if(map_socket->isWritable())
+    {
+        map_socket->write(map_msg);
+    }
 }

@@ -115,6 +115,8 @@ public:
     enum UI_LOC_STATE integrate_status;
     enum AUTO_FSM_STATE fsm_state;
 
+    std::mutex mtx;
+
     // background loop
     std::atomic<bool> backFlag;
     std::thread* backThread = NULL;

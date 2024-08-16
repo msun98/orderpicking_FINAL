@@ -258,6 +258,7 @@ void L2C::commLoop()
                 mobile_status.t = mobile_t + offset_t;
 
                 // motor
+                mobile_status.is_ok = true;
                 mobile_status.connection_m0 = connection_status_m0;
                 mobile_status.connection_m1 = connection_status_m1;
                 mobile_status.status_m0 = stat_m0;

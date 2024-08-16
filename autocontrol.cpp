@@ -2995,6 +2995,7 @@ void AUTOCONTROL::fsm_loop_pick()
             if(goal_err_d < update_config.robot_goal_near_dist)
             {
                 path = calc_short_path(cur_pose, _goal);
+
                 logger.write("[AUTO] near goal, use shortest path", true);
             }
             else

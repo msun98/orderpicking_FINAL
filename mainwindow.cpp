@@ -2029,6 +2029,8 @@ void MainWindow::plot_loop()
             fsm_state=STATE_AUTO_FAILED;
             ui->lb_AutoFsmState->setText("STATE_AUTO_FAILED");
         }
+
+        integrate_ui.mobile_moving_status = ctrl.fsm_state;
     }
 
     // plot state
@@ -2442,6 +2444,8 @@ void MainWindow::watchdog_loop()
     {
         // check status
         MOBILE_STATUS status = mobile.get_status();
+//        qDebug()<<"status.is_ok : "<<status.is_ok;
+//        qDebug()<<"pre_status.is_ok :"<<pre_status.is_ok;
         if(status.is_ok && pre_status.is_ok)
         {
             // motor
@@ -2608,6 +2612,7 @@ void MainWindow::watchdog_loop()
         {
             ui_auto_state = UI_AUTO_NOT_READY;
         }
+//        qDebug()<<"ui_auto_state : "<<ui_auto_state;
     }
 
     integrate_ui.mobile_moving_status = (int)ui_auto_state;
@@ -2782,7 +2787,10 @@ void MainWindow::backLoop()
                 cv::Mat map;
                 cv::resize(plot_img,map,cv::Size(1000,1000),0,0,cv::INTER_NEAREST);
                 QByteArray IMGByte((char*)(map.data),1000*1000*3);//숫자확
+                // latter mutex add
+                mtx.lock();
                 IMGByte2 = IMGByte;
+                mtx.unlock();
             }
         }
 
@@ -2872,7 +2880,10 @@ void MainWindow::websocket_map_changed(QString map_name)
 
 void MainWindow::IntegrateUILoop()
 {
+    mtx.lock();
     QByteArray header = "map";
     header.append(IMGByte2);
+    mtx.unlock();
     integrate_ui.onMapImageSocketWrite(header);
+
 }
