@@ -102,6 +102,9 @@ MainWindow::MainWindow(QWidget *parent)
     // send maps
     connect(ui->bt_SendMaps, SIGNAL(clicked()), this, SLOT(bt_SendMaps()));
 
+    // set maps
+    connect(ui->bt_SetMap, SIGNAL(clicked()), this, SLOT(bt_SetMap()));
+
     ui->lb_VersionInfo->setText("VS:" + QString::fromStdString(VERSION_LOG));
 
     // build datetime
@@ -289,10 +292,10 @@ void MainWindow::init()
         backThread = new std::thread(&MainWindow::backLoop, this);
     }
 
-//    // not used LOC_STATUS
-//    IPC::LOC_STATUS loc;
-//    memset(loc.serving, 1, 255);
-//    ipc.set_loc_status(loc);
+    //    // not used LOC_STATUS
+    //    IPC::LOC_STATUS loc;
+    //    memset(loc.serving, 1, 255);
+    //    ipc.set_loc_status(loc);
 }
 
 void MainWindow::make_sim_virtualObs()
@@ -1180,9 +1183,9 @@ void MainWindow::bt_SendMaps()
     }
 
     QString send_path = QDir::homePath() + "/RB_MOBILE/maps";
-//    QString send_path = QDir::homePath() + "/maps";
+    //    QString send_path = QDir::homePath() + "/maps";
     QString destination_path = "/home/" + id + "/RB_MOBILE";
-//    QString destination_path = "/home/" + id;
+    //    QString destination_path = "/home/" + id;
 
     QString cmd = "sshpass -p " + pw + " rsync -avz -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'" + send_path + " " + id + "@" + ip + ":" + destination_path;
     int result = system(cmd.toStdString().c_str());
@@ -2232,14 +2235,19 @@ void MainWindow::plot_loop()
     json_output["battery"] = mobile_status.bat_in;
     json_output["charge_state"] = mobile_status.charge_state;
     json_output["FSM STATUS"] = fsm_status;
+    if(fsm_status==STATE_AUTO_GOAL_REACHED)
+    {
+        json_output["uuid"] = ctrl.uuid;
+//        qDebug()<<"uuid: "<<ctrl.uuid;
+    }
 
     QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
     integrate_ui.mtx.lock();
     integrate_ui.send_mobile_status.push(json_string);
     integrate_ui.mtx.unlock();
 
-//    /    integrate_ui.onMobileStatusSocketWrite(json_string);
-//    integrate_ui.newk_AMR_status = json_string;
+    //    /    integrate_ui.onMobileStatusSocketWrite(json_string);
+    //    integrate_ui.newk_AMR_status = json_string;
 
     // image plot
     cv::Mat plot_img;
@@ -2444,8 +2452,8 @@ void MainWindow::watchdog_loop()
     {
         // check status
         MOBILE_STATUS status = mobile.get_status();
-//        qDebug()<<"status.is_ok : "<<status.is_ok;
-//        qDebug()<<"pre_status.is_ok :"<<pre_status.is_ok;
+        //        qDebug()<<"status.is_ok : "<<status.is_ok;
+        //        qDebug()<<"pre_status.is_ok :"<<pre_status.is_ok;
         if(status.is_ok && pre_status.is_ok)
         {
             // motor
@@ -2612,7 +2620,7 @@ void MainWindow::watchdog_loop()
         {
             ui_auto_state = UI_AUTO_NOT_READY;
         }
-//        qDebug()<<"ui_auto_state : "<<ui_auto_state;
+        //        qDebug()<<"ui_auto_state : "<<ui_auto_state;
     }
 
     integrate_ui.mobile_moving_status = (int)ui_auto_state;
@@ -2814,9 +2822,14 @@ void MainWindow::bt_TestMoveExt()
 {
     // waypoints
     std::vector<cv::Vec3d> waypoints;
-    waypoints.push_back(cv::Vec3d(2, 1, -90*D2R));
-    waypoints.push_back(cv::Vec3d(-0.58, 1.2, -90*D2R));
-    waypoints.push_back(cv::Vec3d(-0.40, 1.11, 0*D2R));
+    waypoints.push_back(cv::Vec3d(1.45, 3.96, -90*D2R));
+    waypoints.push_back(cv::Vec3d(1.53, 3.67, -90*D2R));
+
+    waypoints.push_back(cv::Vec3d(-0.46, 3.60, -90*D2R));
+    waypoints.push_back(cv::Vec3d(-0.16, 4.25, -90*D2R));
+
+    waypoints.push_back(cv::Vec3d(-0.31, 2.09, 0*D2R));
+    waypoints.push_back(cv::Vec3d(1.17, 5.01, -90*D2R));
     //waypoints.push_back(cv::Vec3d(10.7, 0, 90*D2R));
     ctrl.run_ext(waypoints);
 }
@@ -2885,5 +2898,20 @@ void MainWindow::IntegrateUILoop()
     header.append(IMGByte2);
     mtx.unlock();
     integrate_ui.onMapImageSocketWrite(header);
+}
 
+void MainWindow::bt_SetMap()
+{
+    QString setting_path = QDir::homePath()+"/RB_MOBILE/config/setting_config.ini";
+    QFileInfo setting_path_info(setting_path);
+    if(setting_path_info.exists() && setting_path_info.isFile())
+    {
+        QSettings settings(setting_path, QSettings::IniFormat);
+
+        QString map_path = ui -> lb_MapName -> text();
+        settings.setValue("MAP/map_path",map_path);
+
+        QStringList map_name = map_path.split("/");
+        settings.setValue("MAP/map_name",map_name[5]);
+    }
 }

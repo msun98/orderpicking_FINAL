@@ -133,6 +133,7 @@ public:
     QPushButton *bt_ManualRestingSet;
     QPushButton *bt_ManualServingSet;
     QCheckBox *ckb_SetLocation;
+    QPushButton *bt_SetMap;
     QWidget *tab_4;
     QLineEdit *le_IP2Send;
     QLineEdit *le_ID2Send;
@@ -210,6 +211,8 @@ public:
         te_Pose = new QTextEdit(frame);
         te_Pose->setObjectName(QString::fromUtf8("te_Pose"));
         te_Pose->setGeometry(QRect(220, 40, 221, 101));
+        te_Pose->setAutoFillBackground(false);
+        te_Pose->setStyleSheet(QString::fromUtf8(""));
         te_Pose->setFrameShape(QFrame::Box);
         te_Pose->setFrameShadow(QFrame::Plain);
         te_Pose->setReadOnly(true);
@@ -396,14 +399,14 @@ public:
         lb_AutoFsmState->setFont(font);
         lb_FaceState = new QLabel(groupBox);
         lb_FaceState->setObjectName(QString::fromUtf8("lb_FaceState"));
-        lb_FaceState->setGeometry(QRect(50, 160, 181, 16));
+        lb_FaceState->setGeometry(QRect(50, 138, 181, 20));
         lb_FaceState->setFont(font);
         label_24 = new QLabel(groupBox);
         label_24->setObjectName(QString::fromUtf8("label_24"));
         label_24->setGeometry(QRect(10, 200, 31, 21));
         lb_PresetState = new QLabel(groupBox);
         lb_PresetState->setObjectName(QString::fromUtf8("lb_PresetState"));
-        lb_PresetState->setGeometry(QRect(50, 140, 181, 16));
+        lb_PresetState->setGeometry(QRect(50, 118, 181, 20));
         lb_PresetState->setFont(font);
         lb_LocInfo = new QLabel(groupBox);
         lb_LocInfo->setObjectName(QString::fromUtf8("lb_LocInfo"));
@@ -430,11 +433,11 @@ public:
         label_23->setGeometry(QRect(10, 30, 31, 21));
         lb_MotorLockState = new QLabel(groupBox);
         lb_MotorLockState->setObjectName(QString::fromUtf8("lb_MotorLockState"));
-        lb_MotorLockState->setGeometry(QRect(50, 120, 181, 16));
+        lb_MotorLockState->setGeometry(QRect(50, 98, 181, 20));
         lb_MotorLockState->setFont(font);
         lb_DrawState = new QLabel(groupBox);
         lb_DrawState->setObjectName(QString::fromUtf8("lb_DrawState"));
-        lb_DrawState->setGeometry(QRect(50, 180, 181, 16));
+        lb_DrawState->setGeometry(QRect(50, 158, 181, 20));
         lb_DrawState->setFont(font);
         lb_FailState = new QLabel(groupBox);
         lb_FailState->setObjectName(QString::fromUtf8("lb_FailState"));
@@ -545,6 +548,9 @@ public:
         ckb_SetLocation->setObjectName(QString::fromUtf8("ckb_SetLocation"));
         ckb_SetLocation->setGeometry(QRect(270, 160, 41, 22));
         ckb_SetLocation->setChecked(false);
+        bt_SetMap = new QPushButton(tab_2);
+        bt_SetMap->setObjectName(QString::fromUtf8("bt_SetMap"));
+        bt_SetMap->setGeometry(QRect(240, 120, 61, 31));
         tabWidget->addTab(tab_2, QString());
         tab_4 = new QWidget();
         tab_4->setObjectName(QString::fromUtf8("tab_4"));
@@ -710,6 +716,7 @@ public:
         bt_ManualRestingSet->setText(QCoreApplication::translate("MainWindow", "Set", nullptr));
         bt_ManualServingSet->setText(QCoreApplication::translate("MainWindow", "Set", nullptr));
         ckb_SetLocation->setText(QCoreApplication::translate("MainWindow", "Set", nullptr));
+        bt_SetMap->setText(QCoreApplication::translate("MainWindow", "Set Map", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QCoreApplication::translate("MainWindow", "Operation", nullptr));
         label_7->setText(QCoreApplication::translate("MainWindow", "IP:", nullptr));
         label_12->setText(QCoreApplication::translate("MainWindow", "ID:", nullptr));

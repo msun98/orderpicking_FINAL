@@ -18,7 +18,7 @@
 #include "mobile.h"
 
 //#define IP "10.108.1.68" //
-#define IP "192.168.2.93" //
+#define IP "192.168.2.91" //
 //#define IP "10.108.2.93" //
 #define PORT1 7799
 #define PORT2 7788

@@ -109,6 +109,8 @@ public:
 
     int count = 0;
 
+    QString uuid;
+
 private:
     MOBILE *mobile = NULL;
     SLAM_2D *slam = NULL;

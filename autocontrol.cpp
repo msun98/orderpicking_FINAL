@@ -3425,7 +3425,7 @@ void AUTOCONTROL::fsm_loop_pick()
 
 void AUTOCONTROL::fsm_loop_ext()
 {
-    // real time loop
+    count = 0;   // real time loop
     const double dt = 0.05; // 20hz
     double pre_loop_time = get_time();
     double fine_dt = 0;
@@ -3729,26 +3729,10 @@ void AUTOCONTROL::fsm_loop_ext()
                 v = saturation(err_d/t, min_v, max_v);
                 w = saturation(err_th/t, min_w, max_w);
             }
-            /*else
-            {
-                // pid
-                double v0 = cur_vw[0];
-                double w0 = cur_vw[1];
-
-                double max_v = std::min<double>(pp_limit_v, v0 + pp_limit_v_acc*dt);
-                double min_v = std::max<double>(0, v0 - (2.0*pp_limit_v_acc)*dt); // decel case, acc*2
-
-                double max_w = std::min<double>(pp_limit_w, w0 + pp_limit_w_acc*dt);
-                double min_w = std::max<double>(-pp_limit_w, w0 - pp_limit_w_acc*dt);
-
-                v = saturation(kp_v*err_d + kd_v*v0, min_v, max_v);
-                w = saturation(kp_w*err_th + kd_w*w0, min_w, max_w);
-            }*/
-
             count += 1;
 
             // goal check
-            if(goal_err_d < update_config.robot_goal_dist && count>80)
+            if((goal_err_d < update_config.robot_goal_dist) && (count>500))
             {
                 std::cout<<count<<std::endl;
                 //fine_dt += dt;
@@ -3905,6 +3889,7 @@ void AUTOCONTROL::fsm_loop_ext()
     cur_face_state = UI_FACE_NORMAL;
     fsm_state = STATE_AUTO_GOAL_REACHED;
     fsm_flag = false;
+
     logger.write("[AUTO] STATE_STOPPED", true);
 }
 

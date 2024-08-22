@@ -222,6 +222,9 @@ private slots:
     // send maps
     void bt_SendMaps();
 
+    // set maps
+    void bt_SetMap();
+
     // integrate ui (orderPicking)
     void bt_TestMoveExt();
     void bt_TestMovePick();

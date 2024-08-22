@@ -183,12 +183,13 @@ void INTEGRATE_UI::publish_path()
 
         // path sampling, 0.5m
         std::vector<PATH_POINT> sampled_path;
-        sampled_path.push_back(path[cur_idx]);
-        for(size_t p = cur_idx; p < path.size()-1; p+=50)
+        for(size_t p = cur_idx; p < path.size(); p++)
         {
-            sampled_path.push_back(path[p]);
+            if(p == cur_idx || p%50 == 0 || p == path.size()-1)
+            {
+                sampled_path.push_back(path[p]);
+            }
         }
-        sampled_path.push_back(path.back());
 
         int num = sampled_path.size();
         for(int p = 0; p < num; p++)
@@ -346,18 +347,17 @@ void INTEGRATE_UI::onReadyCmdRead() //nuc 에게 로봇 상태를 시간에 맞�
         double move_y = json_input["POSE_y"].toDouble();
         double move_th = json_input["POSE_theta"].toDouble();
 
+        ctrl->uuid = json_input["uuid"].toString();
+
         //yujin robot get preset_idx
 
         int preset_idx = PRESET_SPEED_NORMAL;
         ctrl->run_pick(cv::Vec3d(move_x,move_y,move_th), preset_idx);
 
-        //        std::cout<<"eeeeeeeeeeeeeeeeee"<<std::endl;
         qDebug()<<move_x<<move_y<<move_th;
     }
 
     else if(json_input["MSG_TYPE"] == "MOVE_EXT"){
-
-
         QJsonArray move_path = json_input["PATH"].toArray();
         cv::Vec3d path;
         std::vector<cv::Vec3d> waypoints;
@@ -369,6 +369,9 @@ void INTEGRATE_UI::onReadyCmdRead() //nuc 에게 로봇 상태를 시간에 맞�
             path[0] = move_path_obj["x"].toDouble();
             path[1] = move_path_obj["y"].toDouble();
             path[2] = move_path_obj["theta"].toDouble();
+
+            ctrl->uuid = json_input["uuid"].toString();
+
 
             //            qDebug()<<path[0];
             //            command_path_que.push(path);
