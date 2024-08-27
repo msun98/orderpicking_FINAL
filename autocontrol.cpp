@@ -57,7 +57,9 @@ void AUTOCONTROL::run(cv::Vec3d _goal, int _preset_idx)
 
     fsm_flag = true;
     fsm_thread = new std::thread(&AUTOCONTROL::fsm_loop, this);
+//    std::cout<<"sssssssssssssssssssss"<<std::endl;
 }
+
 
 void AUTOCONTROL::run_pick(cv::Vec3d _goal, int _preset_idx)
 {
@@ -495,6 +497,7 @@ std::vector<PATH_POINT> AUTOCONTROL::calc_short_path(cv::Vec3d st_pose, cv::Vec3
     return path;
 }
 
+//path get using travel line
 std::vector<PATH_POINT> AUTOCONTROL::calc_ref_path(cv::Vec3d st_pose, cv::Vec3d ed_pose)
 {
     // get travel map
@@ -2403,7 +2406,6 @@ int AUTOCONTROL::get_tgt_idx(int cur_idx, double ld, int path_num)
     }
     return idx;
 }
-
 void AUTOCONTROL::fsm_loop()
 {
     // real time loop
@@ -3845,9 +3847,12 @@ void AUTOCONTROL::fsm_loop_ext()
                 }
             }
 
+            // get_time out from yujin (?)
             if(get_time() > obs_time + setting_config.robot_obs_wait_time)
             {
                 mobile->led(0, LED_WHITE);
+
+                // judge by just in goal -> false : state
                 fsm_state = STATE_AUTO_PATH_FINDING;
 
                 logger.write("[AUTO] OBSTACLE -> PATH_FINDING", true);

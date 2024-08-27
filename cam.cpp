@@ -2,6 +2,7 @@
 
 CAM::CAM(QObject *parent) : QObject(parent)
 {
+//    std::cout<<"CCCCCCCCAMMMMMMMMMMMMMM"<<std::endl;
 }
 
 CAM::~CAM()
@@ -16,16 +17,16 @@ CAM::~CAM()
 
 void CAM::init()
 {
-    // start grab loop
-    if (grabThread == NULL)
-    {
-        grabFlag = true;
-        grabThread = new std::thread(&CAM::grabLoop, this);
-    }
+//    // start grab loop
+//    if (grabThread == NULL)
+//    {
+//        grabFlag = true;
+//        grabThread = new std::thread(&CAM::grabLoop, this);
+//    }
 }
 
 void CAM::grabLoop()
-{
+{/*
 #ifndef USE_SIM
     // check device
     ob::Context::setLoggerSeverity(OB_LOG_SEVERITY_FATAL);
@@ -355,6 +356,7 @@ void CAM::grabLoop()
     pipes[1]->stop();
 
     #endif
+//*/
 }
 
 QString CAM::get_sn_l()

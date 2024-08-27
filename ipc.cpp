@@ -1,54 +1,25 @@
-//https://doc.qt.io/qt-5/qtcore-ipc-sharedmemory-example.html 참고.
 #include "ipc.h"
 
 IPC::IPC(QObject *parent)
     : QObject(parent)
-    , shm_cmd("slamnav_cmd")
     , shm_status("slamnav_status")
     , shm_path("slamnav_path")
     , shm_map("slamnav_map")
     , shm_obs("slamnav_obs")
     , shm_cam0("slamnav_cam0")
     , shm_cam1("slamnav_cam1")
-
-    , shm_move("slamnav_move")
-    , shm_mobile_pose("slamnav_pose")
-    , shm_mobile_status("slamnav_mobile_status")
-    , shm_move_success_check("slamnav_move_success_check")
-
-    , shm_rb_5("rb_5_check")
-    , shm_gripper("gripper_cmd")
-    , shm_websocketON("yujin_websocketON")
-
-    , shm_detect_img("vison_img")
-    , shm_detect_point("vison_point")
-
-    , shm_handeye_detect_flag("shm_handeye_detect_flag")
-
-    , shm_box_center_point("box_center_point")
-
+    , shm_cam_color0("slamnav_cam_color0")
+    , shm_cam_color1("slamnav_cam_color1")
+    , shm_loc_status("slamnav_loc_status")
+    , shm_call_status("slamnav_call_status")
+    , shm_call_loc("slamnav_call_loc")
+    , shm_check_travel("slamnav_check_travel")
 {
     // msg tick clear, check for new data
     tick = 0;
 
-    // create or attach
-    //프로그램 오픈시 공유 메모리 생성, 쉐어드 메모리 오픈되어있는지 확인.
-    if (!shm_cmd.create(sizeof(IPC::CMD), QSharedMemory::ReadWrite) && shm_cmd.error() == QSharedMemory::AlreadyExists)
-
-    //공유 메모리 세그먼트 생성. 공유 메모리 세그먼트가 이미 존재하는 경우 false 반환
-    // 공유 메모리가 만들어지지 않았고 쉐어드 메모리가 이미 존재하고 있다고 하면
-    {
-        printf("attach shared memory, key: slamnav_cmd, size: %ld\n", sizeof(IPC::CMD));
-        shm_cmd.attach();
-    }
-    else
-    {
-        printf("create shared memory, key: slamnav_cmd, size: %ld\n", sizeof(IPC::CMD));
-    }
-
     if (!shm_status.create(sizeof(IPC::STATUS), QSharedMemory::ReadWrite) && shm_status.error() == QSharedMemory::AlreadyExists)
     {
-//        qDebug()<<"ERROR : "<<shm_status.errorString();
         printf("attach shared memory, key: slamnav_status, size: %ld\n", sizeof(IPC::STATUS));
         shm_status.attach();
     }
@@ -106,127 +77,70 @@ IPC::IPC(QObject *parent)
     {
         printf("create shared memory, key: slamnav_cam1, size: %ld\n", sizeof(IPC::IMG));
     }
-    if (!shm_move.create(sizeof(IPC::POSE), QSharedMemory::ReadWrite) && shm_move.error() == QSharedMemory::AlreadyExists)
+
+    if (!shm_cam_color0.create(sizeof(IPC::IMG_COLOR), QSharedMemory::ReadWrite) && shm_cam_color0.error() == QSharedMemory::AlreadyExists)
     {
-        printf("attach shared memory, key: shm_move, size: %ld\n", sizeof(IPC::POSE));
-        shm_move.attach();
+        printf("attach shared memory, key: slamnav_cam_color0, size: %ld\n", sizeof(IPC::IMG_COLOR));
+        shm_cam_color0.attach();
     }
     else
     {
-        printf("create shared memory, key: shm_move, size: %ld\n", sizeof(IPC::POSE));
-    }
-    if (!shm_mobile_pose.create(sizeof(IPC::MOBILE_POSE), QSharedMemory::ReadWrite) && shm_mobile_pose.error() == QSharedMemory::AlreadyExists)
-    {
-        printf("attach shared memory, key: shm_move, size: %ld\n", sizeof(IPC::POSE));
-        shm_mobile_pose.attach();
-    }
-    else
-    {
-        printf("create shared memory, key: shm_move, size: %ld\n", sizeof(IPC::POSE));
+        printf("create shared memory, key: slamnav_cam_color0, size: %ld\n", sizeof(IPC::IMG_COLOR));
     }
 
-    if (!shm_mobile_status.create(sizeof(IPC::ROBOT_COMMAND), QSharedMemory::ReadWrite) && shm_mobile_status.error() == QSharedMemory::AlreadyExists)
+    if (!shm_cam_color1.create(sizeof(IPC::IMG_COLOR), QSharedMemory::ReadWrite) && shm_cam_color1.error() == QSharedMemory::AlreadyExists)
     {
-        printf("attach shared memory, key: shm_mobile_status, size: %ld\n", sizeof(IPC::ROBOT_COMMAND));
-        shm_mobile_status.attach();
+        printf("attach shared memory, key: slamnav_cam_color1, size: %ld\n", sizeof(IPC::IMG_COLOR));
+        shm_cam_color1.attach();
     }
     else
     {
-        printf("create shared memory, key: shm_mobile_status, size: %ld\n", sizeof(IPC::ROBOT_COMMAND));
+        printf("create shared memory, key: slamnav_cam_color1, size: %ld\n", sizeof(IPC::IMG_COLOR));
     }
 
-    if (!shm_move_success_check.create(sizeof(IPC::SUCCESS_CHECK), QSharedMemory::ReadWrite) && shm_move_success_check.error() == QSharedMemory::AlreadyExists)
+    if (!shm_loc_status.create(sizeof(IPC::LOC_STATUS), QSharedMemory::ReadWrite) && shm_loc_status.error() == QSharedMemory::AlreadyExists)
     {
-        printf("attach shared memory, key: shm_move_success_check, size: %ld\n", sizeof(IPC::SUCCESS_CHECK));
-        shm_move_success_check.attach();
+        printf("attach shared memory, key: shm_loc_status, size: %ld\n", sizeof(IPC::LOC_STATUS));
+        shm_loc_status.attach();
     }
     else
     {
-        printf("create shared memory, key: shm_move_success_check, size: %ld\n", sizeof(IPC::SUCCESS_CHECK));
+        printf("create shared memory, key: shm_loc_status, size: %ld\n", sizeof(IPC::LOC_STATUS));
     }
 
-    if (!shm_rb_5.create(sizeof(IPC::RB_5), QSharedMemory::ReadWrite) && shm_move_success_check.error() == QSharedMemory::AlreadyExists)
+    if (!shm_call_status.create(sizeof(IPC::CALL_STATUS), QSharedMemory::ReadWrite) && shm_call_status.error() == QSharedMemory::AlreadyExists)
     {
-        printf("attach shared memory, key: rb_5_check, size: %ld\n", sizeof(IPC::RB_5));
-        shm_rb_5.attach();
+        printf("attach shared memory, key: shm_call_status, size: %ld\n", sizeof(IPC::CALL_STATUS));
+        shm_call_status.attach();
     }
     else
     {
-        printf("create shared memory, key: rb_5_check, size: %ld\n", sizeof(IPC::RB_5));
+        printf("create shared memory, key: shm_call_status, size: %ld\n", sizeof(IPC::CALL_STATUS));
     }
 
-    //for get gripper cmd
-    if (!shm_gripper.create(sizeof(IPC::GRIPPER), QSharedMemory::ReadWrite) && shm_gripper.error() == QSharedMemory::AlreadyExists)
+    if (!shm_call_loc.create(sizeof(IPC::CALL_LOC), QSharedMemory::ReadWrite) && shm_call_loc.error() == QSharedMemory::AlreadyExists)
     {
-        printf("attach shared memory, key: gripper cmd, size: %ld\n", sizeof(IPC::GRIPPER));
-        shm_gripper.attach();
+        printf("attach shared memory, key: shm_call_loc, size: %ld\n", sizeof(IPC::CALL_LOC));
+        shm_call_loc.attach();
     }
     else
     {
-        printf("create shared memory, key: gripper cmd, size: %ld\n", sizeof(IPC::GRIPPER));
+        printf("create shared memory, key: shm_call_loc, size: %ld\n", sizeof(IPC::CALL_LOC));
     }
 
-    //for check websocket
-    if (!shm_websocketON.create(sizeof(IPC::SUCCESS_CHECK), QSharedMemory::ReadWrite) && shm_websocketON.error() == QSharedMemory::AlreadyExists)
+    if (!shm_check_travel.create(sizeof(IPC::CHECK_TRAVEL), QSharedMemory::ReadWrite) && shm_check_travel.error() == QSharedMemory::AlreadyExists)
     {
-        printf("attach shared memory, key: shm_websocketON, size: %ld\n", sizeof(IPC::SUCCESS_CHECK));
-        shm_websocketON.attach();
+        printf("attach shared memory, key: shm_check_travel, size: %ld\n", sizeof(IPC::CHECK_TRAVEL));
+        shm_check_travel.attach();
     }
     else
     {
-        printf("create shared memory, key: shm_websocketON, size: %ld\n", sizeof(IPC::SUCCESS_CHECK));
-    }
-
-    //for get vision img
-    if (!shm_detect_img.create(sizeof(IPC::COLOR_MAP), QSharedMemory::ReadWrite) && shm_detect_img.error() == QSharedMemory::AlreadyExists)
-    {
-        printf("attach shared memory, key: shm_detect_img, size: %ld\n", sizeof(IPC::COLOR_MAP));
-        shm_detect_img.attach();
-    }
-    else
-    {
-        printf("create shared memory, key: shm_detect_img, size: %ld\n", sizeof(IPC::COLOR_MAP));
-    }
-
-    //for get vision point
-    if (!shm_detect_point.create(sizeof(IPC::VISION_POSE), QSharedMemory::ReadWrite) && shm_detect_point.error() == QSharedMemory::AlreadyExists)
-    {
-        printf("attach shared memory, key: shm_detect_point, size: %ld\n", sizeof(IPC::VISION_POSE));
-        shm_detect_point.attach();
-    }
-    else
-    {
-        printf("create shared memory, key: shm_detect_point, size: %ld\n", sizeof(IPC::VISION_POSE));
-    }
-
-    if (!shm_handeye_detect_flag.create(sizeof(IPC::Handeye_FLAG), QSharedMemory::ReadWrite) && shm_handeye_detect_flag.error() == QSharedMemory::AlreadyExists)
-    {
-        printf("attach shared memory, key: shm_handeye_detect_flag, size: %ld\n", sizeof(IPC::Handeye_FLAG));
-        shm_handeye_detect_flag.attach();
-    }
-    else
-    {
-        printf("create shared memory, key: shm_handeye_detect_flag, size: %ld\n", sizeof(IPC::Handeye_FLAG));
-    }
-
-    if (!shm_box_center_point.create(sizeof(IPC::BOX_CENTER_POSE), QSharedMemory::ReadWrite) && shm_box_center_point.error() == QSharedMemory::AlreadyExists)
-    {
-        printf("attach shared memory, key: shm_handeye_detect_flag, size: %ld\n", sizeof(IPC::BOX_CENTER_POSE));
-        shm_box_center_point.attach();
-    }
-    else
-    {
-        printf("create shared memory, key: shm_handeye_detect_flag, size: %ld\n", sizeof(IPC::BOX_CENTER_POSE));
+        printf("create shared memory, key: shm_check_travel, size: %ld\n", sizeof(IPC::CHECK_TRAVEL));
     }
 }
 
-IPC::~IPC()//프로그램 종료시 연결 해제
+IPC::~IPC()
 {
-    if(shm_cmd.detach())
-    {
-        printf("detach shared memory, key: slamnav_cmd\n");
-    }
-
     if(shm_status.detach())
     {
         printf("detach shared memory, key: slamnav_status\n");
@@ -257,71 +171,25 @@ IPC::~IPC()//프로그램 종료시 연결 해제
         printf("detach shared memory, key: slamnav_cam1\n");
     }
 
-    if(shm_move.detach())
+    if(shm_loc_status.detach())
     {
-        printf("detach shared memory, key: shm_move\n");
+        printf("detach shared memory, key: shm_loc_status\n");
     }
 
-    if(shm_mobile_pose.detach())
+    if(shm_call_status.detach())
     {
-        printf("detach shared memory, key: shm_mobile_pose\n");
+        printf("detach shared memory, key: shm_call_status\n");
     }
 
-    if(shm_mobile_status.detach())
+    if(shm_call_loc.detach())
     {
-        printf("detach shared memory, key: shm_mobile_status\n");
+        printf("detach shared memory, key: shm_call_loc\n");
     }
 
-    if(shm_move_success_check.detach())
+    if(shm_check_travel.detach())
     {
-        printf("detach shared memory, key: shm_move_success_check\n");
+        printf("detach shared memory, key: shm_check_travel\n");
     }
-
-    if(shm_rb_5.detach())
-    {
-        printf("detach shared memory, key: rb_5_check\n");
-    }
-
-    if(shm_gripper.detach())
-    {
-        printf("detach shared memory, key: gripper_cmd\n");
-    }
-
-    if(shm_websocketON.detach())
-    {
-        printf("detach shared memory, key: shm_websocketON\n");
-    }
-
-    if(shm_detect_img.detach())
-    {
-        printf("detach shared memory, key: shm_detect_img\n");
-    }
-
-    if(shm_detect_point.detach())
-    {
-        printf("detach shared memory, key: shm_detect_point\n");
-    }
-
-    if(shm_handeye_detect_flag.detach())
-    {
-        printf("detach shared memory, key: shm_handeye_detect_flag\n");
-    }
-
-    if(shm_box_center_point.detach())
-    {
-        printf("detach shared memory, key: shm_box_center_point\n");
-    }
-}
-
-IPC::CMD IPC::get_cmd()
-{
-    IPC::CMD res;
-
-    shm_cmd.lock();
-    memcpy(&res, (char*)shm_cmd.constData(), sizeof(IPC::CMD));
-    shm_cmd.unlock();
-
-    return res;
 }
 
 IPC::STATUS IPC::get_status()
@@ -390,89 +258,48 @@ IPC::IMG IPC::get_cam1()
     return res;
 }
 
-IPC::POSE IPC::get_move_where()
+IPC::LOC_STATUS IPC::get_loc_status()
 {
-    IPC::POSE res;
+    IPC::LOC_STATUS res;
 
-    shm_move.lock();
-    memcpy(&res, (char*)shm_move.constData(), sizeof(IPC::POSE));
-    shm_move.unlock();
+    shm_loc_status.lock();
+    memcpy(&res, (char*)shm_loc_status.constData(), sizeof(IPC::LOC_STATUS));
+    shm_loc_status.unlock();
 
     return res;
 }
 
-IPC::MOBILE_POSE IPC::get_mobile_pos()
+IPC::CALL_STATUS IPC::get_call_status()
 {
-    IPC::MOBILE_POSE res;
+    IPC::CALL_STATUS res;
 
-    shm_mobile_pose.lock();
-    memcpy(&res, (char*)shm_mobile_pose.constData(), sizeof(IPC::MOBILE_POSE));
-    shm_mobile_pose.unlock();
+    shm_call_status.lock();
+    memcpy(&res, (char*)shm_call_status.constData(), sizeof(IPC::CALL_STATUS));
+    shm_call_status.unlock();
 
     return res;
 }
 
-IPC::SUCCESS_CHECK IPC::get_mobile_success_check()
+IPC::CALL_LOC IPC::get_call_loc()
 {
-    IPC::SUCCESS_CHECK res;
+    IPC::CALL_LOC res;
 
-    shm_move_success_check.lock();
-    memcpy(&res, (char*)shm_move_success_check.constData(), sizeof(IPC::SUCCESS_CHECK));
-    shm_move_success_check.unlock();
+    shm_call_loc.lock();
+    memcpy(&res, (char*)shm_call_loc.constData(), sizeof(IPC::CALL_LOC));
+    shm_call_loc.unlock();
 
     return res;
 }
 
-IPC::GRIPPER IPC::get_gripper()
+IPC::CHECK_TRAVEL IPC::get_check_travel()
 {
-    IPC::GRIPPER res;
+    IPC::CHECK_TRAVEL res;
 
-    shm_gripper.lock();
-    memcpy(&res, (char*)shm_gripper.constData(), sizeof(IPC::GRIPPER));
-    shm_gripper.unlock();
+    shm_check_travel.lock();
+    memcpy(&res, (char*)shm_check_travel.constData(), sizeof(IPC::CHECK_TRAVEL));
+    shm_check_travel.unlock();
 
     return res;
-}
-
-////////////// get detect img, point ////////////
-
-IPC::COLOR_MAP IPC::get_img()
-{
-    IPC::COLOR_MAP res;
-
-    shm_detect_img.lock();
-    memcpy(&res, (char*)shm_detect_img.constData(), sizeof(IPC::COLOR_MAP));
-    shm_detect_img.unlock();
-
-    return res;
-}
-
-IPC::VISION_POSE IPC::get_point()
-{
-    IPC::VISION_POSE res;
-    shm_detect_point.lock();
-    memcpy(&res, (char*)shm_detect_point.constData(), sizeof(IPC::VISION_POSE));
-    shm_detect_point.unlock();
-
-    return res;
-}
-
-IPC::BOX_CENTER_POSE IPC::get_box_center()
-{
-    IPC::BOX_CENTER_POSE res;
-    shm_box_center_point.lock();
-    memcpy(&res, (char*)shm_box_center_point.constData(), sizeof(IPC::BOX_CENTER_POSE));
-    shm_box_center_point.unlock();
-
-    return res;
-}
-
-void IPC::set_cmd(IPC::CMD val)
-{
-    shm_cmd.lock();
-    val.tick = ++tick;
-    memcpy((char*)shm_cmd.data(), &val, sizeof(IPC::CMD));
-    shm_cmd.unlock();
 }
 
 void IPC::set_status(IPC::STATUS val)
@@ -523,74 +350,50 @@ void IPC::set_cam1(IPC::IMG val)
     shm_cam1.unlock();
 }
 
-void IPC::set_move_where(IPC::POSE val)
+void IPC::set_cam_color0(IPC::IMG_COLOR val)
 {
-    shm_move.lock();
+    shm_cam_color0.lock();
     val.tick = ++tick;
-    memcpy((char*)shm_move.data(), &val, sizeof(IPC::POSE));
-//    printf("%f",x)
-    shm_move.unlock();
+    memcpy((char*)shm_cam_color0.data(), &val, sizeof(IPC::IMG_COLOR));
+    shm_cam_color0.unlock();
 }
 
-void IPC::set_mobile_status(IPC::ROBOT_COMMAND val)
+void IPC::set_cam_color1(IPC::IMG_COLOR val)
 {
-    shm_mobile_status.lock();
+    shm_cam_color1.lock();
     val.tick = ++tick;
-    memcpy((char*)shm_mobile_status.data(), &val, sizeof(IPC::ROBOT_COMMAND));
-//    printf("%f",x)
-    shm_mobile_status.unlock();
+    memcpy((char*)shm_cam_color1.data(), &val, sizeof(IPC::IMG_COLOR));
+    shm_cam_color1.unlock();
 }
 
-void IPC::set_rb_5_status(IPC::RB_5 val)
+void IPC::set_loc_status(IPC::LOC_STATUS val)
 {
-    shm_rb_5.lock();
+    shm_loc_status.lock();
     val.tick = ++tick;
-    memcpy((char*)shm_rb_5.data(), &val, sizeof(IPC::RB_5));
-//    printf("%f",x)
-    shm_rb_5.unlock();
+    memcpy((char*)shm_loc_status.data(), &val, sizeof(IPC::LOC_STATUS));
+    shm_loc_status.unlock();
 }
 
-void IPC::set_gripper(IPC::GRIPPER val)
+void IPC::set_call_status(IPC::CALL_STATUS val)
 {
-    shm_gripper.lock();
+    shm_call_status.lock();
     val.tick = ++tick;
-    memcpy((char*)shm_gripper.data(), &val, sizeof(IPC::GRIPPER));
-//    printf("%f",x)
-    shm_gripper.unlock();
+    memcpy((char*)shm_call_status.data(), &val, sizeof(IPC::CALL_STATUS));
+    shm_call_status.unlock();
 }
 
-
-void IPC::set_Yujin_CMD(IPC::WEB_commend val)
+void IPC::set_call_loc(IPC::CALL_LOC val)
 {
-    shm_yujin_json.lock();
+    shm_call_loc.lock();
     val.tick = ++tick;
-    memcpy((char*)shm_yujin_json.data(), &val, sizeof(IPC::WEB_commend));
-//    printf("%f",x)
-    shm_yujin_json.unlock();
+    memcpy((char*)shm_call_loc.data(), &val, sizeof(IPC::CALL_LOC));
+    shm_call_loc.unlock();
 }
 
-void IPC::set_Rainbow_CMD(IPC::WEB_commend val)
+void IPC::set_check_travel(IPC::CHECK_TRAVEL val)
 {
-    shm_rainbow_json.lock();
+    shm_check_travel.lock();
     val.tick = ++tick;
-    memcpy((char*)shm_rainbow_json.data(), &val, sizeof(IPC::WEB_commend));
-//    printf("%f",x)
-    shm_rainbow_json.unlock();
-}
-
-void IPC::set_handeye_flag(IPC::Handeye_FLAG val){
-    shm_handeye_detect_flag.lock();
-    val.tick = ++tick;
-    memcpy((char*)shm_handeye_detect_flag.data(), &val, sizeof(IPC::Handeye_FLAG));
-//    printf("%f",x)
-    shm_handeye_detect_flag.unlock();
-}
-
-void IPC::set_detected_point(IPC::VISION_POSE val)
-{
-    shm_detect_point.lock();
-    val.tick = ++tick;
-    memcpy((char*)shm_detect_point.data(), &val, sizeof(IPC::VISION_POSE));
-    //    printf("%f",x)
-    shm_detect_point.unlock();
+    memcpy((char*)shm_check_travel.data(), &val, sizeof(IPC::CHECK_TRAVEL));
+    shm_check_travel.unlock();
 }

@@ -4,35 +4,40 @@ MyGraphicsView::MyGraphicsView(QWidget *parent)
     : QGraphicsView(parent)
     , scene(this)
 {
-	setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-	setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+	setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);	
 	setScene(&scene);
 	
     scene.setBackgroundBrush(Qt::black);
     scene.addItem(&map);
 
-//    QString config_path = QDir::homePath()+"/robot_config.ini";
-//    QFileInfo config_info(config_path);
-//    if(config_info.exists() && config_info.isFile())
-//    {
-//        QSettings settings(config_path, QSettings::IniFormat);
-//        robot_map_size = settings.value("ROBOT_SW/map_size").toString().toInt();
-//        robot_grid_size = settings.value("ROBOT_SW/grid_size").toString().toInt();
+    rect = new QGraphicsRectItem(0, 0, map_size, map_size);
+    rect->setPen(QPen(QBrush(Qt::yellow), 3));
+    scene.addItem(rect);
 
+    line.setPen(QPen(Qt::yellow, 1, Qt::DotLine));
+    line.setLine(QLineF(0,0,0,0));
+    scene.addItem(&line);
 
-//    }
-
-    robot_map_size = 1000;
-    robot_grid_size = 1000;
-//    robot_map_size;
-    scene.addRect(0, 0, robot_map_size, robot_map_size, QPen(QBrush(Qt::yellow), 3));
-
+    pre_target_pose = cv::Vec3d(0,0,0);
     target_pose = cv::Vec3d(0,0,0);
 }
 
 MyGraphicsView::~MyGraphicsView()
 {
     scene.removeItem(&map);
+}
+
+void MyGraphicsView::reload_gv_screen()
+{
+    scene.removeItem(rect);
+    rect = new QGraphicsRectItem(0, 0, map_size, map_size);
+    rect->setPen(QPen(QBrush(Qt::yellow), 3));
+    scene.addItem(rect);
+}
+
+void MyGraphicsView::update_map_info(int _map_size)
+{
+    map_size = _map_size;
 }
 
 void MyGraphicsView::wheelEvent(QWheelEvent * ev)
@@ -55,23 +60,22 @@ void MyGraphicsView::wheelEvent(QWheelEvent * ev)
 
 void MyGraphicsView::mousePressEvent(QMouseEvent * ev)
 {
-	if (ev->button() == Qt::LeftButton)
+    if (ev->button() == Qt::LeftButton && !isGrab)
 	{
         QPointF pt = mapToScene(ev->pos());
 
         // for guide line
-        pt0 = pt;
-        line.setPen(QPen(Qt::yellow, 1, Qt::DotLine));
+        pt0 = pt;        
         line.setLine(QLineF(pt, pt));
-        scene.addItem(&line);
+        line.show();
 
         // for desired robot pose
-        x0 = -(pt.y()-(robot_map_size/2))*robot_grid_size;
-        y0 = -(pt.x()-(robot_map_size/2))*robot_grid_size;
+        x0 = -(pt.y()-(map_size/2))*grid_size;
+        y0 = -(pt.x()-(map_size/2))*grid_size;
 		isDragL = true;
 	}
 	
-	if (ev->button() == Qt::RightButton)
+    if (ev->button() == Qt::RightButton && !isGrab)
 	{
         QPointF pt = mapToScene(ev->pos());
 		isDragR = true;
@@ -101,20 +105,21 @@ void MyGraphicsView::mouseReleaseEvent(QMouseEvent * ev)
 	if (ev->button() == Qt::LeftButton)
 	{
 		isDragL = false;
-        scene.removeItem(&line);
+        line.hide();
 
         QPointF pt = mapToScene(ev->pos());
-        double x1 = -(pt.y()-(robot_map_size/2))*robot_grid_size;
-        double y1 = -(pt.x()-(robot_map_size/2))*robot_grid_size;
+        double x1 = -(pt.y()-(map_size/2))*grid_size;
+        double y1 = -(pt.x()-(map_size/2))*grid_size;
         double x = x0;
         double y = y0;
         double th = std::atan2(y1-y0, x1-x0);
 
         if(!isGrab)
         {
+            pre_target_pose = target_pose;
             target_pose = cv::Vec3d(x, y, th);
             emit pose_clicked(x, y, th);
-            std::cout<<"x : "<<x<<",y : "<<y<<",theta :"<<th*R2D<<std::endl;
+            //printf("x:%f, y:%f, th:%f\n", x, y, th*R2D);
         }
 	}
 
@@ -134,8 +139,8 @@ void MyGraphicsView::keyPressEvent(QKeyEvent * ev)
 		return;
 	}
 
-	if (ev->key() == Qt::Key_Control)
-	{
+    if (ev->key() == Qt::Key_Shift)
+    {
         isGrab = true;
 		setDragMode(ScrollHandDrag);
 		return;
@@ -149,7 +154,7 @@ void MyGraphicsView::keyReleaseEvent(QKeyEvent * ev)
 		return;
 	}
 
-	if (ev->key() == Qt::Key_Control)
+    if (ev->key() == Qt::Key_Shift)
 	{
 		setDragMode(NoDrag);
         isGrab = false;
