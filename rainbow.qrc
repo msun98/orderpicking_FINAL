@@ -2,7 +2,5 @@
     <qresource prefix="/img">
         <file>resource/rainbow.png</file>
         <file>resource/yujin.png</file>
-        <file>resource/reload.png</file>
-        <file>resource/rb.png</file>
     </qresource>
 </RCC>

@@ -14,6 +14,8 @@
 #include <atomic>
 #include <math.h>
 
+#define R2D (180.0/M_PI)
+
 class MyGraphicsView : public QGraphicsView
 {
 	Q_OBJECT
@@ -22,17 +24,8 @@ public:
 	MyGraphicsView(QWidget *parent);
 	~MyGraphicsView();
 
-    void reload_gv_screen();
-    void update_map_info(int _map_size);
-
 	QGraphicsPixmapItem map;
-    QGraphicsRectItem *rect;
-
-    cv::Vec3d pre_target_pose;
     cv::Vec3d target_pose;
-
-    int map_size = 1000;
-    double grid_size = 0.05;
 
 private:
     QGraphicsScene scene;
@@ -47,6 +40,10 @@ private:
 
     QPointF pt0;
 
+    int robot_map_size;
+    double robot_grid_size;
+//    robot_config.robot_map_size;
+
 signals:
     void pose_clicked(double x, double y, double th); // x(m), y(m), th(rad)
 
@@ -57,4 +54,6 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *ev);
 	void keyPressEvent(QKeyEvent *ev);
 	void keyReleaseEvent(QKeyEvent *ev);
+
+
 };
