@@ -1,5108 +1,2937 @@
-﻿//랙과 모바일 플랫폼과의 거리는 45cm 정도를 유지해야 하며 랙 한칸의 높이는 70cm를 유지해야한다.￣
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-Integrated_infomation Integrated_info;//헤더 클래스 사용한다고 선언.
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , md_mot(this)
-    , cobot(this)
-    , mb(this)
-
+    , ipc(this)
+    , cam(this)
+    , lidar(this)
+    , mobile(this)
+    , unimap(this)
+    , topomap(this)
+    , slam(this)
+    , ctrl(this)
+    , mctrl(this)
+    , ws(this)
+    , integrate_ui(this)
+    , sim(this)
+    , plot_timer(this)
+    , watchdog_timer(this)
 {
     ui->setupUi(this);
 
-    //btn click rb_5 connection ctrl
-    connect(ui->BTN_CONNECT_COM, SIGNAL(clicked()), this, SLOT(BTN_CONNECT_COM()));
-    connect(ui->BTN_CONNECT_DATA, SIGNAL(clicked()), this, SLOT(BTN_CONNECT_DATA()));
+    // mapping
+    connect(ui->bt_MapRun, SIGNAL(clicked()), this, SLOT(bt_MapRun()));
+    connect(ui->bt_MapStop, SIGNAL(clicked()), this, SLOT(bt_MapStop()));
+    connect(ui->bt_MapSave, SIGNAL(clicked()), this, SLOT(bt_MapSave()));
+    connect(ui->bt_MapManualLc, SIGNAL(clicked()), this, SLOT(bt_MapManualLc()));
 
-    connect(&systemTimer, SIGNAL(timeout()), this, SLOT(onSystemCheck()));
-    systemTimer.start(200);
+    // robot move
+    connect(ui->bt_RobotMotorInit, SIGNAL(clicked()), this, SLOT(bt_RobotMotorInit()));
+    connect(ui->bt_RobotMoveForward, SIGNAL(pressed()), this, SLOT(bt_RobotMoveForward_pressed()));
+    connect(ui->bt_RobotMoveBackward, SIGNAL(pressed()), this, SLOT(bt_RobotMoveBackward_pressed()));
+    connect(ui->bt_RobotMoveLeftTurn, SIGNAL(pressed()), this, SLOT(bt_RobotMoveLeftTurn_pressed()));
+    connect(ui->bt_RobotMoveRightTurn, SIGNAL(pressed()), this, SLOT(bt_RobotMoveRightTurn_pressed()));
 
-    connect(ui->bt_connect, SIGNAL(clicked()), this, SLOT(bt_connect()));
-    //    connect(ui->bt_test, SIGNAL(clicked()), this, SLOT(bt_test()));
+    connect(ui->bt_RobotMoveForward, SIGNAL(released()), this, SLOT(bt_RobotMove_released()));
+    connect(ui->bt_RobotMoveBackward, SIGNAL(released()), this, SLOT(bt_RobotMove_released()));
+    connect(ui->bt_RobotMoveLeftTurn, SIGNAL(released()), this, SLOT(bt_RobotMove_released()));
+    connect(ui->bt_RobotMoveRightTurn, SIGNAL(released()), this, SLOT(bt_RobotMove_released()));
 
-    // position control
-    connect(ui->bt_homing, SIGNAL(clicked()), this, SLOT(bt_homing()));
-    connect(ui->bt_auto_homing, SIGNAL(clicked()), this, SLOT(bt_auto_homing()));
-    connect(&md_mot, SIGNAL(homingEnd(QString)), this, SLOT(homeEnd(QString)));
+    // localization
+    connect(ui->bt_LocalizationLoad, SIGNAL(clicked()), this, SLOT(bt_LocalizationLoad()));
+    connect(ui->bt_LocalizationInit, SIGNAL(clicked()), this, SLOT(bt_LocalizationInit()));
+    connect(ui->bt_LocalizationInitAuto_Resting, SIGNAL(clicked()), this, SLOT(bt_LocalizationInitAuto_Resting()));
+    connect(ui->bt_LocalizationInitAuto_Semi, SIGNAL(clicked()), this, SLOT(bt_LocalizationInitAuto_Semi()));
+    connect(ui->bt_LocalizationInitAuto_Full, SIGNAL(clicked()), this, SLOT(bt_LocalizationInitAuto_Full()));
+    connect(ui->bt_LocalizationRun, SIGNAL(clicked()), this, SLOT(bt_LocalizationRun()));
+    connect(ui->bt_LocalizationStop, SIGNAL(clicked()), this, SLOT(bt_LocalizationStop()));
+    connect(&slam, SIGNAL(auto_init_finished_resting()), this, SLOT(AutoInitFinished()));
+    connect(&slam, SIGNAL(auto_init_finished_semi()), this, SLOT(AutoInitFinished()));
+    connect(&slam, SIGNAL(auto_init_finished_full()), this, SLOT(AutoInitFinished()));
 
-    connect(ui->bt_lift_homimg, SIGNAL(clicked()), this, SLOT(bt_homing()));
-    connect(ui->bt_move_pos, SIGNAL(clicked()), this, SLOT(bt_move_pos()));
-    connect(ui->bt_lift_pos_move, SIGNAL(clicked()), this, SLOT(bt_lift_pos_move()));
-    connect(ui->sb_lift_pos, SIGNAL(clicked()), this, SLOT(sb_lift_pos()));
-    connect(ui->bt_set_maxVel_pos, SIGNAL(clicked()), this, SLOT(bt_set_maxVel_pos()));
-    connect(ui->bt_lift_rpm_set, SIGNAL(clicked()), this, SLOT(bt_lift_maxVel_pos()));
+    // manual
+    connect(ui->cb_ManualServingGroup, SIGNAL(currentIndexChanged(int)), this, SLOT(cb_ManualServingGroup()));
 
-    // RPM
-    connect(ui->bt_move_rpm, SIGNAL(clicked()), this, SLOT(bt_move_rpm()));
-    connect(ui->bt_rpmZero, SIGNAL(clicked()), this, SLOT(bt_rpmZero()));
-    connect(ui->bt_lift_stop, SIGNAL(clicked()), this, SLOT(bt_rpmZero()));
+    connect(ui->bt_ManualServingRun, SIGNAL(clicked()), this, SLOT(bt_ManualServingRun()));
+    connect(ui->bt_ManualRestingRun, SIGNAL(clicked()), this, SLOT(bt_ManualRestingRun()));
+    connect(ui->bt_ManualChargingRun, SIGNAL(clicked()), this, SLOT(bt_ManualChargingRun()));
+    connect(ui->bt_ManualNodesRun, SIGNAL(clicked()), this, SLOT(bt_ManualNodesRun()));
 
+    connect(ui->bt_ManualServingSet, SIGNAL(clicked()), this, SLOT(bt_ManualServingSet()));
+    connect(ui->bt_ManualRestingSet, SIGNAL(clicked()), this, SLOT(bt_ManualRestingSet()));
+    connect(ui->bt_ManualChargingSet, SIGNAL(clicked()), this, SLOT(bt_ManualChargingSet()));
 
-    connect(&md_mot, SIGNAL(rev_DATA(QByteArray)), this, SLOT(rev_data(QByteArray)));
-    connect(&md_mot, SIGNAL(write_log(QString)), this, SLOT(write_log(QString)));
+    connect(ui->ckb_SetLocation, SIGNAL(stateChanged(int)), this, SLOT(ckb_SetLocation(int)));
 
-    //mobile tcp new connection check
-    connect(&mobile_timer, SIGNAL(timeout()), this, SLOT(newConnection_tcp()));
-    //    connect(&mobile_timer, SIGNAL(timeout()), this, SLOT(disConnection_tcp()));
-    mobile_timer.start(200);
+    connect(ui->bt_ManualClickedRun, SIGNAL(clicked()), this, SLOT(bt_ManualClickedRun()));
+    connect(ui->bt_ManualStop, SIGNAL(clicked()), this, SLOT(bt_ManualStop()));
+    connect(ui->bt_ManualPause, SIGNAL(clicked()), this, SLOT(bt_ManualPause()));
+    connect(ui->bt_ManualResume, SIGNAL(clicked()), this, SLOT(bt_ManualResume()));
 
-    //    udp_socket.bind(QHostAddress(QString("10.108.1.52")), 4444);
-    //ordroid go for lift(jog controll lift)
+    // temporal
+    connect(ui->bt_ReloadRobotConfig, SIGNAL(clicked()), this, SLOT(bt_ReloadRobotConfig()));
+    connect(ui->bt_SimInit, SIGNAL(clicked()), this, SLOT(bt_SimInit()));
+    connect(ui->bt_Test, SIGNAL(clicked()), this, SLOT(bt_Test()));
+    connect(ui->bt_Test2, SIGNAL(clicked()), this, SLOT(bt_Test2()));
+    connect(ui->bt_Test3, SIGNAL(clicked()), this, SLOT(bt_Test3()));
+    connect(ui->bt_Test4, SIGNAL(clicked()), this, SLOT(bt_Test4()));
 
+    connect(ui->bt_SimEmoPush, SIGNAL(clicked()), this, SLOT(bt_SimEmoPush()));
+    connect(ui->bt_SimEmoRelease, SIGNAL(clicked()), this, SLOT(bt_SimEmoRelease()));
 
-    connect(&vision, SIGNAL(msgSignal(bool)), this, SLOT(keti_showUI_msg(bool)));
+    connect(ui->bt_DrawStart, SIGNAL(clicked()), this, SLOT(bt_DrawStart()));
+    connect(ui->bt_DrawStop, SIGNAL(clicked()), this, SLOT(bt_DrawStop()));
 
+    connect(ui->bt_RobotSetLed, SIGNAL(clicked()), this, SLOT(bt_RobotSetLed()));
+    connect(ui->bt_Exit, SIGNAL(clicked()), this, SLOT(bt_Exit()));
+    connect(ui->bt_CheckAllPath, SIGNAL(clicked()), this, SLOT(bt_CheckAllPath()));
+    connect(&cmd_server, SIGNAL(process_command_signal(CMD)), this, SLOT(process_command(CMD)));
 
-    QString lift_port;
-    //    QString port = QString("ttyUSB0");
+    connect(ui->gv_Screen1, SIGNAL(pose_clicked(double, double, double)), this, SLOT(make_sim_virtualObs()));
 
-    Q_FOREACH(QSerialPortInfo port, QSerialPortInfo::availablePorts())
-    {
-        //        qDebug()<<"port : "<<port.portName();
-        bool lift = port.portName().contains("USB", Qt::CaseInsensitive);//이름이 바코드로 정해놓은 것만 들어오도록
-        if (lift)
-        {
-            ui->cb_port->addItem(port.portName());
-            lift_port = port.portName();
-        }
+    // plot
+    connect(&plot_timer, SIGNAL(timeout()), this, SLOT(plot_loop()));
+    connect(&watchdog_timer, SIGNAL(timeout()), this, SLOT(watchdog_loop()));
 
-        bool bar = port.portName().contains("ACM", Qt::CaseInsensitive);//이름이 바코드로 정해놓은 것만 들어오도록
-        if (bar)
-        {
+    // re-load
+    connect(ui->bt_SoftReload, SIGNAL(clicked()), this, SLOT(bt_SoftReload()));
+    connect(ui->bt_HardReload, SIGNAL(clicked()), this, SLOT(bt_HardReload()));
 
-            //barcode on
-            //    qDebug()<<"eeeee : "<<ui->cb_usb1->currentText();
-            //    ui->cb_usb_1->currentText();
-            //            barcode.bt_usb1_con(port);
-            /*
-            ui->cb_usb1->addItem(port.portName());
-            ui->cb_usb2->addItem(port.portName());*/
-            ui->cb_usb1->addItem("ttyBAR0");
-            ui->cb_usb2->addItem("ttyBAR1");
-        }
-    }
+    // send maps
+    connect(ui->bt_SendMaps, SIGNAL(clicked()), this, SLOT(bt_SendMaps()));
 
-    connect(ui->BTN_CONNECT_GRIPPER, SIGNAL(clicked()), this, SLOT(BTN_CONNECT_GRIPPER()));
-    //ui on -> ketich communication on!
-    // rb_5 , lift
-    //순서문제로 인한 불 안들어옴....
+    // set maps
+    connect(ui->bt_SetMap, SIGNAL(clicked()), this, SLOT(bt_SetMap()));
 
-    // gripper msg
-    connect(&gripper, SIGNAL(msgSignal(bool)), this, SLOT(kitech_showUI_msg(bool)));
-    connect(&gripper, SIGNAL(kitech_cmd(QString)), this, SLOT(kitech_msg(QString)));
+    ui->lb_VersionInfo->setText("VS:" + QString::fromStdString(VERSION_LOG));
 
-    if(gripper.connect_flag == false)
-    {
-        qDebug()<<"not connected";
-        //GRIPPER CONNECT
-    }
+    // build datetime
+    QString compilationTime = "BT:" + QString::fromStdString(BUILD_DATE);
+    ui->lb_BuildInfo->setText(compilationTime);
 
-    //    initFlag = 1;
+    // set fms info
+    ui->le_IP2Send->setText(setting_config.fms_ip);
+    ui->le_ID2Send->setText(setting_config.fms_id);
+    ui->le_PW2Send->setText(setting_config.fms_pw);
 
-    //for lift motor on check
-    connect(&md_mot, SIGNAL(LiftMSG(QString)), this, SLOT(UI_Connection_Update_Lift(QString)));
-    if(lift_port.size() != 0)
-    {
-        //         connect(ui->bt_connect, SIGNAL(clicked()), this, SLOT(bt_connect()));
-        md_mot.open(lift_port);
-        ui->bt_connect->setEnabled(false);
-    }
+    // integrate ui (orderPicking)
+    connect(ui->bt_TestMoveExt, SIGNAL(clicked()), this, SLOT(bt_TestMoveExt()));
+    connect(ui->bt_TestMovePick, SIGNAL(clicked()), this, SLOT(bt_TestMovePick()));
+    connect(&integrate_ui, SIGNAL(change_map(QString)), this, SLOT(websocket_map_changed(QString)));
+    connect(&integrateUI_timer, SIGNAL(timeout()), this, SLOT(IntegrateUILoop()));
+    integrateUI_timer.start(1000);
 
-    connect(ui->BTN_GRIPPER_CMD_WRITE, SIGNAL(clicked()), this, SLOT(BTN_GRIPPER_CMD_WRITE()));
-    connect(ui->BTN_GRIPPER_ALLFOLD, SIGNAL(clicked()), this, SLOT(BTN_GRIPPER_ALLFOLD()));
-    connect(ui->BTN_GRIPPER_GRASP, SIGNAL(clicked()), this, SLOT(BTN_GRIPPER_GRASP()));
-    connect(ui->BTN_GRIPPER_VISION, SIGNAL(clicked()), this, SLOT(BTN_GRIPPER_VISION()));
-    connect(ui->CB_GRIPPER_GE_CMD_WRITE, SIGNAL(clicked()), this, SLOT(CB_GRIPPER_GE_CMD_WRITE()));
-
-    connect(ui->Pinch12_FOLD, SIGNAL(clicked()), this, SLOT(Pinch12_FOLD()));
-
-    connect(ui->bt_usb1_con, SIGNAL(clicked()), this, SLOT(bt_usb1_con()));
-    connect(ui->bt_usb2_con, SIGNAL(clicked()), this, SLOT(bt_usb2_con()));
-
-    connect(ui->bt_usb1_dis, SIGNAL(clicked()), this, SLOT(bt_usb1_dis()));
-    connect(ui->bt_usb2_dis, SIGNAL(clicked()), this, SLOT(bt_usb2_dis()));
-
-    connect(&barcode, SIGNAL(msgSignal(QByteArray)), this, SLOT(barcode1_showUI_msg(QByteArray)));
-    connect(&barcode, SIGNAL(msgSignal2(QByteArray)), this, SLOT(barcode2_showUI_msg(QByteArray)));
-    connect(&barcode, SIGNAL(barcode_UI(QString)), this, SLOT(barcode_ON_showUI(QString)));
-
-    // ipc start
-    connect(&timer_shared_memory, SIGNAL(timeout()), this, SLOT(timer_shared_memory_loop()));
-    timer_shared_memory.start(100);
-
-    connect(&updateTimer, SIGNAL(timeout()), this, SLOT(onUpdate()));
-    updateTimer.start(100);
-
-    connect(&cobot, SIGNAL(CobotMSG(QString)), this, SLOT(UI_Connection_Update(QString)));
-
-    //img change for yujin
-    connect(ui->bt_png_change, SIGNAL(clicked()), this, SLOT(bt_png_change()));
-
-    //zip file
-    connect(ui->bt_zip, SIGNAL(clicked()), this, SLOT(bt_zip()));
-
-    //for websocket on check
-    connect(&web, SIGNAL(msgSignal(bool)), this, SLOT(showUI_msg(bool)));
-    connect(&web, SIGNAL(msgReciveSignal(QString)), this, SLOT(showUI_recive_msg(QString)));
-    connect(&web, SIGNAL(msgSendSignal(QString)), this, SLOT(showUI_send_msg(QString)));
-
-    connect(ui->btn_pump, SIGNAL(clicked()), this, SLOT(btn_pump()));
-    connect(ui->bt_tcp_on, SIGNAL(clicked()), this, SLOT(bt_tcp_on()));
-    //    bt_tcp_on
-
-    connect(&liftTimer, SIGNAL(timeout()), this, SLOT(status_loop()));
-    connect(&liftTimer, SIGNAL(timeout()), this, SLOT(bt_lift_status()));
-    connect(&liftTimer, SIGNAL(timeout()), this, SLOT(lift_ui()));
-    liftTimer.start(100);
-
-    connect(&CobotStatusTimer, SIGNAL(timeout()), this, SLOT(print()));
-    CobotStatusTimer.start(300);
-
-    connect(ui->bt_get_map_from_mobile, SIGNAL(clicked()), this, SLOT(bt_get_map_from_mobile()));
-
-    connect(&mb, SIGNAL(mobile_run(QString)), this, SLOT(UI_Connection_Update_mobile(QString)));
-    connect(&mb, SIGNAL(mobile_status(QString)), this, SLOT(rb_pose(QString)));
-
-    //    connect(&map_timer, SIGNAL(timeout()), this, SLOT(lb_sn_map()));
-    //    map_timer.start(150);
-
-    connect(&mb, SIGNAL(img_signal(cv::Mat)), this, SLOT(lb_sn_map(cv::Mat)));
-
-    mb.init(&md_mot, &cobot);
-    web.init(&mb, &md_mot);
-
-    connect(ui->spb_Tx, SIGNAL(valueChanged(double)), this, SLOT(tf_any_change()));
-    connect(ui->spb_Ty, SIGNAL(valueChanged(double)), this, SLOT(tf_any_change()));
-    connect(ui->spb_Tz, SIGNAL(valueChanged(double)), this, SLOT(tf_any_change()));
-    connect(ui->spb_Rx, SIGNAL(valueChanged(double)), this, SLOT(tf_any_change()));
-    connect(ui->spb_Ry, SIGNAL(valueChanged(double)), this, SLOT(tf_any_change()));
-    connect(ui->spb_Rz, SIGNAL(valueChanged(double)), this, SLOT(tf_any_change()));
-
-    connect(ui->bt_cobot_move2object, SIGNAL(clicked()), this, SLOT(bt_cobot_move2object()));
-
-    time_seq = new QTimer();
-    connect(time_seq,SIGNAL(timeout()),this,SLOT(seqLoop()));
-    time_seq->start(100);
-
-    connect(time_seq,SIGNAL(timeout()),this,SLOT(yujin_loop()));
-
-    double tx = ui->spb_Tx->value(); // m
-    double ty = ui->spb_Ty->value();
-    double tz = ui->spb_Tz->value();
-
-    double rz = ui->spb_Rz->value(); // deg
-    double ry = ui->spb_Ry->value();
-    double rx = ui->spb_Rx->value();
-
-    QString str; //qstring에 sprintf 로 한방에 집어넣을 수 있음.
-    str.sprintf("%f,%f,%f,%f,%f,%f", tx, ty, tz, rz, ry, rx);
-
-    T_sensor = string_to_TF(str); //translate matrix
-
-    set_ui_item_from_unimap();
-
-    connect(ui->bt_amr_motor_init, SIGNAL(clicked()), this, SLOT(bt_amr_motor_init()));
-
-    // save auto annotation
-    connect(ui->bt_save_annot, SIGNAL(clicked()), this, SLOT(bt_save_annot()));
-    connect(ui->bt_save_all_annot, SIGNAL(clicked()), this, SLOT(bt_save_all_annot()));
-    connect(ui->bt_delete_annot, SIGNAL(clicked()), this, SLOT(bt_delete_annot()));
-
-    connect(ui->bt_save_annot_2, SIGNAL(clicked()), this, SLOT(bt_save_annot_2()));
-    connect(ui->bt_save_all_annot_2, SIGNAL(clicked()), this, SLOT(bt_save_all_annot_2()));
-    connect(ui->bt_delete_annot_2, SIGNAL(clicked()), this, SLOT(bt_delete_annot_2()));
-
-    // order in
-    connect(ui->bt_order, SIGNAL(clicked()), this, SLOT(bt_order()));
-
-    connect(&vision, SIGNAL(keti_img_signal(cv::Mat)), this, SLOT(LE_KETI_IMG(cv::Mat)));
-    connect(&vision, SIGNAL(keti_img_point(QString)), this, SLOT(lb_keti_point(QString)));
-
-    connect(ui->BTN_GRIPPER_recog_WRITE, SIGNAL(clicked()), this, SLOT(BTN_GRIPPER_recog_WRITE()));
-
-    connect(&vision_capture_timer,SIGNAL(timeout()),this,SLOT(vision_img_capture()));
-    vision_capture_timer.start(100);
-
-    connect(&auto_homming_timer,SIGNAL(timeout()),this,SLOT(auto_homming_seq()));
-    auto_homming_timer.start(100);
-
-    connect(&web, SIGNAL(order_pass(QJsonObject)), this, SLOT(yujin_order(QJsonObject)));
-
+    // initialize
     init();
 
-    // 기본
-    vision.TCP2cam = cam_config.RB_TF_SENSOR;
-
-//    QString aaa = QString::number(172, 16);
-//    qDebug()<<aaa;
-//    const char* p = aaa.toStdString().c_str();
-//    qDebug()<<p;
-    //    connect(&vision_trigger_timer,SIGNAL(timeout()),this,SLOT(vision_trigger()));
-    //    vision_trigger_timer.start(5000);
+    logger.write("[MAIN] Initilized", true);
 }
 
 MainWindow::~MainWindow()
 {
+    slam.stop();
+    slam.stop_loc();
+
+    watchdog_timer.stop();
+    plot_timer.stop();
+    integrateUI_timer.stop();
+
+    if(backThread != NULL)
+    {
+        backFlag = false;
+        backThread->join();
+        backThread = NULL;
+    }
+
     delete ui;
+
+    logger.write("[MAIN] program dead (destructor)", true);
+}
+
+void MainWindow::write_last_pose()
+{
+    QString pose_path = QDir::homePath()+"/RB_MOBILE/config/robot_pose.ini";
+    cv::Vec3d cur_pose = slam.get_cur_pose();
+    float robot_pose_x = cur_pose[0];
+    float robot_pose_y = cur_pose[1];
+    float robot_pose_th = cur_pose[2];
+
+    QSettings settings(pose_path, QSettings::IniFormat);
+    settings.setValue("POSE/robot_last_pose_x", QString::number(robot_pose_x));
+    settings.setValue("POSE/robot_last_pose_y", QString::number(robot_pose_y));
+    settings.setValue("POSE/robot_last_pose_th", QString::number(robot_pose_th));
+}
+
+void MainWindow::bt_Exit()
+{
+    slam.stop();
+    slam.stop_loc();
+
+    logger.write("[MAIN] program dead (bt_Exit call)", true);
+    QApplication::exit();
+}
+
+void MainWindow::bt_ReloadRobotConfig()
+{
+    update_robot_config();
 }
 
 void MainWindow::init()
 {
-    le_digital_in_on[0]  = ui->LE_D_IN_ON_0;
-    le_digital_in_on[1]  = ui->LE_D_IN_ON_1;
-    le_digital_in_on[2]  = ui->LE_D_IN_ON_2;
-    le_digital_in_on[3]  = ui->LE_D_IN_ON_3;
-    le_digital_in_on[4]  = ui->LE_D_IN_ON_4;
-    le_digital_in_on[5]  = ui->LE_D_IN_ON_5;
-    le_digital_in_on[6]  = ui->LE_D_IN_ON_6;
-    le_digital_in_on[7]  = ui->LE_D_IN_ON_7;
-    le_digital_in_on[8]  = ui->LE_D_IN_ON_8;
-    le_digital_in_on[9]  = ui->LE_D_IN_ON_9;
-    le_digital_in_on[10] = ui->LE_D_IN_ON_10;
-    le_digital_in_on[11] = ui->LE_D_IN_ON_11;
-    le_digital_in_on[12] = ui->LE_D_IN_ON_12;
-    le_digital_in_on[13] = ui->LE_D_IN_ON_13;
-    le_digital_in_on[14] = ui->LE_D_IN_ON_14;
-    le_digital_in_on[15] = ui->LE_D_IN_ON_15;
-
-    le_digital_in_off[0]  = ui->LE_D_IN_OFF_0;
-    le_digital_in_off[1]  = ui->LE_D_IN_OFF_1;
-    le_digital_in_off[2]  = ui->LE_D_IN_OFF_2;
-    le_digital_in_off[3]  = ui->LE_D_IN_OFF_3;
-    le_digital_in_off[4]  = ui->LE_D_IN_OFF_4;
-    le_digital_in_off[5]  = ui->LE_D_IN_OFF_5;
-    le_digital_in_off[6]  = ui->LE_D_IN_OFF_6;
-    le_digital_in_off[7]  = ui->LE_D_IN_OFF_7;
-    le_digital_in_off[8]  = ui->LE_D_IN_OFF_8;
-    le_digital_in_off[9]  = ui->LE_D_IN_OFF_9;
-    le_digital_in_off[10] = ui->LE_D_IN_OFF_10;
-    le_digital_in_off[11] = ui->LE_D_IN_OFF_11;
-    le_digital_in_off[12] = ui->LE_D_IN_OFF_12;
-    le_digital_in_off[13] = ui->LE_D_IN_OFF_13;
-    le_digital_in_off[14] = ui->LE_D_IN_OFF_14;
-    le_digital_in_off[15] = ui->LE_D_IN_OFF_15;
-
-    le_digital_out_on[0]  = ui->LE_D_OUT_ON_0;
-    le_digital_out_on[1]  = ui->LE_D_OUT_ON_1;
-    le_digital_out_on[2]  = ui->LE_D_OUT_ON_2;
-    le_digital_out_on[3]  = ui->LE_D_OUT_ON_3;
-    le_digital_out_on[4]  = ui->LE_D_OUT_ON_4;
-    le_digital_out_on[5]  = ui->LE_D_OUT_ON_5;
-    le_digital_out_on[6]  = ui->LE_D_OUT_ON_6;
-    le_digital_out_on[7]  = ui->LE_D_OUT_ON_7;
-    le_digital_out_on[8]  = ui->LE_D_OUT_ON_8;
-    le_digital_out_on[9]  = ui->LE_D_OUT_ON_9;
-    le_digital_out_on[10] = ui->LE_D_OUT_ON_10;
-    le_digital_out_on[11] = ui->LE_D_OUT_ON_11;
-    le_digital_out_on[12] = ui->LE_D_OUT_ON_12;
-    le_digital_out_on[13] = ui->LE_D_OUT_ON_13;
-    le_digital_out_on[14] = ui->LE_D_OUT_ON_14;
-    le_digital_out_on[15] = ui->LE_D_OUT_ON_15;
-
-    le_digital_out_off[0]  = ui->LE_D_OUT_OFF_0;
-    le_digital_out_off[1]  = ui->LE_D_OUT_OFF_1;
-    le_digital_out_off[2]  = ui->LE_D_OUT_OFF_2;
-    le_digital_out_off[3]  = ui->LE_D_OUT_OFF_3;
-    le_digital_out_off[4]  = ui->LE_D_OUT_OFF_4;
-    le_digital_out_off[5]  = ui->LE_D_OUT_OFF_5;
-    le_digital_out_off[6]  = ui->LE_D_OUT_OFF_6;
-    le_digital_out_off[7]  = ui->LE_D_OUT_OFF_7;
-    le_digital_out_off[8]  = ui->LE_D_OUT_OFF_8;
-    le_digital_out_off[9]  = ui->LE_D_OUT_OFF_9;
-    le_digital_out_off[10] = ui->LE_D_OUT_OFF_10;
-    le_digital_out_off[11] = ui->LE_D_OUT_OFF_11;
-    le_digital_out_off[12] = ui->LE_D_OUT_OFF_12;
-    le_digital_out_off[13] = ui->LE_D_OUT_OFF_13;
-    le_digital_out_off[14] = ui->LE_D_OUT_OFF_14;
-    le_digital_out_off[15] = ui->LE_D_OUT_OFF_15;
-
-    foreach(QString list, robot_config.object_list)
+    // check log folder
+    QString log_path = QDir::homePath() + "/RB_MOBILE/log/sn_log";
+    QDir log_dir(log_path);
+    if(!log_dir.exists())
     {
-        //do whatever you need to do
-        ui->cb_get_object_id->addItem(list);
-        ui->cb_get_object_id_2->addItem(list);
-        ui->cb_get_object_id_vision->addItem(list);
+        log_dir.mkdir(log_path);
     }
 
-    foreach(QString list, robot_config.shelves_list)
+    // variable
+    ui_motor_state = UI_MOTOR_NOT_READY;
+    ui_loc_state = UI_LOC_NOT_READY;
+    ui_auto_state = UI_AUTO_NOT_READY;
+    ui_face_state = UI_FACE_NORMAL;
+    ui_velocity_preset = PRESET_SPEED_NORMAL;
+    ui_motor_lock_state = UI_MOTOR_LOCK_ON;
+    ui_draw_state = UI_DRAW_STOP;
+    ui_multi_state = UI_MULTI_READY;
+    ui_fail_state = UI_AUTO_NO_FAILED;
+    pre_vwt = cv::Vec3d(0, 0, 0);
+
+    // auto init vars
+    ui_loc_inlier_ratio = 0.0;
+    ui_loc_inlier_error = 0.0;
+
+    ui_mapping_inlier_ratio = 0.0;
+    ui_mapping_inlier_error = 0.0;
+
+    // mobile init
+    mobile.init();
+
+    // camera init
+    //cam.init();
+
+    // lidar init
+    lidar.init(&mobile);
+
+    // slam init
+    slam.init(&cam, &lidar, &mobile, &unimap);
+
+    // control init
+    ctrl.init(&mobile, &slam, &unimap);
+
+    // websocket init
+    ws.init();
+
+    // topomap
+    topomap.init(&unimap);
+
+    // communicate to integrate ui init
+    integrate_ui.init(&mobile, &ctrl, &slam);
+
+    // multicontrol init
+    mctrl.init(&mobile, &slam, &unimap, &ws);
+
+    // cmd server init
+    cmd_server.init();
+
+    // simulation init
+#ifdef USE_SIM
+    sim.init(&mobile, &lidar, &cam);
+    logger.write("[MAIN] sim mode", true);
+#endif
+
+    // auto load map
+    QString path = setting_config.map_path;
+    if(!path.isEmpty())
     {
-        //do whatever you need to do
-        ui->cb_shelf_id->addItem(list);
-        ui->CB_shelf->addItem(list);
-    }
-
-    load();
-    ui->le_scenario->setStyleSheet("QLineEdit{background-color:white}");
-}
-
-
-void MainWindow::map_size_load()
-{
-    QString command = "du -hs /home/rainbow/RB_MOBILE/maps";
-
-    QProcess process;
-    process.start(command);
-    process.waitForFinished(-1); // Wait until the process is finished
-
-    QByteArray result = process.readAllStandardOutput();
-    QString resultString = QString::fromUtf8(result).trimmed(); // Convert to QString and trim whitespace
-
-    qDebug() << "Result:" << resultString;
-}
-
-void MainWindow::load()
-{
-    QString shelf_info_path = QDir::homePath() + "/order_json/shelf_infomation.json";
-
-    QFile file(shelf_info_path);
-    if(file.open(QIODevice::ReadOnly))
-    {
-        QByteArray data = file.readAll();
-        QJsonDocument doc = QJsonDocument::fromJson(data);
-
-        QJsonArray arr = doc.array();
-        foreach(const QJsonValue &val, arr)
+        QDir dir(path);
+        if(dir.exists())
         {
-            // shelf's name = original name + box left/right + lift pose
-            SHELF_INFO *shelf_info = new SHELF_INFO();
-            QJsonObject obj = val.toObject();
-            shelf_info->shelf_id = obj["shelf_id"].toString()+"_"+ obj["lift_pose"].toString();
-            shelf_info->lift_pose = obj["lift_pose"].toString().toDouble();
-            shelf_info->AMR_pose = array_to_pose(obj["AMR_pose"].toArray());
-            shelf_info->RB_5_pose = array_to_pose6(obj["RB_5_pose"].toArray());
-            //            qDebug()<<"lift : "<<shelf_info->lift_pose;
-
-            shelf_infos[shelf_info->shelf_id.toStdString()] = shelf_info;
-
-            web.shelf_infos = shelf_infos;
-        }
-
-        file.close();
-    }
-
-    QString object_info_path = QDir::homePath() + "/order_json/object_infomation.json";
-
-    QFile obj_file(object_info_path);
-    if(obj_file.open(QIODevice::ReadOnly))
-    {
-        QByteArray data = obj_file.readAll();
-        QJsonDocument doc = QJsonDocument::fromJson(data);
-
-        QJsonArray arr = doc.array();
-        foreach(const QJsonValue &val, arr)
-        {
-            OBJECT_INFO *object_info = new OBJECT_INFO();
-            QJsonObject obj = val.toObject();
-            object_info->obj_id = obj["obj_id"].toString();
-            object_info->obj_grap_pose = obj["real_Gripping"].toString();
-            object_info->obj_ready_grap_pose = obj["ready_Gripping"].toString();
-
-            object_infos[object_info->obj_id.toStdString()] = object_info;
-            web.object_infos = object_infos;
-        }
-
-        obj_file.close();
-    }
-}
-
-void MainWindow::tf_any_change()
-{
-    double tx = ui->spb_Tx->value(); // m
-    double ty = ui->spb_Ty->value();
-    double tz = ui->spb_Tz->value();
-    double rx = ui->spb_Rx->value(); // deg
-    double ry = ui->spb_Ry->value();
-    double rz = ui->spb_Rz->value();
-
-    QString str; //qstring에 sprintf 로 한방에 집어넣을 수 있음.
-    str.sprintf("%f,%f,%f,%f,%f,%f", tx, ty, tz, rx, ry, rz);
-
-    T_sensor = string_to_TF(str); //translate matrix
-
-    //    std::cout<<T_sensor<<std::endl; //cout translate metrix
-    Eigen::Vector3d P(keti_x, keti_y, keti_z);
-    Eigen::Vector3d _P = T_sensor.block(0,0,3,3)*P+T_sensor.block(0,3,3,1);
-
-    //    std::cout<<_P[0]<<_P[1]<<_P[2]<<std::endl;
-    QString res_x,res_y,res_z;
-    res_x.sprintf("%.f",(_P[0])*1000);
-    res_y.sprintf("%.f",(_P[1])*1000);
-    res_z.sprintf("%.f",(_P[2])*1000);
-
-    ui->move_x_val->setText(res_x);
-    ui->move_y_val->setText(res_y);
-    ui->move_z_val->setText(res_z);
-}
-
-void MainWindow::lb_sn_map(cv::Mat map_img)
-{
-    //    계속 업데이트 되고 있음.
-    ui->lb_sn_map->map.setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(map_img)));
-
-}
-
-void MainWindow::bt_tcp_on()
-{
-    mb.mobile_Connect();
-}
-
-void MainWindow::bt_get_map_from_mobile()
-{
-    qDebug()<<"get map from mobile robot";
-    QString msg = ui->cb_get_map_data->currentText();
-    mb.getData(msg);
-
-}
-
-void MainWindow::kitech_msg(QString msg)
-{
-    //이전 명령을 체크한 후 그냥 손 오므리기가 성공인지 잡은것이 성공인지 확인해야함.
-    if (msg == "0")
-    {
-        msg = "grip fail";
-        grip = false;
-        ui->le_pick->setStyleSheet("QLineEdit{background-color:green}");
-    }
-    else if(msg == "1")
-    {
-        msg = "grip success";
-        grip = true;
-        ui->le_pick->setStyleSheet("QLineEdit{background-color:red}");
-    }
-    ui ->notice_kitech ->setText(msg);
-}
-
-void MainWindow::status_loop()
-{
-    md_mot.req_data();
-}
-
-void MainWindow::btn_pump()
-{
-    if (ui->btn_pump->text()=="Pump on")
-    {
-        cobot.ControlBoxDigitalOut(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-        ui->btn_pump->setText("Pump off");
-        ui->btn_pump_2->setText("Pump off");
-        ui->le_rb5_move_status->setStyleSheet("QLineEdit{background-color:red}");
-    }
-    else if(ui->btn_pump->text()=="Pump off")
-    {
-        cobot.ControlBoxDigitalOut(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-        ui->btn_pump->setText("Pump on");
-        ui->btn_pump_2->setText("Pump on");
-        ui->le_rb5_move_status->setStyleSheet("QLineEdit{background-color:green}");
-    }
-}
-
-void MainWindow::lift_ui()
-{
-    static int lift_timeout = 0;
-
-    //    qDebug()<<"md_mot.move_poisition_flag : "<<md_mot.move_poisition_flag;
-    //    qDebug()<<"lift_clicked : "<<lift_clicked;
-    if(md_mot.move_poisition_flag)
-    {
-        lift_clicked = lift_start;
-        md_mot.move_poisition_flag = false;
-    }
-    else
-    {
-        //        lift_clicked = lift_done;
-    }
-    //    qDebug()<<"lift_clicked : "<<lift_clicked;
-
-    if(lift_clicked == lift_start)
-    {
-        web.lift_status = "working";
-        qDebug()<<"lift is working";
-        lift_timeout = 500/100;
-        lift_clicked = lift_wait;
-    }
-
-    else if(lift_clicked == lift_wait)
-    {
-        if(--lift_timeout > 0)
-        {
-            //            qDebug()<<lift_timeout;
-            lift_clicked = lift_wait;
-        }
-        else
-        {
-            lift_clicked = lift_working;
-        }
-    }
-    else if(lift_clicked == lift_working)
-    {
-        if(lift_pos == old_lift_pos)
-        {
-            //            web.lift_status = false;
-            ui -> le_lift_move_status->setStyleSheet("QLineEdit{background-color:green}");
-            //        web.move_flag =false;
-            web.lift_status = "not moving";
-            lift_state = "done";
-            lift_clicked = lift_done;
-        }
-        else if(lift_pos != old_lift_pos)
-        {
-            //            web.lift_status = true;
-            ui -> le_lift_move_status->setStyleSheet("QLineEdit{background-color:red}");
-            //        web.move_flag =false;
-            web.lift_status = "moving";
-            lift_state = "working";
-            lift_clicked = lift_working;
-            mb.liftState(lift_state);
-        }
-        old_lift_pos = lift_pos;
-    }
-    else if(lift_clicked == lift_done)
-    {
-        if(lift_pos == old_lift_pos)
-        {
-            //            web.lift_status = true;
-            ui -> le_lift_move_status->setStyleSheet("QLineEdit{background-color:green}");
-            //        web.move_flag =false;
-            web.lift_status = "not moving";
-            lift_state = "done";
-            lift_clicked = lift_done;
-            mb.liftState(lift_state);
-            //            md_mot.move_poisition_flag =false;
-        }
-    }
-}
-
-void MainWindow::barcode_ON_showUI(QString msg)
-{
-    if (msg == "all usb is on")
-    {
-        ui->le_barcode_connection->setStyleSheet("QLineEdit{background-color:green}");
-    }
-    else
-    {
-        ui->le_barcode_connection->setStyleSheet("QLineEdit{background-color:red}");
-    }
-}
-
-void MainWindow::showUI_msg(bool msg)
-{
-    if (msg == true)
-    {
-        ui->te_label->setText(QString("FMS Client Connected.."));
-        ui->le_websocket_connection->setStyleSheet("QLineEdit{background-color:green}");
-    }
-
-    else
-    {
-        ui->te_label->setText(QString("FMS Client Disconnect.."));
-        ui->le_websocket_connection->setStyleSheet("QLineEdit{background-color:red}");
-    }
-}
-
-void MainWindow::showUI_recive_msg(QString message)
-{
-    ui->te_msg->append(QString(message));
-    ui->te_msg->append("");
-
-    ui->te_websocket->append(QString(message));
-    ui->te_websocket->append("");
-}
-
-void MainWindow::showUI_send_msg(QString message)
-{
-    ui->te_send_msg->setText(QString(message));
-}
-
-void MainWindow::UI_Connection_Update(QString msg)
-{
-    if (msg == "cmd Disconnect")
-    {
-        ui->BTN_CONNECT_COM->setText("Connect");
-        ui->le_rb5_cmd_connection->setStyleSheet("QLineEdit{background-color:red}");
-    }
-
-    else if (msg == "cmd connected")
-    {
-        ui->BTN_CONNECT_COM->setText("Disconnect");
-        ui->le_rb5_cmd_connection->setStyleSheet("QLineEdit{background-color:green}");
-    }
-
-    else if (msg == "data Disconnect")
-    {
-        ui->BTN_CONNECT_DATA->setText("Connect");
-        ui->le_rb5_data_connection->setStyleSheet("QLineEdit{background-color:red}");
-    }
-
-    else if (msg == "data connected")
-    {
-        ui->BTN_CONNECT_DATA->setText("Disconnect");
-        ui->le_rb5_data_connection->setStyleSheet("QLineEdit{background-color:green}");
-    }
-
-}
-
-
-void MainWindow::UI_Connection_Update_Lift(QString msg)
-{
-
-    if (msg == "false")
-    {
-        ui->le_lift_connection->setStyleSheet("QLineEdit{background-color:red}");
-    }
-
-    else if (msg == "true")
-    {
-        ui->le_lift_connection->setStyleSheet("QLineEdit{background-color:green}");
-    }
-}
-
-void MainWindow::UI_Connection_Update_mobile(QString run)
-{
-    //    qDebug()<<"mobile run :"<<run;
-    if (run == "false")
-    {
-        mobile_moving_flag = false;
-        ui->le_mobile_move_status->setStyleSheet("QLineEdit{background-color:green}");
-    }
-
-    else if (run == "true")
-    {
-        mobile_moving_flag = true;
-        ui->le_mobile_move_status->setStyleSheet("QLineEdit{background-color:red}");
-    }
-    //    qDebug()<<"uiuiuiui mobile_moving_flag : "<<mobile_moving_flag;
-}
-
-void MainWindow::rb_pose(QString pose_msg)
-{
-    ui->te_log->setText(pose_msg);
-}
-
-
-void MainWindow::onUpdate()
-{
-    //        qDebug() << "***************** program_mode " <<  cobot.systemStat.sdata.robot_state ;
-    {
-        if(cobot.systemStat.sdata.program_mode == 0){
-            ui->LE_PG_MODE_REAL->setStyleSheet("QLineEdit{background-color:green}");
-            //cobot 이 realmode 가 되는 순간 속도를 50%로 변경.
-            if (cobot.realflag)
+            // new map load
+            slam.stop();
+            slam.stop_loc();
+            unimap.load_map(path);
+            if(unimap.is_loaded)
             {
-                cobot.BaseSpeedChange(0.5);
-                cobot.realflag = false;
-            }
-            ui->LE_PG_MODE_SIMULATION->setStyleSheet("QLineEdit{background-color:white}");
-        }
-        else if(cobot.systemStat.sdata.program_mode == 1)
-        {
-            ui->LE_PG_MODE_REAL->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_PG_MODE_SIMULATION->setStyleSheet("QLineEdit{background-color:green}");
-        }
-        else
-        {
-            ui->LE_PG_MODE_REAL->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_PG_MODE_SIMULATION->setStyleSheet("QLineEdit{background-color:white}");
-        }
+                slam.set_map();
 
-        if(cobot.systemStat.sdata.robot_state == 1)
-        {
-            //            web.move_flag = false;
-            web.rb_status = "not moving";
-            ui->LE_ROBOT_STATE_IDLE->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_ROBOT_STATE_MOVING->setStyleSheet("QLineEdit{background-color:white}");
-            ui->le_rb5_move_status->setStyleSheet("QLineEdit{background-color:green}");
+                unimap.load_locations();
+                set_ui_items_from_unimap();
 
-            if(cobot.systemStat.sdata.robot_state != old_robot_state)
-            {
-                on_pb_reload_clicked();
-            }
+                ui->gv_Screen1->map_size = unimap.map_w;
+                ui->gv_Screen1->grid_size = unimap.map_grid_width;
+                ui->gv_Screen1->reload_gv_screen();
 
-        }
-        else if(cobot.systemStat.sdata.robot_state == 2)
-        {
-            //            web.move_flag = false;
-            web.rb_status = "not moving";
-            ui->LE_ROBOT_STATE_IDLE->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_ROBOT_STATE_MOVING->setStyleSheet("QLineEdit{background-color:white}");
-            ui->le_rb5_move_status->setStyleSheet("QLineEdit{background-color:green}");
-        }
-        else if(cobot.systemStat.sdata.robot_state == 3)
-        {
-            //            web.move_flag = true;
-            web.rb_status = "moving";
-            ui->LE_ROBOT_STATE_IDLE->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_ROBOT_STATE_MOVING->setStyleSheet("QLineEdit{background-color:green}");
-            ui->le_rb5_move_status->setStyleSheet("QLineEdit{background-color:red}");
-        }
-        else
-        {
-            web.rb_status = "not moving";
-            web.rb5_move_flag = false;
-            ui->LE_ROBOT_STATE_IDLE->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_ROBOT_STATE_MOVING->setStyleSheet("QLineEdit{background-color:white}");
-            ui->le_rb5_move_status->setStyleSheet("QLineEdit{background-color:green}");
-        }
+                // for map name check
+                ui->lb_MapName->setText(path);
 
-
-        if(cobot.systemStat.sdata.is_freedrive_mode == 1){
-            ui->LE_ROBOT_STATUS_TEACHING->setStyleSheet("QLineEdit{background-color:green}");
-        }else{
-            ui->LE_ROBOT_STATUS_TEACHING->setStyleSheet("QLineEdit{background-color:white}");
-        }
-        if(cobot.systemStat.sdata.op_stat_collision_occur == 1){
-            ui->LE_ROBOT_STATUS_EXT_COLLISION->setStyleSheet("QLineEdit{background-color:red}");
-        }else{
-            ui->LE_ROBOT_STATUS_EXT_COLLISION->setStyleSheet("QLineEdit{background-color:white}");
-        }
-        if(cobot.systemStat.sdata.op_stat_self_collision == 1){
-            ui->LE_ROBOT_STATUS_SELF_COLLISION->setStyleSheet("QLineEdit{background-color:red}");
-        }else{
-            ui->LE_ROBOT_STATUS_SELF_COLLISION->setStyleSheet("QLineEdit{background-color:white}");
-        }
-        if(cobot.systemStat.sdata.op_stat_soft_estop_occur == 1){
-            ui->LE_ROBOT_STATUS_PAUSED->setStyleSheet("QLineEdit{background-color:red}");
-            web.rb_pause_status = "paused";
-        }else{
-            ui->LE_ROBOT_STATUS_PAUSED->setStyleSheet("QLineEdit{background-color:white}");
-            web.rb_pause_status = "resume";
-        }
-        if(cobot.systemStat.sdata.op_stat_ems_flag != 0){
-            ui->LE_ROBOT_STATUS_EMS->setStyleSheet("QLineEdit{background-color:red}");
-        }else{
-            ui->LE_ROBOT_STATUS_EMS->setStyleSheet("QLineEdit{background-color:white}");
-        }
-        if(cobot.systemStat.sdata.op_stat_sos_flag == 1){
-            ui->LE_ROBOT_STATUS_SOS->setStyleSheet("QLineEdit{background-color:red}");
-        }else{
-            ui->LE_ROBOT_STATUS_SOS->setStyleSheet("QLineEdit{background-color:white}");
-        }
-
-        ui->LE_JNT_ENC_1->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.jnt_ang[0]));
-        ui->LE_JNT_ENC_2->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.jnt_ang[1]));
-        ui->LE_JNT_ENC_3->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.jnt_ang[2]));
-        ui->LE_JNT_ENC_4->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.jnt_ang[3]));
-        ui->LE_JNT_ENC_5->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.jnt_ang[4]));
-        ui->LE_JNT_ENC_6->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.jnt_ang[5]));
-
-        ui->LE_JNT_REF_1->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.jnt_ref[0]));
-        ui->LE_JNT_REF_2->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.jnt_ref[1]));
-        ui->LE_JNT_REF_3->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.jnt_ref[2]));
-        ui->LE_JNT_REF_4->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.jnt_ref[3]));
-        ui->LE_JNT_REF_5->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.jnt_ref[4]));
-        ui->LE_JNT_REF_6->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.jnt_ref[5]));
-
-        ui->LE_TCP_REF_X->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.tcp_ref[0]));
-        ui->LE_TCP_REF_Y->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.tcp_ref[1]));
-        ui->LE_TCP_REF_Z->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.tcp_ref[2]));
-        ui->LE_TCP_REF_RX->setText(QString().sprintf("%.3f",cobot.systemStat.sdata.tcp_ref[3]));
-        ui->LE_TCP_REF_RY->setText(QString().sprintf("%.3f",cobot.systemStat.sdata.tcp_ref[4]));
-        ui->LE_TCP_REF_RZ->setText(QString().sprintf("%.3f",cobot.systemStat.sdata.tcp_ref[5]));
-
-
-        //        ui -> spb_Rz2->setValue(-1*(90+cobot.systemStat.sdata.tcp_ref[4]));
-
-        if(first_time==1)
-        {
-            ui -> spb_Tx->setValue(ui->LE_TCP_REF_X->text().toFloat()/1000);
-            ui -> spb_Ty->setValue(ui->LE_TCP_REF_Y->text().toFloat()/1000);
-            ui -> spb_Tz->setValue(ui->LE_TCP_REF_Z->text().toFloat()/1000);
-
-            ui -> spb_Rx->setValue(ui->LE_TCP_REF_RX->text().toFloat());
-            ui -> spb_Ry->setValue(ui->LE_TCP_REF_RY->text().toFloat());
-            ui -> spb_Rz->setValue(ui->LE_TCP_REF_RZ->text().toFloat());
-
-            first_time+=1;
-        }
-
-        for(int i=0; i<16; i++){
-            if(cobot.systemStat.sdata.digital_in[i] == 0){
-                le_digital_in_off[i]->setStyleSheet("QLineEdit{background-color:green}");
-                le_digital_in_on[i]->setStyleSheet("QLineEdit{background-color:white}");
-                if(i == 12)
-                {
-                    ui->le_pick->setStyleSheet("QLineEdit{background-color:green}");
-                    //                    bool ret = gripper.contains("red", Qt::CaseInsensitive);
-                    //                    qDebug()<<ret;
-                }
-            }else if(cobot.systemStat.sdata.digital_in[i] == 1){
-                le_digital_in_off[i]->setStyleSheet("QLineEdit{background-color:white}");
-                le_digital_in_on[i]->setStyleSheet("QLineEdit{background-color:green}");
-                if(i == 12)
-                {
-                    ui->le_pick->setStyleSheet("QLineEdit{background-color:red}");
-                    //                    qDebug()<<ui->le_pick->styleSheet();
-                }
-            }else{
-                le_digital_in_off[i]->setStyleSheet("QLineEdit{background-color:white}");
-                le_digital_in_on[i]->setStyleSheet("QLineEdit{background-color:white}");
-            }
-
-            if(cobot.systemStat.sdata.digital_out[i] == 0){
-                le_digital_out_off[i]->setStyleSheet("QLineEdit{background-color:green}");
-                le_digital_out_on[i]->setStyleSheet("QLineEdit{background-color:white}");
-                if(i == 0)
-                {
-                    //                    qDebug()<<"pump is not working";
-                    ui->btn_pump->setText("Pump on");
-                    ui->btn_pump_2->setText("Pump on");
-                    //                    ui->le_rb5_move_status->setStyleSheet("QLineEdit{background-color:green}");
-                    //                    qDebug()<<ui->le_pick->styleSheet();
-                }
-
-            }else if(cobot.systemStat.sdata.digital_out[i] == 1){
-                le_digital_out_off[i]->setStyleSheet("QLineEdit{background-color:white}");
-                le_digital_out_on[i]->setStyleSheet("QLineEdit{background-color:green}");
-                if(i == 0)
-                {
-                    //                    qDebug()<<"pump is working";
-                    ui->btn_pump->setText("Pump off");
-                    ui->btn_pump_2->setText("Pump off");
-                    //                    ui->le_rb5_move_status->setStyleSheet("QLineEdit{background-color:red}");
-                    //                    qDebug()<<ui->le_pick->styleSheet();
-                }
-
-            }else{
-                le_digital_out_off[i]->setStyleSheet("QLineEdit{background-color:white}");
-                le_digital_out_on[i]->setStyleSheet("QLineEdit{background-color:white}");
+#ifdef USE_SIM
+                sim.sim_grid_width = unimap.map_grid_width;
+                QString str;
+                str.sprintf("sim.sim_grid_width %f", unimap.map_grid_width);
+                logger.write(str, true);
+                sim.load_map(path);
+#endif
             }
         }
-
-        ui->LE_A_IN_0->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.analog_in[0]));
-        ui->LE_A_IN_1->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.analog_in[1]));
-        ui->LE_A_IN_2->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.analog_in[2]));
-        ui->LE_A_IN_3->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.analog_in[3]));
-
-        ui->LE_A_OUT_0->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.analog_out[0]));
-        ui->LE_A_OUT_1->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.analog_out[1]));
-        ui->LE_A_OUT_2->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.analog_out[2]));
-        ui->LE_A_OUT_3->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.analog_out[3]));
-
-
-
-        if(fabs(cobot.systemStat.sdata.tfb_voltage_out) < 0.01){
-            ui->LE_TV_0->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_TV_12->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TV_24->setStyleSheet("QLineEdit{background-color:white}");
-        }else if(fabs(cobot.systemStat.sdata.tfb_voltage_out-12.0) < 0.01){
-            ui->LE_TV_0->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TV_12->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_TV_24->setStyleSheet("QLineEdit{background-color:white}");
-        }else if(fabs(cobot.systemStat.sdata.tfb_voltage_out-24.0) < 0.01){
-            ui->LE_TV_0->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TV_12->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TV_24->setStyleSheet("QLineEdit{background-color:green}");
-        }else{
-            ui->LE_TV_0->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TV_12->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TV_24->setStyleSheet("QLineEdit{background-color:white}");
-        }
-
-
-        if(cobot.systemStat.sdata.tfb_digital_out[0] == 0){
-            ui->LE_TD_OUT_ON_0->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TD_OUT_OFF_0->setStyleSheet("QLineEdit{background-color:green}");
-        }else if(cobot.systemStat.sdata.tfb_digital_out[0] == 1){
-            ui->LE_TD_OUT_ON_0->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_TD_OUT_OFF_0->setStyleSheet("QLineEdit{background-color:white}");
-        }else{
-            ui->LE_TD_OUT_ON_0->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TD_OUT_OFF_0->setStyleSheet("QLineEdit{background-color:white}");
-        }
-        if(cobot.systemStat.sdata.tfb_digital_out[1] == 0){
-            ui->LE_TD_OUT_ON_1->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TD_OUT_OFF_1->setStyleSheet("QLineEdit{background-color:green}");
-        }else if(cobot.systemStat.sdata.tfb_digital_out[1] == 1){
-            ui->LE_TD_OUT_ON_1->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_TD_OUT_OFF_1->setStyleSheet("QLineEdit{background-color:white}");
-        }else{
-            ui->LE_TD_OUT_ON_1->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TD_OUT_OFF_1->setStyleSheet("QLineEdit{background-color:white}");
-        }
-
-
-        if(cobot.systemStat.sdata.tfb_digital_in[0] == 0){
-            ui->LE_TD_IN_ON_0->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TD_IN_OFF_0->setStyleSheet("QLineEdit{background-color:green}");
-        }else if(cobot.systemStat.sdata.tfb_digital_in[0] == 1){
-            ui->LE_TD_IN_ON_0->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_TD_IN_OFF_0->setStyleSheet("QLineEdit{background-color:white}");
-        }else{
-            ui->LE_TD_IN_ON_0->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TD_IN_OFF_0->setStyleSheet("QLineEdit{background-color:white}");
-        }
-        if(cobot.systemStat.sdata.tfb_digital_in[1] == 0){
-            ui->LE_TD_IN_ON_1->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TD_IN_OFF_1->setStyleSheet("QLineEdit{background-color:green}");
-        }else if(cobot.systemStat.sdata.tfb_digital_in[1] == 1){
-            ui->LE_TD_IN_ON_1->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_TD_IN_OFF_1->setStyleSheet("QLineEdit{background-color:white}");
-        }else{
-            ui->LE_TD_IN_ON_1->setStyleSheet("QLineEdit{background-color:white}");
-            ui->LE_TD_IN_OFF_1->setStyleSheet("QLineEdit{background-color:white}");
-        }
-        ui->LE_TA_IN_0->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.tfb_analog_in[0]));
-        ui->LE_TA_IN_1->setText(QString().sprintf("%.3f", cobot.systemStat.sdata.tfb_analog_in[1]));
     }
-    old_robot_state = cobot.systemStat.sdata.robot_state;
+
+    // run watchdog
+    watchdog_timer.start(10);
+
+    // plot
+    plot_timer.start(100);
+
+    // background loop init
+    if (backThread == NULL)
+    {
+        backFlag = true;
+        backThread = new std::thread(&MainWindow::backLoop, this);
+    }
+
+    //    // not used LOC_STATUS
+    //    IPC::LOC_STATUS loc;
+    //    memset(loc.serving, 1, 255);
+    //    ipc.set_loc_status(loc);
 }
 
-void MainWindow::newConnection_tcp()
+void MainWindow::make_sim_virtualObs()
 {
-    if (mb.connect_flag)
+#ifdef USE_SIM
+    if(ui->ckb_SimObs->isChecked())
     {
-        ui->le_mobile_connection->setStyleSheet("QLineEdit{background-color:green}");
+        cv::Vec2d pt;
+        pt[0] = ui->gv_Screen1->target_pose[0];
+        pt[1] = ui->gv_Screen1->target_pose[1];
+
+        sim.set_obs_pt(pt);
     }
-    else
-    {
-        ui->le_mobile_connection->setStyleSheet("QLineEdit{background-color:red}");
-    }
+#endif
 }
 
-//void MainWindow::readyRead_udp()
-//// using joystick
-//// for using odroid go -> move lift
-//{
-//    if(udp_socket.hasPendingDatagrams())
-//    {
-//        QByteArray _buf;
-//        _buf.resize(udp_socket.pendingDatagramSize());
-
-//        QHostAddress sender; quint16 senderPort;
-//        udp_socket.readDatagram(_buf.data(), _buf.size(), &sender, &senderPort);
-
-//        if(_buf.size() > 0)
-//        {
-//            buf.append(_buf);
-
-//            if(buf.size() < 2)
-//            {
-//                return;
-//            }
-
-//            bool is_header = false;
-//            for(int p = 0; p < buf.size()-1; p++)
-//            {
-//                // header check
-//                if(buf[p] == (char)0xFF && buf[p+1] == (char)0xFD)
-//                {
-//                    buf.remove(0, p);
-//                    is_header = true;
-//                    break;
-//                }
-//            }
-
-//            // 11 3*4 +8 20 25
-//            const int packet_size = 28;
-//            if(is_header && buf.size() >= packet_size)
-//            {
-//                if(buf[packet_size-2] == (char)0x01 && buf[packet_size-1] == (char)0x02)
-//                {
-//                    uchar* body = (uchar*)buf.data();
-//                    // body parsing
-//                    //uchar id = body[2];
-//                    float lx, ly, rx, ry; uint8_t btn[8];
-
-//                    memcpy(&lx, &body[2], 4);
-//                    memcpy(&ly, &body[6], 4);
-//                    memcpy(&rx, &body[10], 4);
-//                    memcpy(&ry, &body[14], 4);
-//                    memcpy(&btn, &body[18], 8);
-
-//                    // remove current packet
-//                    buf.remove(0, packet_size);
-
-//                    if(btn[6] == 1)
-//                    {
-//                        md_mot.move_rpm(1000);
-//                    }
-//                    else if(btn[7] == 1)
-//                    {
-//                        md_mot.move_rpm(-1000);
-//                    }
-//                    else if(btn[6] == 0 && btn[7] == 0)
-//                    {
-//                        md_mot.move_rpm(0);
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-
-void MainWindow::bt_connect()
+void MainWindow::cb_ManualServingGroup()
 {
-    QString port = ui->cb_port->currentText();
-    if(port.size() != 0)
+    int group_idx = ui->cb_ManualServingGroup->currentIndex();
+    if(group_idx < 0)
     {
-        md_mot.open(port);
-    }
-}
-
-void MainWindow::bt_homing()
-{
-    if(!md_mot.motor.isOpen())
-    {
-        printf("motor not connect.\n");
         return;
     }
 
-    if(ui->ch_dir->isChecked())
+    ui->cb_ManualServing->clear();
+    for(size_t p = 0; p < unimap.serving_names[group_idx].size(); p++)
     {
-        md_mot.homing(CCW);
-    }
-    else
-    {
-        md_mot.homing(CW);
-    }
-
-    if(ui->cb_lift_dir_homing->isChecked())
-    {
-        md_mot.homing(CCW);
-    }
-    else
-    {
-        md_mot.homing(CW);
-    }
-
-}
-
-void MainWindow::homeEnd(QString msg)
-{
-    if (msg == "homing end")
-    {
-        qDebug()<<"homing end";
-        ui->bt_homing->setEnabled(false);
-        ui->bt_lift_homimg->setEnabled(false);
+        ui->cb_ManualServing->addItem(unimap.serving_names[group_idx][p]);
     }
 }
 
-void MainWindow::bt_move_pos()
+void MainWindow::set_ui_items_from_unimap()
 {
-    int pos = ui->sb_move_pos->value();
+    printf("[MAIN] set ui item\n");
 
-    //pos의 단위는 mm임.
-    if (pos>680){
-        pos=680;
-    }
-    else if(pos<50){
-        pos = 50;
-    }
+    // clear
+    ui->cb_ManualCharging->clear();
+    ui->cb_ManualResting->clear();
+    ui->cb_ManualServingGroup->clear();
 
-    ui->sb_lift_pos->setValue(pos);
-    md_mot.move_position(pos);
-}
-
-
-void MainWindow::bt_lift_pos_move()
-{
-    int pos = ui->sb_lift_pos->value();
-    //pos의 단위는 mm임.
-    if (pos>620){
-        pos=620;
-    }
-    else if(pos<0){
-        pos = 0;
-    }
-    ui->sb_move_pos->setValue(pos);
-    md_mot.move_position(pos);
-}
-
-void MainWindow::sb_lift_pos()
-{
-    int pos = ui->sb_lift_pos->value();
-    ui->sb_move_pos->setValue(pos);
-    md_mot.move_position(pos);
-    //    ui->le_lift_move_status->setStyleSheet("QLineEdit{background-color:green}");
-}
-
-void MainWindow::bt_rpmZero()
-{
-    md_mot.move_rpm(0);
-    //    ui->le_lift_move_status->setStyleSheet("QLineEdit{background-color:green}");
-}
-
-void MainWindow::bt_lift_maxVel_pos()
-{
-    int vel = ui->sb_lift_pos_rpm->value();
-    ui->sb_max_vel_pos->setValue(vel);
-    md_mot.set_maxVel_pos(vel);
-
-}
-
-void MainWindow::bt_set_maxVel_pos()
-{
-    int vel = ui->sb_max_vel_pos->value();
-    ui->sb_lift_pos_rpm->setValue(vel);
-    md_mot.set_maxVel_pos(vel);
-}
-
-
-void MainWindow::bt_move_rpm()
-{
-    md_mot.move_poisition_flag=false;
-    int rpm = ui->sb_rpm->value();
-    md_mot.move_rpm(rpm);
-    //    ui->le_lift_move_status->setStyleSheet("QLineEdit{background-color:red}");
-}
-
-void MainWindow::bt_lift_status()
-{
-    //    md_mot.test_pid();
-    MOTOR_MAIN_DATA for_show = md_mot.get_main_data();
-    lift_rpm = for_show.motor_rpm;
-    ui->le_rpm->setText(QString::number(for_show.motor_rpm));
-
-    armp = for_show.motor_armp;
-    ui->le_armp->setText(QString::number(armp));
-
-    short controlType = for_show.motor_controlType;
-    //    memcpy(&controlType, data.data() + 9, 1);
-    if(controlType == 0)
+    // add
+    for(size_t p = 0; p < unimap.charging_names.size(); p++)
     {
-        ui->le_controlType->setText(QString("stop"));
+        ui->cb_ManualCharging->addItem(unimap.charging_names[p]);
     }
-    else if(controlType == 1)
+
+    for(size_t p = 0; p < unimap.resting_names.size(); p++)
     {
-        ui->le_controlType->setText(QString("speed"));
+        ui->cb_ManualResting->addItem(unimap.resting_names[p]);
     }
-    else if(controlType == 2)
+
+    for(size_t p = 0; p < unimap.serving_names.size(); p++)
     {
-        ui->le_controlType->setText(QString("posi"));
+        ui->cb_ManualServingGroup->addItem(QString::number(p));
     }
-    else if(controlType == 3)
+
+    for(size_t p = 0; p < unimap.nodes.size(); p++)
     {
-        ui->le_controlType->setText(QString("open loop"));
+        ui->cb_ManualNodes->addItem(unimap.nodes[p].id);
     }
-    else if(controlType == 4)
-    {
-        ui->le_controlType->setText(QString("tq"));
-    }
-
-    //    ui->le_controlType->setText(QString::number(for_show.motor_controlType));
-
-    ui->le_rpmStd->setText(QString::number(for_show.motor_ref_rpm));
-
-    lift_pos = for_show.motor_position*620/4700+1;
-    ui->le_pos->setText(QString::number(lift_pos));
-
-    QString le_lift_move_status = ui->le_lift_move_status->styleSheet();
-    QStringList lift_color = le_lift_move_status.split(":");
-
-    if(lift_color[1]=="red}")
-    {
-        ui -> sb_lift_pos->setValue(lift_pos);
-    }
-
-    ui->le_temp->setText(QString::number(for_show.motor_temperature));
 }
 
-void MainWindow::write_log(QString str)
+// mapping
+void MainWindow::bt_MapRun()
 {
-    qDebug()<<str;
-    //    ui->te_data->append(str);
-    //    MOTOR_MAIN_DATA for_show = md_mot.get_main_data();
-    //    ui->le_rpm->setText(QString::number(for_show.motor_rpm));
+    unimap.map_w = update_config.robot_map_size;
+    unimap.map_h = update_config.robot_map_size;
+    unimap.map_ou = update_config.robot_map_size/2;
+    unimap.map_ov = update_config.robot_map_size/2;
+    unimap.map_grid_width = update_config.robot_grid_size;
+
+    ui->gv_Screen1->map_size = update_config.robot_map_size;
+    ui->gv_Screen1->grid_size = update_config.robot_grid_size;
+    ui->gv_Screen1->reload_gv_screen();
+
+    slam.run();
 }
 
-void MainWindow::onSystemCheck()
+void MainWindow::bt_MapStop()
 {
-    // base speed change
-    //        qDebug() << "************** " << systemStat.sdata.robot_state ;
-    //    sendData();
-    Joint_info_now[0] = cobot.systemStat.sdata.jnt_ang[0];
-    Joint_info_now[1] = cobot.systemStat.sdata.jnt_ang[1];
-    Joint_info_now[2] = cobot.systemStat.sdata.jnt_ang[2];
-    Joint_info_now[3] = cobot.systemStat.sdata.jnt_ang[3];
-    Joint_info_now[4] = cobot.systemStat.sdata.jnt_ang[4];
-    Joint_info_now[5] = cobot.systemStat.sdata.jnt_ang[5];
+    slam.stop();
+}
 
-    float spd = (float)ui->HS_BASE_SPEED->value()/100.0;
-    if(fabs(spd - cobot.systemStat.sdata.default_speed) > 0.005)
+void MainWindow::bt_MapSave()
+{
+    QString path = QFileDialog::getExistingDirectory(this, "Select dir", QDir::homePath() + "/RB_MOBILE/maps");
+    if(!path.isNull())
     {
-        if(speed_changed == true)
+        unimap.save_map(path);
+        slam.save(path);
+    }
+}
+
+void MainWindow::bt_MapManualLc()
+{
+    slam.is_manual_lc = true;
+}
+
+// robot move
+void MainWindow::bt_RobotMotorInit()
+{
+    mobile.motor_init();
+}
+
+void MainWindow::bt_RobotMoveForward_pressed()
+{
+    double alpha = ui->spb_JogGain->value();
+    double v = update_config.robot_manual_limit_v * alpha;
+    double w = 0;
+    mobile.move(v, w);
+    printf("[JOG] v:%f, w:%f(%f)\n", v, w*R2D, w);
+}
+
+void MainWindow::bt_RobotMoveBackward_pressed()
+{    
+    double alpha = ui->spb_JogGain->value();
+    double v = -update_config.robot_manual_limit_v * alpha;
+    double w = 0;
+    mobile.move(v, w);
+    printf("[JOG] v:%f, w:%f(%f)\n", v, w*R2D, w);
+}
+
+void MainWindow::bt_RobotMoveLeftTurn_pressed()
+{
+    double alpha = ui->spb_JogGain->value();
+    double v = 0;
+    double w = update_config.robot_manual_limit_w * alpha;
+    mobile.move(v, w);
+    printf("[JOG] v:%f, w:%f(%f)\n", v, w*R2D, w);
+}
+
+void MainWindow::bt_RobotMoveRightTurn_pressed()
+{
+    double alpha = ui->spb_JogGain->value();
+    double v = 0;
+    double w = -update_config.robot_manual_limit_w * alpha;
+    mobile.move(v, w);
+    printf("[JOG] v:%f, w:%f(%f)\n", v, w*R2D, w);
+}
+
+void MainWindow::bt_RobotMove_released()
+{
+    mobile.move(0, 0);
+}
+
+// localization
+void MainWindow::bt_LocalizationLoad()
+{
+    // dataset load
+    QString path = QFileDialog::getExistingDirectory(this, "Select dir", QDir::homePath() + "/RB_MOBILE/maps");
+    if (!path.isNull())
+    {
+        // new map load
+        slam.stop();
+        slam.stop_loc();
+
+        unimap.clear_map();
+        unimap.load_map(path);
+        if(unimap.is_loaded)
         {
-            // value changed
-            cobot.BaseSpeedChange(spd);
-            speed_changed = false;
-        }
-        else
-        {
-            float spd = cobot.systemStat.sdata.default_speed;
-            ui->HS_BASE_SPEED->setValue(spd*100);
-            ui->sld_rb5_speed->setValue(spd*100);
-            ui -> sb_rb5_speed->setValue(spd*100);
-            ui->lb_rb5_speed_percentage->setText(QString::number(spd*100)+"%");
-        }
-    }
+            slam.set_map();
 
+            unimap.load_locations();
+            set_ui_items_from_unimap();
 
-    // check initialize status
-    if(initFlag == true)
-    {
-        int init_info = cobot.systemStat.sdata.init_state_info;
-        //        qDebug()<<"init_info : " <<init_info;
-        switch(init_info)
-        {
-        case INIT_STAT_INFO_VOLTAGE_CHECK:
-            ui->LE_INIT_POWER->setStyleSheet("QLineEdit{background-color:yellow}");
-            ui->LE_INIT_DEVICE->setStyleSheet("QLineEdit{background-color:red}");
-            ui->LE_INIT_SYSTEM->setStyleSheet("QLineEdit{background-color:red}");
-            ui->LE_INIT_ROBOT->setStyleSheet("QLineEdit{background-color:red}");
-            ui->robot_status->setStyleSheet("QLineEdit{background-color:red}");
-            break;
-        case INIT_STAT_INFO_DEVICE_CHECK:
-            ui->LE_INIT_POWER->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_INIT_DEVICE->setStyleSheet("QLineEdit{background-color:yellow}");
-            ui->LE_INIT_SYSTEM->setStyleSheet("QLineEdit{background-color:red}");
-            ui->LE_INIT_ROBOT->setStyleSheet("QLineEdit{background-color:red}");
-            ui->robot_status->setStyleSheet("QLineEdit{background-color:red}");
-            break;
-        case INIT_STAT_INFO_FIND_HOME:
-            ui->LE_INIT_POWER->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_INIT_DEVICE->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_INIT_SYSTEM->setStyleSheet("QLineEdit{background-color:yellow}");
-            ui->LE_INIT_ROBOT->setStyleSheet("QLineEdit{background-color:red}");
-            ui->robot_status->setStyleSheet("QLineEdit{background-color:red}");
-            break;
-        case INIT_STAT_INFO_VARIABLE_CHECK:
-            ui->LE_INIT_POWER->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_INIT_DEVICE->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_INIT_SYSTEM->setStyleSheet("QLineEdit{background-color:yellow}");
-            ui->LE_INIT_ROBOT->setStyleSheet("QLineEdit{background-color:red}");
-            ui->robot_status->setStyleSheet("QLineEdit{background-color:red}");
-            break;
-        case INIT_STAT_INFO_COLLISION_ON:
-            ui->LE_INIT_POWER->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_INIT_DEVICE->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_INIT_SYSTEM->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_INIT_ROBOT->setStyleSheet("QLineEdit{background-color:yellow}");
-            ui->robot_status->setStyleSheet("QLineEdit{background-color:yellow}");
-            break;
-        case INIT_STAT_INFO_INIT_DONE:
-            ui->LE_INIT_POWER->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_INIT_DEVICE->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_INIT_SYSTEM->setStyleSheet("QLineEdit{background-color:green}");
-            ui->LE_INIT_ROBOT->setStyleSheet("QLineEdit{background-color:green}");
-            ui->robot_status->setStyleSheet("QLineEdit{background-color:green}");
-            initFlag = false;
-            break;
-        case INIT_STAT_INFO_NOACT:
-        default:
-            break;
+            ui->gv_Screen1->map_size = unimap.map_w;
+            ui->gv_Screen1->grid_size = unimap.map_grid_width;
+            ui->gv_Screen1->reload_gv_screen();
+            ui->lb_MapName->setText(path);
+
+#ifdef USE_SIM
+            sim.sim_grid_width = unimap.map_grid_width;
+
+            QString str;
+            str.sprintf("sim.sim_grid_width %f", unimap.map_grid_width);
+            logger.write(str, true);
+
+            sim.load_map(path);
+#endif
         }
     }
 }
 
-
-void MainWindow::print()
+void MainWindow::bt_LocalizationInit()
 {
-    QByteArray rb_5_data = cobot.datas;
-    QString string(rb_5_data);
-    //    qDebug() << "datas! : "<<rb_5_data;
-    if(string != old_rb5_msg)
+    loc_manual_init(ui->gv_Screen1->target_pose);
+    //    std::cout<<ui->gv_Screen1->target_pose<<std::endl;
+}
+
+bool MainWindow::check_approach_travel_line(cv::Mat &img, cv::Vec2i uv0, cv::Vec2i uv1)
+{
+    bool is_far = false;
+
+    cv::Vec2i nn_st = cv::Vec2i(-1, -1);
+    cv::Vec2i nn_ed = cv::Vec2i(-1, -1);
+    double min_st = 99999999;
+    double min_ed = 99999999;
+    for(int i = 0; i < img.rows; i++)
     {
-        ui->textPrint->append(string);
-        QScrollBar *sb = ui->textPrint->verticalScrollBar();
-        sb->setValue(sb->maximum());
-    }
-    old_rb5_msg = string;
-}
-
-void MainWindow::BTN_CONNECT_COM()
-{
-    if(ui->BTN_CONNECT_COM->text() == "Connect")
-    {
-        // connect
-        //        qDebug() << "커넥션하려고한다";
-        cobot.cmdSocket.connectToHost(QHostAddress(ui->LE_IP->text()), ui->textCmdPort->text().toInt());
-        connect(&cobot, SIGNAL(readyRead()), &cobot, SLOT(onReadyCmdRead()));
-    }
-    else
-    {
-        //        qDebug() << "커넥션 안하려고한다";
-        // disconnect
-        cobot.cmdSocket.close();
-    }
-}
-
-void MainWindow::BTN_CONNECT_DATA()
-{
-    if(ui->BTN_CONNECT_DATA->text() == "Connect")
-    {
-        // connect
-        cobot.dataSocket.connectToHost(QHostAddress(ui->LE_IP->text()), ui->textDataPort->text().toInt());
-        connect(&cobot, SIGNAL(readyRead()), &cobot, SLOT(onReadyDataRead()));
-        //        timer.start(20);
-        //        cobot.init();
-    }
-    else
-    {
-        // disconnect
-        timer.stop();
-        cobot.dataSocket.close();
-    }
-}
-
-void MainWindow::on_BTN_COBOT_INIT_clicked()
-{
-    cobot.CobotInit();
-    initFlag = true;
-}
-
-void MainWindow::on_BTN_MODE_REAL_clicked()
-{
-    cobot.ProgramMode_Real();
-    ui -> bt_rb5_mode ->setText("Simul.");
-}
-
-void MainWindow::on_BTN_MODE_SIMULATION_clicked()
-{
-    cobot.ProgramMode_Simulation();
-    ui -> bt_rb5_mode ->setText("Real.");
-}
-
-void MainWindow::on_BTN_CLEAR_clicked()
-{
-    ui->textPrint->clear();
-}
-
-void MainWindow::on_HS_BASE_SPEED_valueChanged(int value)
-{
-    float spd = (float)value/100.0;
-    ui->LB_BASE_SPEED->setText(QString().sprintf("%.1f%%", spd*100.0));
-    ui->lb_rb5_speed_percentage->setText(QString::number(spd*100)+"%");
-    ui->sb_rb5_speed->setValue(spd*100);
-    ui->sld_rb5_speed->setValue(spd*100);
-    speed_changed = true;
-}
-
-void MainWindow::on_BTN_MOVE_JOINT_HIGH_clicked()
-{
-    qDebug()<<"최고높이에서 디텍팅중.";
-    //    cobot.MoveJoint(initPos._joint_1, initPos._joint_2 , initPos._joint_3 , initPos._joint_4, initPos._joint_5, initPos._joint_6, -1, -1);
-    //    cobot.MoveTCP(-372, -118, 529, 90, -90.00, 180, 2, -1);
-    //     cobot.MoveJoint(2.90,29.97,-137.74,107.77, -92.92,-90.04,2, -1);
-    //    cobot.MoveJoint(0,20,-76,20,-90,-90,2, -1);
-    //    cobot.MoveJoint(-7.11, -3.82, -40.88, -12.63, -85.45, -83.14,2, -1);
-    //    cobot.MoveJoint(0.0,75.7509994506836,-124.04100036621094,21,-90.00,-90.00, 2, -1);
-    cobot.MoveJoint(0.000,29.340,-119.691,69.323,-90.000,-90.000, 2, -1);
-}
-
-
-void MainWindow::on_BTN_MOVE_JOINT_READY_GRIPPER_clicked()
-{
-    //    cobot.MoveJoint(readyGripperPos._joint_1, readyGripperPos._joint_2, readyGripperPos._joint_3, readyGripperPos._joint_4,  readyGripperPos._joint_5, readyGripperPos._joint_6, -1, -1);
-}
-
-void MainWindow::on_BTN_MOVE_JOINT_GRAPS_GRIPPER_clicked()
-{
-    //    cobot.MoveJoint(grapsGripperPos._joint_1, grapsGripperPos._joint_2, grapsGripperPos._joint_3, grapsGripperPos._joint_4, grapsGripperPos._joint_5, grapsGripperPos._joint_6, -1, -1);
-}
-
-void MainWindow::on_BTN_MOTION_PAUSE_clicked()
-{
-    cobot.MotionPause();
-}
-
-void MainWindow::on_BTN_MOTION_RESUME_clicked()
-{
-    cobot.MotionResume();
-}
-
-void MainWindow::on_BTN_MOTION_HALT_clicked()
-{
-    cobot.MotionHalt();
-}
-
-void MainWindow::on_BTN_COLLISION_RESUME_clicked()
-{
-    cobot.CollisionResume();
-}
-////////////////////////////////////////////////////////////////
-
-void MainWindow::keti_showUI_msg(bool connect_flag)
-{
-    if (connect_flag)
-    {
-        ui->le_keti->setStyleSheet("background-color:green");
-        ui->le_vision_connection->setStyleSheet("background-color:green");
-        keti_connect_flag = true;
-    }
-
-    else
-    {
-        ui->le_keti->setStyleSheet("background-color:red");
-        ui->le_vision_connection->setStyleSheet("background-color:red");
-        keti_connect_flag = false;
-    }
-
-}
-
-void MainWindow::kitech_showUI_msg(bool connect_flag)
-{
-    if (connect_flag)
-    {
-        ui->le_kitech->setStyleSheet("background-color:green");
-        ui->le_gripper_connection->setStyleSheet("background-color:green");
-        if(old_connect_flag != connect_flag)
+        for(int j = 0; j < img.cols; j++)
         {
-            vision.TCP2cam = cam_config.KITECH_TF_SENSOR;
-            //            std::cout<<vision.TCP2cam<<std::endl;
-        }
-    }
-
-    else
-    {
-        ui->le_kitech->setStyleSheet("background-color:red");
-        ui->le_gripper_connection->setStyleSheet("background-color:red");
-        if(old_connect_flag != connect_flag)
-        {
-            vision.TCP2cam = cam_config.RB_TF_SENSOR;
-            //            std::cout<<vision.TCP2cam<<std::endl;
-        }
-    }
-    old_connect_flag = connect_flag;
-}
-
-
-void MainWindow::BTN_GRIPPER_CMD_WRITE()
-{
-
-    //    QString txt = "S1";
-    QString txt = ui->LE_GRIPPER_CMD->text();
-    qDebug()<<"txt : "<<txt;
-    gripper.Kitech_Client->write(txt.toStdString().c_str());
-    //    // all cmd write in hand
-    //    if(Integrated_info.init_gripper == true)
-    //    {
-    //        //        IPC::GRIPPER gripper_cmd;
-    //        auto text = ui->LE_GRIPPER_CMD->text();
-    //        qDebug()<<text;
-    //        memcpy((uint8_t*)gripper_cmd.cmd, text.data(), 50);
-    //        ipc.set_gripper(gripper_cmd); //통합 ui에 그리퍼 명령을 넘기기 위한 코드.
-    //        std::string msg = text.toUtf8().constData();
-
-    //        ::send(gripper.tmp_fd, msg.data(), msg.size(), 0);
-    //        //        gripper_cmd.cmd = ;
-    //        QString Log = "[Gripper] cmd : " + text;
-    //        QByteArray br = text.toUtf8();
-
-    //        //        _log.PrintLog(Log.toStdString(), ui->TE_GLOBAL_LOG, "green", true);
-    //        //        gripper.Kitech_Client->write(br);
-    //    }
-    //    else
-    //    {
-    //        //        _log.PrintLog("Not connected KITECH yet.", ui->TE_GLOBAL_LOG, "red", true);
-    //    }
-}
-
-void MainWindow::BTN_GRIPPER_HOLD()
-{
-
-    // preset unfold(gripper ready) pos cmd
-    if(Integrated_info.init_gripper == true)
-    {
-        QString text("Rg0");
-        qDebug()<<text;
-        memcpy((uint8_t*)gripper_cmd.cmd, text.data(), 50);
-        ipc.set_gripper(gripper_cmd); //통합 ui에 그리퍼 명령을 넘기기 위한 코드.
-        std::string msg = text.toUtf8().constData();
-        ::send(gripper.tmp_fd, msg.data(), msg.size(), 0);
-
-        QByteArray br1 = text.toUtf8();
-        //        gripper.Kitech_Client->write(br1);
-    }
-}
-
-void MainWindow::BTN_GRIPPER_ALLFOLD()
-{
-
-    // preset unfold(gripper ready) pos cmd
-    if(Integrated_info.init_gripper == true)
-    {
-        BTN_GRIPPER_HOLD();
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-        QString text("Gg9");
-        qDebug()<<text;
-        QByteArray br = text.toUtf8();
-        //        std::string msg = text.toUtf8().constData();
-        //        ::send(gripper.tmp_fd, msg.data(), msg.size(), 0);
-        gripper.Kitech_Client->write(br);
-
-        //        start_old = clock(); // 시간 측정 시작
-        //        bool flag_old = true;
-
-        //        //        qDebug()<<"start"<<start;
-
-        //        while(flag_old)
-        //        {
-
-        //            if(result_old>1000000)
-        //            {
-        //                //                Pinch12_FOLD();
-        //                QString text("Rm9");
-        //                qDebug()<<text;
-        //                QString Log = "[Gripper] cmd : " + text;
-        //                QByteArray br = text.toUtf8();
-
-        //                //            _log.PrintLog(Log.toStdString(), ui->TE_GLOBAL_LOG, "green", true);
-        ////                gripper.Kitech_Client->write(br);
-
-        ////                gripper.Kitech_Client->flush();//
-        //                flag_old = false;
-        //            }
-        //            end_old = clock(); // 시간 측정 끝
-        //            result_old = double(end_old-start_old);
-
-        //        }
-        //        start = clock(); // 시간 측정 시작
-        //        bool flag = true;
-
-        //        //        qDebug()<<"start"<<start;
-
-        //        while(flag)
-        //        {
-
-        //            if(result>300)
-        //            {
-        //                QString text("Gg9");
-        //                qDebug()<<text;
-        //                QString Log = "[Gripper] cmd : " + text;
-        //                QByteArray br = text.toUtf8();
-
-        //                //            _log.PrintLog(Log.toStdString(), ui->TE_GLOBAL_LOG, "green", true);
-        ////                gripper.Kitech_Client->write(br);
-        //                flag = false;
-        //            }
-        //            end = clock(); // 시간 측정 끝
-        //            result = double(end-start);
-        //        }
-
-    }
-    else
-    {
-        //        _log.PrintLog("Not connected KITECH yet.", ui->TE_GLOBAL_LOG, "red", true);
-    }
-}
-
-void MainWindow::Pinch12_FOLD()
-{
-
-    // preset unfold(gripper ready) pos cmd
-    if(Integrated_info.init_gripper == true)
-    {
-        QString text("Gi2");
-        //        qDebug()<<text;
-        //        std::string msg = text.toUtf8().constData();
-
-        //        ::send(gripper.tmp_fd, msg.data(), msg.size(), 0);
-        //        QString Log = "[Gripper] cmd : " + text;
-
-
-        //        _log.PrintLog(Log.toStdString(), ui->TE_GLOBAL_LOG, "green", true);
-        QByteArray br = text.toUtf8();
-        gripper.Kitech_Client->write(br);
-    }
-    else
-    {
-        //                _log.PrintLog("Not connected KITECH yet.", ui->TE_GLOBAL_LOG, "red", true);
-    }
-}
-
-
-void MainWindow::BTN_GRIPPER_GRASP()
-{
-    // preset graps pos cmd in free grapMode & power
-    if(Integrated_info.init_gripper == true)
-    {
-        QString grap = ui->CB_GRIPPER_GRAPS->currentText();
-        QString powe = ui->CB_GRIPPER_POWER->currentText();
-
-        QString text = "R" + grap + powe ;
-        QByteArray br = text.toUtf8();
-        gripper.Kitech_Client->write(br);
-    }
-    else
-    {
-        //        _log.PrintLog("Not connected KITECH yet.", ui->TE_GLOBAL_LOG, "red", true);
-    }
-}
-
-void MainWindow::BTN_GRIPPER_VISION()
-{
-    // preset vision pos cmd
-    if(Integrated_info.init_gripper == true)
-    {
-        QString text("Rg9");
-        qDebug()<<text;
-        QByteArray br = text.toUtf8();
-
-        //        _log.PrintLog(Log.toStdString(), ui->TE_GLOBAL_LOG, "green", true);
-        gripper.Kitech_Client->write(br);
-    }
-    else
-    {
-        //        _log.PrintLog("Not connected KITECH yet.", ui->TE_GLOBAL_LOG, "red", true);
-    }
-}
-
-void MainWindow::CB_GRIPPER_GE_CMD_WRITE()
-{
-    //    ControlBoxDigitalOut(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-    // preset gripper pos cmd in free mode & grapMode & power
-    if(Integrated_info.init_gripper == true)
-    {
-        auto mode = ui->CB_GRIPPER_GE_MODE->currentText();
-        auto grap = ui->CB_GRIPPER_GE_GRAPS->currentText();
-        auto powe = ui->CB_GRIPPER_GE_POWER->currentText();
-
-        QString text = mode  + grap + powe;
-        gripper.Kitech_Client->write(text.toUtf8());
-        if(ui->CB_GRIPPER_GE_SUCTION_POWER->currentText()=="ON")
-        {
-            cobot.ControlBoxDigitalOut(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-        }
-        else if(ui->CB_GRIPPER_GE_SUCTION_POWER->currentText()=="OFF")
-        {
-            cobot.ControlBoxDigitalOut(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-        }
-
-        //        std::string msg = text.toUtf8().constData();
-
-        //        ::send(gripper.tmp_fd, msg.data(), msg.size(), 0);
-        //        //        ControlBoxDigitalOut(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-        //        qDebug()<<text;
-        //        QString Log = "[Gripper] cmd : " + text;
-        //        QByteArray br = text.toUtf8();
-
-        //        _log.PrintLog(Log.toStdString(), ui->TE_GLOBAL_LOG, "green", true);
-        //        gripper.Kitech_Client->write(br);
-    }
-    else
-    {
-        //        _log.PrintLog("Not connected KITECH yet.", ui->TE_GLOBAL_LOG, "red", true);
-    }
-}
-
-void MainWindow::bt_cobot_move2object()
-{
-    on_BTN_GRIPPER_OPEN_clicked();
-
-    float move_x_valo = ui->move_x_val->text().toFloat();
-    float move_y_valo = ui->move_y_val->text().toFloat();
-    float move_z_valo = ui->move_z_val->text().toFloat();
-
-    float move_rx_valo = ui->move_rx_val->text().toFloat();
-    float move_ry_valo = ui->move_ry_val->text().toFloat();
-    float move_rz_valo = ui->move_rz_val->text().toFloat();
-
-    cobot.MoveTCP(move_x_valo,move_y_valo,move_z_valo, move_rx_valo, move_ry_valo, move_rz_valo, 0.5, -1);
-
-    if(vision.box_cent_value == false)
-    {
-        cobot.ControlBoxDigitalOut(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-    }
-    else if(vision.box_cent_value)
-    {
-        vision.box_cent_value = false;
-    }
-
-    //    cobot.MoveTCPBlend_Clear();
-    //    cobot.MoveTCPBlend_AddPoint(0.1,move_x_valo+10,move_y_valo+10,move_z_valo+10, move_rx_valo, move_ry_valo, move_rz_valo, 0.5, -1);
-    //    cobot.MoveTCPBlend_AddPoint(0.1,move_x_valo,move_y_valo,move_z_valo, move_rx_valo, move_ry_valo, move_rz_valo, 0.5, -1);
-    //    cobot.MoveTCPBlend_MovePoint();
-
-}
-
-
-void MainWindow::BTN_CONNECT_GRIPPER()
-{
-    gripper.Gripper_Connect();
-}
-
-void MainWindow::on_BTN_MOVE_JOINT_HIGH_LEFT_clicked()
-{
-    cobot.MoveJoint(178.86,-15.61, -120.44, 46.04, -90.00, -88.89, 2, -1);
-    //    cobot.MoveJoint(putdown1Pos._joint_1, putdown1Pos._joint_2 , putdown1Pos._joint_3 , putdown1Pos._joint_4, putdown1Pos._joint_5, putdown1Pos._joint_6, -1, -1);
-}
-void MainWindow::on_BTN_MOVE_JOINT_INIT_3_clicked()
-{
-    cobot.MoveJoint(0,60,-134,56,-90,-88, -1, -1);
-}
-
-void MainWindow::on_BTN_MOVE_JOINT_INIT_4_clicked()
-{
-    //    cobot.MoveJoint(readyGripper2Pos._joint_1, readyGripper2Pos._joint_2 , readyGripper2Pos._joint_3 , readyGripper2Pos._joint_4, readyGripper2Pos._joint_5, readyGripper2Pos._joint_6, -1, -1);
-}
-
-void MainWindow::on_BTN_MOVE_JOINT_INIT_5_clicked()
-{
-    //    cobot.MoveJoint(grapsGripper2Pos._joint_1, grapsGripper2Pos._joint_2 , grapsGripper2Pos._joint_3 , grapsGripper2Pos._joint_4, grapsGripper2Pos._joint_5, grapsGripper2Pos._joint_6, -1, -1);
-}
-
-//////////barcode//////////
-
-void MainWindow::bt_usb1_con()
-{
-    if (ui->cb_usb1->currentText()!=ui->cb_usb2->currentText())
-    {
-        barcode.bt_usb1_con(ui->cb_usb1->currentText());
-        ui->bt_usb1_con->setEnabled(false);
-        ui->bt_usb1_dis->setEnabled(true);
-    }
-    else
-    {
-        qDebug()<<"클릭할 수 없습니다.";
-    }
-}
-
-void MainWindow::bt_usb2_con()
-{
-    if (ui->cb_usb1->currentText()!=ui->cb_usb2->currentText())
-    {
-        barcode.bt_usb2_con(ui->cb_usb2->currentText());
-        ui->bt_usb2_con->setEnabled(false);
-        ui->bt_usb2_dis->setEnabled(true);
-    }
-    else
-    {
-        qDebug()<<"클릭할 수 없습니다.";
-    }
-}
-
-void MainWindow::bt_usb1_dis()
-{
-    barcode.bt_usb1_dis();
-    ui->bt_usb1_con->setEnabled(true);
-    ui->bt_usb1_dis->setEnabled(false);
-}
-
-void MainWindow::bt_usb2_dis()
-{
-    barcode.bt_usb2_dis();
-    ui->bt_usb2_con->setEnabled(true);
-    ui->bt_usb2_dis->setEnabled(false);
-}
-
-
-void MainWindow::barcode1_showUI_msg(QByteArray msg)
-{
-    ui->te_usb1->setText(msg);
-}
-void MainWindow::barcode2_showUI_msg(QByteArray msg)
-{
-    ui->te_usb2->setText(msg);
-}
-
-//get detect point
-
-void MainWindow::timer_shared_memory_loop()
-{
-    IPC::VISION_POSE vision_pose = ipc.get_point();
-    //        qDebug()<<"vision_pose.x : "<<vision_pose.x;
-    //        printf("x : %f, y : %f, z : %f\n",vision_pose.x,vision_pose.y,vision_pose.z);
-
-    QString res_str;
-    res_str.sprintf("%.3f, %.3f, %.3f, %.3f, %.3f, %.3f", vision_pose.x,vision_pose.y,vision_pose.z,vision_pose.roll,vision_pose.pitch,vision_pose.yaw);
-
-    if(vision_pose.tick!=old_tick)
-    {
-        ui->lb_keti_point->setText(res_str);
-        if(keti_connect_flag == false)
-        {
-            keti_x = vision_pose.x;
-            keti_y = vision_pose.y;
-            keti_z = vision_pose.z;
-
-            keti_rx = vision_pose.roll;
-            keti_ry = vision_pose.pitch;
-            keti_rz = vision_pose.yaw;
-
-            //            app_x = vision_pose.x;
-            //            app_y = vision_pose.y+10;
-            //            app_z = vision_pose.z;
-            //////////////////////////////////////////////////////
-            //for approach
-            double approach_ty = keti_y + 0.10;
-            Eigen::Vector3d app_P(keti_x,approach_ty,keti_z);
-            Eigen::Vector3d app_trance_P = T_sensor.block(0,0,3,3)*app_P+T_sensor.block(0,3,3,1);
-
-            app_x = app_trance_P[0]*1000;
-            app_y = app_trance_P[1]*1000;
-            app_z = app_trance_P[2]*1000;
-            //////////////////////////////////////////////////////
-        }
-
-        else
-        {
-            keti_x = vision.keti_x;
-            keti_y = vision.keti_y;
-            keti_z = vision.keti_z;
-
-            //            keti_rx = vision_pose.roll;
-            //            keti_ry = vision_pose.pitch;
-            //            keti_rz = vision_pose.yaw;
-        }
-
-        Eigen::Vector3d P(keti_x, keti_y, keti_z);
-        Eigen::Vector3d _P = T_sensor.block(0,0,3,3)*P+T_sensor.block(0,3,3,1);
-
-        QString res_x,res_y,res_z;
-        res_x.sprintf("%.3f",(_P[0])*1000);
-        res_y.sprintf("%.3f",(_P[1])*1000);
-        res_z.sprintf("%.3f",(_P[2])*1000);
-
-        ui->move_x_val->setText(res_x);
-        ui->move_y_val->setText(res_y);
-        ui->move_z_val->setText(res_z);
-
-        ui->move_rx_val->setText(QString::number(keti_rx));
-        ui->move_ry_val->setText(QString::number(keti_ry));
-        ui->move_rz_val->setText(QString::number(keti_rz));
-    }
-
-    // map
-    IPC::COLOR_MAP color_map = ipc.get_img();
-
-    if(color_map.tick != last_map_tick)
-    {
-        cv::Mat map_img(300, 500, CV_8UC3, cv::Scalar(0));
-        memcpy((uint8_t*)map_img.data, color_map.buf, 500*300*3);
-
-        //        cv::imshow("map_img",map_img);
-        ui->LE_KETI_IMG->setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(map_img)));
-        ui->lb_vision_capture_img->setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(map_img)));
-
-        if (capture_flag)
-        {
-            //                        qDebug()<<"working";
-            cv::Mat color_img(100, 100, CV_8UC3, cv::Scalar(0));
-            cv::resize(map_img, color_img, cv::Size(545,311), 0, 0, cv::INTER_NEAREST);
-            cv::imshow("color_img",color_img);
-            cv::imwrite("/home/rainbow/orderpicking_img/keti capture.png",color_img);
-            //            imshow("/home/rainbow/orderpicking_img/capture",map_img);
-
-
-            capture_flag=false;
-        }
-    }
-
-    last_map_tick = color_map.tick;
-
-}
-
-void MainWindow::LE_KETI_IMG(cv::Mat map_img)
-{
-    //    계속 업데이트 되고 있음.
-    ui->LE_KETI_IMG->setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(map_img)));
-    ui->lb_vision_capture_img->setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(map_img)));
-
-    if (capture_flag)
-    {
-        //        qDebug()<<"working";
-        QString filename = vision_num+"vision_img.png";
-        qDebug()<<filename;
-        //                cv::imwrite(filename.toStdString,map_img);
-        vision_num+=vision_num;
-        capture_flag =false;
-    }
-}
-
-void MainWindow::bt_png_change()
-{
-    mb.png_change();
-}
-
-void MainWindow::bt_zip()
-//유진로봇 요청 대응하기 위한 자동 압축 프로그램 만들기...
-{
-    mb.bt_zip();
-}
-
-void MainWindow::on_bt_rb5_mode_clicked()
-{
-    if(ui->bt_rb5_mode->text() =="Simul.")
-    {
-        cobot.ProgramMode_Simulation();
-        ui -> bt_rb5_mode ->setText("Real.");
-    }
-
-    else if(ui->bt_rb5_mode->text() == "Real.")
-    {
-        cobot.ProgramMode_Real();
-        ui -> bt_rb5_mode ->setText("Simul.");
-    }
-}
-
-void MainWindow::on_sld_rb5_speed_valueChanged(int value)
-{
-    float spd = (float)value/100.0;
-    ui->LB_BASE_SPEED->setText(QString().sprintf("%.1f%%", spd*100.0));
-    ui->lb_rb5_speed_percentage->setText(QString::number(spd*100)+"%");
-    ui->sb_rb5_speed->setValue(spd*100);
-    ui->HS_BASE_SPEED->setValue(spd*100);
-    speed_changed = true;
-}
-
-void MainWindow::on_sb_rb5_speed_valueChanged(int value)
-{
-    float spd = value/100.0;
-    ui->LB_BASE_SPEED->setText(QString().sprintf("%.1f%%", spd*100.0));
-    ui->lb_rb5_speed_percentage->setText(QString::number(spd*100)+"%");
-    ui->sld_rb5_speed->setValue(spd*100);
-    ui->HS_BASE_SPEED->setValue(spd*100);
-    speed_changed = true;
-}
-
-void MainWindow::on_BTN_MOVE_JOINT_Rotation_clicked()
-{
-    cobot.MoveJoint(-2.22,-15,-120,46,-90,-90, -1);
-}
-
-void MainWindow::on_bt_cobot_push_clicked()
-{
-    float move_x_valo = ui->LE_TCP_REF_X->text().toFloat();
-    float move_y_valo = ui->LE_TCP_REF_Y->text().toFloat();
-    float move_z_valo = ui->LE_TCP_REF_Z->text().toFloat();
-
-    float move_rx_valo = ui->LE_TCP_REF_RX->text().toFloat();
-    float move_ry_valo = ui->LE_TCP_REF_RY->text().toFloat();
-    float move_rz_valo = ui->LE_TCP_REF_RZ->text().toFloat();
-
-    cobot.MoveTCP(move_x_valo-10,move_y_valo,move_z_valo-10, move_rx_valo, move_ry_valo, move_rz_valo, 0.2, 0.1);
-    //    cobot.ControlBoxDigitalOut(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-}
-
-
-void MainWindow::on_btn_pump_2_clicked()
-{
-    if (ui->btn_pump_2->text()=="Pump on")
-    {
-        cobot.ControlBoxDigitalOut(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-        ui->btn_pump_2->setText("Pump off");
-        ui->le_rb5_move_status->setStyleSheet("QLineEdit{background-color:green}");
-    }
-    else if(ui->btn_pump_2->text()=="Pump off")
-    {
-        cobot.ControlBoxDigitalOut(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-        ui->btn_pump_2->setText("Pump on");
-        ui->le_rb5_move_status->setStyleSheet("QLineEdit{background-color:red}");
-    }
-}
-
-void MainWindow::on_bt_TCP_Blend_clicked()
-{
-    //    cobot.ControlBoxDigitalOut(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-    cobot.MoveTCPBlend_Clear();
-    float move_x_valo = ui->move_x_val->text().toFloat();
-    float move_y_valo = ui->move_y_val->text().toFloat();
-    float move_z_valo = ui->move_z_val->text().toFloat();
-
-    float move_rx_valo = ui->LE_TCP_REF_RX->text().toFloat();
-    float move_ry_valo = ui->LE_TCP_REF_RY->text().toFloat();
-    float move_rz_valo = ui->LE_TCP_REF_RZ->text().toFloat();
-
-    cobot.MoveTCPBlend_AddPoint(move_x_valo,move_y_valo,move_z_valo, move_rx_valo, move_ry_valo, move_rz_valo, 0.5, -1);
-    cobot.MoveTCP(move_x_valo-20,move_y_valo,move_z_valo-20, move_rx_valo, move_ry_valo, move_rz_valo, 0.2, -1);
-    cobot.MoveTCPBlend_MovePoint();
-}
-
-void MainWindow::on_BTN_MOVE_JOINT_LOW_clicked()
-{
-    //    cobot.MoveJointBlend_Clear();
-    //    cobot.MoveJointBlend_AddPoint(150.207,-3.357,-64.440,-19.582,-89.706,-88.582, 0.2, 0.2);
-    //    cobot.MoveJointBlend_AddPoint(0.000,31.222,-131.071,35.017,-90.004,-90.006, -1);
-    //    cobot.MoveJointBlend_MovePoint();
-
-    float spd = 180.0;
-    float acc = 400.0;
-    float blending_value = 0.2;
-
-    cobot.move_jb2_clear();
-    cobot.move_jb2_add(150.68,0.00,-97.41,-10.00,-90.00,-88.90, spd, acc, blending_value);
-    cobot.move_jb2_add(0.000,31.222,-131.071,35.017,-90.004,-90.006, spd, acc, blending_value);
-    cobot.move_jb2_run();
-
-}
-
-void MainWindow::on_BTN_MOVE_JOINT_INIT_7_clicked()
-{
-    cobot.MoveJointBlend_Clear();
-    cobot.MoveJointBlend_AddPoint(-9.35,-85,-124,168,-82,-84, -1, -1);
-    cobot.MoveJointBlend_AddPoint(22.61,-49,-132,111,-86,-87, -1, -1);
-    cobot.MoveJointBlend_AddPoint(50,0,-113,26,-90,-90,-1 -1);
-    cobot.MoveJointBlend_AddPoint(117,-6,-79,-12,-90,-90, -1, -1);
-    cobot.MoveJointBlend_AddPoint(172,-3,-116,30,-90,-90,-1 -1);
-    cobot.MoveJointBlend_MovePoint();
-    //    cobot.MoveJoint(180,0,-113,15,-90,-90, -1);
-}
-
-void MainWindow::on_bt_lift_top_clicked()
-{
-    //    ui -> sb_lift_pos->setValue(620);
-    md_mot.move_poisition_flag = true;
-    md_mot.move_position(620);
-}
-
-void MainWindow::on_bt_lift_MID_clicked()
-{
-    //    ui -> sb_lift_pos->setValue(450);
-    md_mot.move_poisition_flag = true;
-    md_mot.move_position(450);
-}
-
-void MainWindow::on_bt_lift_Low_clicked()
-{
-    //    ui -> sb_lift_pos->setValue(0);
-    md_mot.move_poisition_flag = true;
-    md_mot.move_position(0);
-}
-
-void MainWindow::on_bt_low_get_out_clicked()
-{
-    float move_x_valo = ui->LE_TCP_REF_X->text().toFloat();
-    float move_y_valo = ui->LE_TCP_REF_Y->text().toFloat();
-    float move_z_valo = ui->LE_TCP_REF_Z->text().toFloat();
-
-    float move_rx_valo = ui->LE_TCP_REF_RX->text().toFloat();
-    float move_ry_valo = ui->LE_TCP_REF_RY->text().toFloat();
-    float move_rz_valo = ui->LE_TCP_REF_RZ->text().toFloat();
-
-    cobot.MoveTCP(move_x_valo+50,move_y_valo,move_z_valo+50, move_rx_valo, move_ry_valo, move_rz_valo,  0.3, 0.3);
-}
-
-void MainWindow::on_bt_vision_water_clicked()
-{
-    float move_x_valo = ui->LE_TCP_REF_X->text().toFloat();
-    float move_y_valo = ui->LE_TCP_REF_Y->text().toFloat();
-    float move_z_valo = ui->LE_TCP_REF_Z->text().toFloat();
-
-    float move_rx_valo = ui->LE_TCP_REF_RX->text().toFloat();
-    float move_ry_valo = ui->LE_TCP_REF_RY->text().toFloat();
-    float move_rz_valo = ui->LE_TCP_REF_RZ->text().toFloat();
-
-    cobot.MoveTCP(move_x_valo-20,move_y_valo,move_z_valo-20, move_rx_valo, move_ry_valo, move_rz_valo, 0.2, -1);
-    cobot.ControlBoxDigitalOut(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-}
-
-void MainWindow::on_bt_vision_high_get_out_clicked()
-{
-    float move_x_valo = ui->LE_TCP_REF_X->text().toFloat();
-    float move_y_valo = ui->LE_TCP_REF_Y->text().toFloat();
-    float move_z_valo = ui->LE_TCP_REF_Z->text().toFloat();
-
-    float move_rx_valo = ui->LE_TCP_REF_RX->text().toFloat();
-    float move_ry_valo = ui->LE_TCP_REF_RY->text().toFloat();
-    float move_rz_valo = ui->LE_TCP_REF_RZ->text().toFloat();
-
-    cobot.MoveTCP(move_x_valo+200,move_y_valo,move_z_valo+200, move_rx_valo, move_ry_valo, move_rz_valo,  0.3, 0.3);
-}
-
-void MainWindow::on_BTN_MOVE_JOINT_MID_clicked()
-{
-    float spd = 180.0;
-    float acc = 400.0;
-    float blending_value = 0.2;
-
-    cobot.move_jb2_clear();
-    cobot.move_jb2_add(150.68,0.00,-97.41,-10.00,-90.00,-88.90, spd, acc, blending_value);
-    //    cobot.move_jb2_add(95.63,11.45,-97.41,10.00,-90.00,-88.90, spd, acc, blending_value);
-
-    cobot.move_jb2_add(25.32,26.38,-113.63,0.33,-90.00,-88.90, spd, acc, blending_value);
-    cobot.move_jb2_add(-3.24,36.00,-113.62,-12.40,-90.00,-88.90, spd, acc, blending_value);
-        cobot.move_jb2_add(0.228,19.684,-73.543,-15.062,-89.891,-89.646, spd, acc, blending_value);
-
-//    //for 홍보영상
-//    cobot.move_jb2_add(0.217986,-1.37101,-60.712,-37.0196,-89.9902,-89.6021, spd, acc, blending_value);
-
-    cobot.move_jb2_run();
-
-}
-
-void MainWindow::on_bt_vision_rael_more_move_clicked()
-{
-
-}
-
-void MainWindow::on_BTN_MOVE_JOINT_MID_RIGHT_clicked()
-{
-    cobot.MoveJoint(178.859,0.005,-97.016,10.010,-90.000,-88.892, 2, -1);
-}
-
-void MainWindow::yujin_order(QJsonObject json)
-{
-    QJsonDocument doc_json(json);
-    QString str_json(doc_json.toJson(QJsonDocument::Indented));
-
-    // order msg kipping
-    mtx.lock();
-    order_yj_json_msg.push(str_json);
-    mtx.unlock();
-
-    yujin_order_check();
-    ui -> te_order -> append(str_json);
-}
-
-void MainWindow::yujin_order_check()
-{
-    // order msg save -> parsing -> making parsing msg to qstringlist -> que astringlist
-    //    qDebug()<<order_yj_json_msg.front();
-
-    //    QString shelf_hight = ui->le_shelf_hight->text();
-    //    int count = ui -> CB_gripper_num -> currentText().toInt();
-    //    QString shelf_name = ui->CB_shelf->currentText();
-
-    for(auto& it: shelf_infos) // get from saved json
-    {
-        if(it.second == nullptr)
-        {
-            continue;
-        }
-
-        QStringList order_msg;
-        QString new_msg = order_yj_json_msg.front();
-        QJsonDocument doc_json = QJsonDocument::fromJson(new_msg.toUtf8());
-        QJsonObject json = doc_json.object();
-
-        QVariantMap json_pa = json.toVariantMap();
-        QVariantMap json_parm = json_pa["params"].toMap();
-        QVariantMap json_destination_box = json_parm["destination_box"].toMap();
-
-
-        int count = json_parm["item_count"].toInt();
-
-        float shelve_height = json_parm["shelve_height"].toDouble()*1000;
-
-        //        shelf_info->RB_5_pose;
-
-        if (order_yj_list_msg.size() == 0)
-        {
-            qDebug()<<"msg order que is 0!!!_yyyyy";
-            yujin_que_time = 0;
-        }
-
-        // 명령에 맞게 리스트를 만든후 que 에 넣음. -> loop start ->
-
-        //        qDebug()<<json_parm["shelve_name"].toString()+"_"+json_destination_box["name"].toString();
-        qDebug()<<it.second->shelf_id;
-        qDebug()<<json_parm["shelve_name"].toString()+"_"+QString::number(shelve_height);
-        if (it.second->shelf_id == json_parm["shelve_name"].toString()+"_"+QString::number(shelve_height))
-        {
-            qDebug()<<it.second->shelf_id;
-            // 정해진 위치에 해당하는 명령이 들어온다면.
-            if (it.second->lift_pose == shelve_height)
+            if(img.ptr<uchar>(i)[j] == 0)
             {
-                qDebug()<<"같은 위치 찾음.";
-                std::cout<<it.second->RB_5_pose[0]<<std::endl;
-                QString lift_high = "lift_high,"+QString::number(shelve_height);
-                order_msg.append(lift_high);//리프트 이동
+                continue;
+            }
 
-                // vision robot pose -> robot pose blend
-                QString robot_vision = "robot vision,"+QString::number(it.second->RB_5_pose[0])+","+QString::number(it.second->RB_5_pose[1])+","+QString::number(it.second->RB_5_pose[2])+","+QString::number(it.second->RB_5_pose[3])+","+QString::number(it.second->RB_5_pose[4])+","+QString::number(it.second->RB_5_pose[5]);
-                //                qDebug()<<"robot moving :" <<robot_vision;
-                order_msg.append(robot_vision);
-                //                                order_msg.append("robot_high_vision");
-                /*
-                order_msg.append("wait");
-                order_msg.append("robot vision box center");
-                */
-                //                order_msg.append("wait");
-                //                order_msg.append("vision");
-                //                order_msg.append("wait");
-                //                order_msg.append("robot approach");
-                //                order_msg.append("");
-                //                //                order_msg.append("wait");
-                //                order_msg.append("robot push");
-                //                order_msg.append("wait");
-                //                order_msg.append("robot pump on");
-                //                order_msg.append("robot pop");
-                //                //                order_msg.append("robot pump on");
-                //                order_msg.append("robot mid left");
+            cv::Vec2i pt;
+            pt[0] = j;
+            pt[1] = i;
 
-                //                QString lift_down = "lift_high,5";
-                //                order_msg.append(lift_down);//리프트 이동
-                //                order_msg.append("robot pump off");
-                //                order_msg.append("success");
+            double d_st = cv::norm(pt - uv0);
+            if(d_st < min_st)
+            {
+                min_st = d_st;
+                nn_st = pt;
+            }
 
-                order_msg.append("wait");
-                order_msg.append("vision");
-                order_msg.append("wait");
-                order_msg.append("robot approach");
-                order_msg.append("robot pick");
-                //                order_msg.append("wait");
-                order_msg.append("robot push");
-                order_msg.append("wait");
+            double d_ed = cv::norm(pt - uv1);
+            if(d_ed < min_ed)
+            {
+                min_ed = d_ed;
+                nn_ed = pt;
+            }
+        }
+    }
 
-                if (count!=1)
+    const double limit_dist = 20; // 1m
+    if(min_st > limit_dist || min_ed > limit_dist)
+    {
+        is_far = true;
+    }
+
+    if(nn_st[0] != -1 || nn_st[1] != -1 || nn_ed[0] != -1 || nn_ed[1] != -1)
+    {
+        // draw shortest travel line
+        cv::line(img, cv::Point(uv0[0], uv0[1]), cv::Point(nn_st[0], nn_st[1]), cv::Scalar(255), 1);
+        cv::line(img, cv::Point(uv1[0], uv1[1]), cv::Point(nn_ed[0], nn_ed[1]), cv::Scalar(255), 1);
+    }
+    return is_far;
+}
+
+
+
+void MainWindow::bt_LocalizationInitAuto_Full()
+{
+    loc_auto_init_full();
+}
+
+void MainWindow::bt_LocalizationInitAuto_Semi()
+{
+    loc_auto_init_semi();
+}
+
+void MainWindow::bt_LocalizationInitAuto_Resting()
+{
+    loc_auto_init_resting();
+}
+
+void MainWindow::AutoInitFinished()
+{
+    slam.run_loc();
+}
+
+void MainWindow::loc_manual_init(cv::Vec3d pose)
+{
+    if(ui_loc_state == UI_LOC_BUSY)
+    {
+        logger.write("[LOC] busy", true);
+        return;
+    }
+
+    logger.write("[LOC] try manual init", true);
+    ui_loc_state = UI_LOC_MANUAL;
+
+    // initial location finding
+    slam.set_initial_location(pose);
+    slam.run_loc();
+}
+
+void MainWindow::loc_auto_init_full()
+{
+    if(ui_loc_state == UI_LOC_BUSY)
+    {
+        logger.write("[LOC] busy", true);
+        return;
+    }
+
+    logger.write("[LOC] try full-auto init", true);
+    slam.stop_loc();
+    ui_loc_state = UI_LOC_BUSY;
+
+    // doing thread
+    if(auto_init_thread_full != NULL)
+    {
+        logger.write("[LOC] auto init already running", true);
+        auto_init_thread_full->join();
+        auto_init_thread_full = NULL;
+    }
+
+    auto_init_thread_full = new std::thread(&SLAM_2D::set_auto_initial_location_full, &slam);
+}
+
+void MainWindow::loc_auto_init_semi()
+{
+    if(ui_loc_state == UI_LOC_BUSY)
+    {
+        logger.write("[LOC] busy", true);
+        return;
+    }
+
+    logger.write("[LOC] try semi-auto init", true);
+    slam.stop_loc();
+    ui_loc_state = UI_LOC_BUSY;
+
+    // doing thread
+    if(auto_init_thread_semi != NULL)
+    {
+        logger.write("[LOC] auto init already running", true);
+        auto_init_thread_semi->join();
+        auto_init_thread_semi = NULL;
+    }
+
+    auto_init_thread_semi = new std::thread(&SLAM_2D::set_auto_initial_location_semi, &slam);
+}
+
+void MainWindow::loc_auto_init_resting()
+{
+    if(ui_loc_state == UI_LOC_BUSY)
+    {
+        logger.write("[LOC] busy", true);
+        return;
+    }
+
+    logger.write("[LOC] try resting-auto init", true);
+    slam.stop_loc();
+    ui_loc_state = UI_LOC_BUSY;
+
+    // doing thread
+    if(auto_init_thread_resting != NULL)
+    {
+        logger.write("[LOC] auto init already running", true);
+        auto_init_thread_resting->join();
+        auto_init_thread_resting = NULL;
+    }
+
+    auto_init_thread_resting = new std::thread(&SLAM_2D::set_auto_initial_location_resting, &slam);
+}
+
+void MainWindow::bt_LocalizationRun()
+{
+    slam.run_loc();
+
+#ifdef USE_SIM
+    slam.loc_inlier_error = 0;
+    slam.loc_inlier_ratio = 1.0;
+    ui_loc_state = UI_LOC_GOOD;
+#endif
+}
+
+void MainWindow::bt_LocalizationStop()
+{
+    slam.stop_loc();
+}
+
+// manual
+void MainWindow::bt_ManualServingRun()
+{
+    if(unimap.serving_locs.size() == 0)
+    {
+        return;
+    }
+
+    int group_idx = ui->cb_ManualServingGroup->currentIndex();
+    int idx = ui->cb_ManualServing->currentIndex();
+    int preset_idx = ui->cb_preset->currentIndex() + 1;
+
+    // robot state now moving
+    cv::Vec3d pose = unimap.serving_locs[group_idx][idx];
+    if(setting_config.robot_use_multi)
+    {
+        mctrl.run(pose, preset_idx);
+    }
+    else
+    {
+        ctrl.run(pose, preset_idx);
+    }
+
+    printf("%d-serving_%d, %f, %f, %f\n", group_idx, idx, pose[0], pose[1], pose[2]*R2D);
+}
+
+void MainWindow::bt_ManualRestingRun()
+{
+    if(unimap.resting_locs.size() == 0)
+    {
+        return;
+    }
+
+    int idx = ui->cb_ManualResting->currentIndex();
+    int preset_idx = ui->cb_preset->currentIndex() + 1;
+
+    // robot state now moving
+    cv::Vec3d pose = unimap.resting_locs[idx];
+    if(setting_config.robot_use_multi)
+    {
+        mctrl.run(pose, preset_idx);
+    }
+    else
+    {
+        ctrl.run(pose, preset_idx);
+    }
+
+    printf("resting_%d, %f, %f, %f\n", idx, pose[0], pose[1], pose[2]*R2D);
+}
+
+void MainWindow::bt_ManualChargingRun()
+{
+    if(unimap.charging_locs.size() == 0)
+    {
+        return;
+    }
+
+    int idx = ui->cb_ManualCharging->currentIndex();
+    int preset_idx = ui->cb_preset->currentIndex() + 1;
+
+    // robot state now moving
+    cv::Vec3d pose = unimap.charging_locs[idx];
+    if(setting_config.robot_use_multi)
+    {
+        mctrl.run(pose, preset_idx);
+    }
+    else
+    {
+        ctrl.run(pose, preset_idx);
+    }
+
+    printf("charging_%d, %f, %f, %f\n", idx, pose[0], pose[1], pose[2]*R2D);
+}
+
+void MainWindow::bt_ManualNodesRun()
+{
+    if(unimap.nodes.size() == 0)
+    {
+        return;
+    }
+    QString goal_node = ui->cb_ManualNodes->currentText();
+    int preset_idx = ui->cb_preset->currentIndex() + 1;
+
+    ctrl.run_ext2(goal_node, preset_idx);
+    printf("run %s\n", goal_node.toStdString());
+}
+
+void MainWindow::bt_ManualClickedRun()
+{
+    int preset_idx = ui->cb_preset->currentIndex() + 1;
+    if(setting_config.robot_use_multi)
+    {
+        mctrl.run(ui->gv_Screen1->target_pose, preset_idx);
+    }
+    else
+    {
+        ctrl.run(ui->gv_Screen1->target_pose, preset_idx);
+    }
+}
+
+void MainWindow::bt_ManualStop()
+{
+    if(setting_config.robot_use_multi)
+    {
+        mctrl.stop();
+    }
+    else
+    {
+        ctrl.stop();
+    }
+}
+
+void MainWindow::bt_ManualPause()
+{
+    if(setting_config.robot_use_multi)
+    {
+        if(mctrl.fsm_state != STATE_AUTO_GOAL_REACHED &&
+                mctrl.fsm_state != STATE_AUTO_FAILED)
+        {
+            mctrl.fsm_state = STATE_AUTO_PAUSE;
+        }
+    }
+    else
+    {
+        if(ctrl.fsm_state != STATE_AUTO_GOAL_REACHED &&
+                ctrl.fsm_state != STATE_AUTO_FAILED)
+        {
+            ctrl.fsm_state = STATE_AUTO_PAUSE;
+        }
+    }
+}
+
+void MainWindow::bt_ManualResume()
+{
+    if(setting_config.robot_use_multi)
+    {
+        if(mctrl.fsm_state == STATE_AUTO_PAUSE)
+        {
+            mctrl.fsm_state = STATE_AUTO_PURE_PURSUIT;
+        }
+    }
+    else
+    {
+        if(ctrl.fsm_state == STATE_AUTO_PAUSE)
+        {
+            ctrl.fsm_state = STATE_AUTO_PATH_FINDING;
+        }
+    }
+}
+
+void MainWindow::bt_ManualServingSet()
+{
+    if(slam.is_loc == false)
+    {
+        logger.write("[MAINWINDOW] loc not init", true);
+        return;
+    }
+
+    cv::Vec3d cur_pose = slam.get_cur_pose();
+
+    int num = -1;
+    // load locations from annotation.ini
+    QString annotated_loc_path = unimap.map_dir + "/annotation.ini";
+    QFileInfo annotated_loc_info(annotated_loc_path);
+    if(annotated_loc_info.exists() && annotated_loc_info.isFile())
+    {
+        QSettings settings(annotated_loc_path, QSettings::IniFormat);
+
+        num = settings.value("serving_0/num").toInt();
+
+        QString sec;
+        sec.sprintf("serving_0/loc%d", num);
+
+        QString str;
+        str.sprintf("Serving%d,%f,%f,%f,", num, cur_pose[0], cur_pose[1], cur_pose[2]);
+
+        num += 1;
+        settings.setValue(sec, str);
+        settings.setValue("serving_0/num", num);
+    }
+
+    printf("set serving_%d, %f, %f, %f\n", num, cur_pose[0], cur_pose[1], cur_pose[2]*R2D);
+}
+
+void MainWindow::bt_ManualRestingSet()
+{
+    if(slam.is_loc == false)
+    {
+        logger.write("[MAINWINDOW] loc not init", true);
+        return;
+    }
+
+    cv::Vec3d cur_pose = slam.get_cur_pose();
+
+    int num = -1;
+    // load locations from annotation.ini
+    QString annotated_loc_path = unimap.map_dir + "/annotation.ini";
+    QFileInfo annotated_loc_info(annotated_loc_path);
+    if(annotated_loc_info.exists() && annotated_loc_info.isFile())
+    {
+        QSettings settings(annotated_loc_path, QSettings::IniFormat);
+
+        num = settings.value("resting_locations/num").toInt();
+
+        QString sec;
+        sec.sprintf("resting_locations/loc%d", num);
+
+        QString str;
+        str.sprintf("Resting%d,%f,%f,%f,", num, cur_pose[0], cur_pose[1], cur_pose[2]);
+
+        num += 1;
+        settings.setValue(sec, str);
+        settings.setValue("resting_locations/num", num);
+    }
+
+    printf("set resting_%d, %f, %f, %f\n", num, cur_pose[0], cur_pose[1], cur_pose[2]*R2D);
+}
+
+void MainWindow::bt_ManualChargingSet()
+{
+    if(slam.is_loc == false)
+    {
+        logger.write("[MAINWINDOW] loc not init", true);
+        return;
+    }
+
+    cv::Vec3d cur_pose = slam.get_cur_pose();
+
+    int num = -1;
+    // load locations from annotation.ini
+    QString annotated_loc_path = unimap.map_dir + "/annotation.ini";
+    QFileInfo annotated_loc_info(annotated_loc_path);
+    if(annotated_loc_info.exists() && annotated_loc_info.isFile())
+    {
+        QSettings settings(annotated_loc_path, QSettings::IniFormat);
+
+        num = settings.value("charging_locations/num").toInt();
+
+        QString sec;
+        sec.sprintf("charging_locations/loc%d", num);
+
+        QString str;
+        str.sprintf("Charging%d,%f,%f,%f,", num, cur_pose[0], cur_pose[1], cur_pose[2]);
+
+        num += 1;
+        settings.setValue(sec, str);
+        settings.setValue("charging_locations/num", num);
+    }
+
+    printf("set charging_%d, %f, %f, %f\n", num, cur_pose[0], cur_pose[1], cur_pose[2]*R2D);
+}
+
+void MainWindow::ckb_SetLocation(int val)
+{
+    if(ui->ckb_SetLocation->isChecked())
+    {
+        ui->bt_ManualServingSet->setDisabled(false);
+        ui->bt_ManualRestingSet->setDisabled(false);
+        ui->bt_ManualChargingSet->setDisabled(false);
+    }
+    else
+    {
+        ui->bt_ManualServingSet->setDisabled(true);
+        ui->bt_ManualRestingSet->setDisabled(true);
+        ui->bt_ManualChargingSet->setDisabled(true);
+    }
+}
+
+// temporal
+void MainWindow::bt_SimInit()
+{
+#ifdef USE_SIM
+    if(unimap.resting_locs.size() == 0)
+    {
+        return;
+    }
+
+    int idx = ui->cb_ManualResting->currentIndex();
+
+    // robot jump resting
+    cv::Vec3d pose = unimap.resting_locs[idx];
+    sim.set_sim_pose(pose);
+    slam.cur_pose = pose;
+    slam.cur_scan_pose = pose;
+    loc_init(pose);
+
+    // emo release
+    MOBILE_STATUS status;
+    status.is_ok = true;
+
+    status.emo_state = 1;
+    status.charge_state = 0;
+    status.power_state = 1;
+
+    status.connection_m0 = 1;
+    status.connection_m1 = 1;
+
+    status.status_m0 = 1;
+    status.status_m1 = 1;
+
+    mobile.status_received(status);
+
+#endif
+}
+
+void MainWindow::bt_Test()
+{
+
+}
+
+void MainWindow::bt_Test2()
+{
+
+}
+
+void MainWindow::bt_Test3()
+{
+
+}
+
+void MainWindow::bt_Test4()
+{
+
+}
+
+void MainWindow::bt_CheckAllPath()
+{
+    if(unimap.is_loaded == false)
+    {
+        logger.write("[PATH_CHECK] unimap is not loaded", true);
+        return;
+    }
+
+    logger.write("[PATH_CHECK] path check start", true);
+
+    std::vector<cv::Vec3d> resting_locs = unimap.get_resting_locations();
+    std::vector<cv::Vec3d> charging_locs = unimap.get_charging_locations();
+    std::vector<cv::Vec3d> cleaning_locs = unimap.get_cleaning_locations();
+
+    std::vector<std::vector<cv::Vec3d>> serving_locs = unimap.get_serving_locations();
+    std::vector<std::vector<QString>> serving_names = unimap.get_serving_names();
+    std::vector<QString> serving_group_names = unimap.get_serving_group_names();
+
+    IPC::CHECK_TRAVEL msg;
+    int idx = 0;
+    for(size_t p = 0; p < resting_locs.size(); p++)
+    {
+        for(size_t q = 0; q < serving_locs.size(); q++)
+        {
+            bool is_broken = false;
+            bool is_far = false;
+            for(size_t r = 0; r < serving_locs[q].size(); r++)
+            {
+                if(idx >= 5)
                 {
-                    QStringList msg;
-                    for(int i=0;i<count;i++)
+                    break;
+                }
+
+                cv::Mat travel_map = unimap.get_map_travel();
+
+                cv::Vec2d pos0(resting_locs[p][0], resting_locs[p][1]);
+                cv::Vec2d pos1(serving_locs[q][r][0], serving_locs[q][r][1]);
+
+                cv::Vec2i uv0 = unimap.xy_uv(pos0);
+                cv::Vec2i uv1 = unimap.xy_uv(pos1);
+
+                is_far = check_approach_travel_line(travel_map, uv0, uv1);
+
+                std::vector<cv::Vec2i> path = ctrl.path_finding(~travel_map, uv0, uv1);
+                if(path.size() == 0)
+                {
+                    is_broken = true;
+                }
+
+                if(is_far == true || is_broken == true)
+                {
+                    if(idx < 5)
                     {
-                        msg+=order_msg;
+                        uint8_t _is_broken = uint8_t(is_broken);
+                        uint8_t _is_far = uint8_t(is_far);
+                        QString _group = serving_group_names[q];
+                        QString _name = serving_names[q][r];
+
+                        memcpy(&msg.is_broken[idx], &_is_broken, sizeof(uint8_t));
+                        memcpy(&msg.is_far[idx],&_is_far, sizeof(uint8_t));
+                        memcpy(&msg.group[idx], _group.toUtf8().data(), 255);
+                        memcpy(&msg.name[idx], _name.toUtf8().data(), 255);
                     }
-                    order_msg=msg;
+                    idx++;
                 }
             }
-            else //만약 정해진 위치가 아닌 다른 위치가 들어온다면.
-            {
-                qDebug()<<"위치 다름.";
-                QString lift_high = "lift_high,"+QString::number(shelve_height);
-                order_msg.append(lift_high);//리프트 이동
-                //                order_msg.append("scene done");//리프트 이동
-            }
-
-            for(auto& it: object_infos) // get propreate gripping position hands data
-            {
-                if(it.second == nullptr)
-                {
-                    continue;
-                }
-
-                if (it.second->obj_id == json_destination_box["name"].toString())
-                {
-
-                    //                        std::cout<<it.second->RB_5_pose[0]<<std::endl;
-                    qDebug()<<"grap pose : "<<it.second->obj_grap_pose;
-                    qDebug()<<"ready grap pose :"<<it.second->obj_ready_grap_pose;
-                    //                        order_msg.append("");
-                    //                        order_msg.append("");
-
-                    qDebug()<<"grap pose : "<<it.second->obj_grap_pose;
-                    qDebug()<<"ready grap pose :"<<it.second->obj_ready_grap_pose;
-                    //                        order_msg.append("");
-                    //                        order_msg.append("");
-                    QString grasp_ready = "grasp ready,"+it.second->obj_ready_grap_pose;
-                    //                qDebug()<<"robot moving :" <<robot_vision;
-                    order_msg.append(grasp_ready);
-                    order_msg.append("wait");
-                    order_msg.append("robot pump on");
-
-                    QString real_grasp = "grasp real,"+it.second->obj_grap_pose;
-                    //                qDebug()<<"robot moving :" <<robot_vision;
-                    order_msg.append(real_grasp);
-                    order_msg.append("robot pop");
-                    //                order_msg.append("robot pump on");
-                    order_msg.append("robot mid left");
-
-                    QString lift_down = "lift_high,5";
-                    order_msg.append(lift_down);//리프트 이동
-                    order_msg.append("robot pump off");
-                    order_msg.append("success");
-                }
-            }
-
-            mtx.lock();
-            order_yj_list_msg.push(order_msg);
-            //            qDebug()<<"yujin : "<<order_msg;
-            mtx.unlock();
-            cur_step_yj = FMS_ROBOT_STATE_START;
-            //                qDebug()<<"나는 큐의 크기를 알고싶다 : "<<order_list_msg.size();
-            //                cur_step = ROBOT_STATE_START;
-            flag_circle = false;
-            yujin_old_msg_size = order_yj_list_msg.size();
         }
     }
-    order_yj_json_msg.pop();// loop 안에서 pop해야함.
-}
 
-void MainWindow::yujin_loop()
-{
-    /*int seq = 0;
-    static int yujin_timeout = 0;
-    int cnt = 1;
-
-    QTime time = QTime::currentTime();
-    QString timeString = time.toString();
-
-    //websocket 에서 시작을 알려줌.
-    //    cur_step_yj = web.cur_step;
-
-    int new_yujin_msg_size = order_yj_list_msg.size();
-    //    qDebug()<<"order_yj_list_msg : "<<order_yj_list_msg.front();
-
-
-    // 여러 메시지가 들어올 때 que 에 저장해놓고 사용하기 위함.
-    if (order_yj_list_msg.size()!=0){
-        if(yujin_old_msg_size - new_yujin_msg_size > 0 && yujin_que_time !=0)
-        {
-            yujin_scene = order_yj_list_msg.front();
-            cur_step_yj = FMS_ROBOT_STATE_START;
-
-            qDebug()<<"size check 진행중...";
-            qDebug()<<"old msg size : "<<yujin_old_msg_size;
-            qDebug()<<"new msg size : "<<new_yujin_msg_size;
-
-        }
-        else if(yujin_que_time == 0)
-        {
-            yujin_scene = order_yj_list_msg.front();
-            cur_step_yj = FMS_ROBOT_STATE_START;
-
-            qDebug()<<"처음으로 루프 진행중...";
-            qDebug()<<"old msg size : "<<yujin_old_msg_size;
-            qDebug()<<"new msg size : "<<new_yujin_msg_size;
-        }
-        yujin_old_msg_size = new_yujin_msg_size;
-        yujin_que_time ++;
-    }
-
-    switch(cur_step_yj)
+    for(size_t p = 0; p < resting_locs.size(); p++)
     {
-
-    qDebug()<<"Yujin seqLoop START!!";
-
-    case FMS_ROBOT_STATE_START:
-    {
-        yujin_scene.prepend("init");
-        if (flag_circle == false)
+        for(size_t q = 0; q < charging_locs.size(); q++)
         {
-            yujin_scene.append("scene done");
-        }
-        qDebug()<<"scene : "<<yujin_scene;
-
-        cur_step_yj = FMS_ROBOT_STATE_CHECK_SCENE;
-        yujin_timeout = 500/100;
-        break;
-    }
-    case FMS_ROBOT_STATE_CHECK_SCENE:
-    {
-        if(--yujin_timeout > 0)
-            break;
-        if(yujin_scene.size() > 0)
-        {
-            //            qDebug()<<"Sssssssssssssssssssssssssssssss";
-            ui->te_status->setText(yujin_scene[0]);
-            //            QString log = "["+timeString +"] " + scene[0];
-            //            save_log(log);
-
-            qDebug() << "check scene " << yujin_scene[0] << yujin_scene.size();
-            if(yujin_scene[0] == "move_point_1" || yujin_scene[0] == "move_point_2"|| yujin_scene[0] == "robot origin")
-            {
-                qDebug() << "move point";
-                cur_step_yj = FMS_ROBOT_STATE_AMR_START;
-                //                web.cur_step = cur_step_yj;
-            }
-            else if(yujin_scene[0] == "init" || yujin_scene[0] == "robot_init"){
-                //                ROBOT_STATE_CHECK_SCENE=web.cur_step;
-                cur_step_yj = FMS_ROBOT_STATE_ROBOT_START;
-            }
-            else if(yujin_scene[0].left(4) == "lift"){
-                cur_step_yj = FMS_ROBOT_STATE_LIFT_START;
-            }
-            else if(yujin_scene[0].left(5) == "robot"){
-                cur_step_yj = FMS_ROBOT_STATE_ROBOT_START;
-            }
-            else if(yujin_scene[0] == "vision"){
-                cur_step_yj = FMS_ROBOT_STATE_VISION_START;
-            }
-            else if(yujin_scene[0] == "robot_grasp_ready"){
-                cur_step_yj = FMS_ROBOT_STATE_GRIPPER_START;
-            }
-            else if(yujin_scene[0] == "robot_grasp"){
-                cur_step_yj = FMS_ROBOT_STATE_GRIPPER_START;
-            }
-            else if(yujin_scene[0] == "lift_down"){
-                cur_step_yj = FMS_ROBOT_STATE_LIFT_START;
-            }
-            else if(yujin_scene[0] == "lift_mid"){
-                cur_step_yj = FMS_ROBOT_STATE_LIFT_START;
-            }
-            else if(yujin_scene[0] == "lift_high"){
-                cur_step_yj = FMS_ROBOT_STATE_LIFT_START;
-            }
-            else if(yujin_scene[0].left(6) == "mobile"){
-                cur_step_yj = FMS_ROBOT_STATE_AMR_START;
-            }
-            else if(yujin_scene[0] == "wait"){
-                cur_step_yj = FMS_ROBOT_STATE_WAIT;
-            }
-            else if(yujin_scene[0] == "success"){
-                cur_step_yj = FMS_ROBOT_STATE_SUCCESS;
-            }
-
-            else{
-                qDebug() << "SCENE DONE";
-                web.seqLoop_done_flag = true;
-                order_yj_list_msg.pop();
-                cur_step_yj = FMS_ROBOT_STATE_NOT_READY;
-            }
-
-            web.cur_step = cur_step_yj;
-            yujin_timeout = 500/100;
-            break;
-        }
-
-        else
-        {
-            cnt++;
-        }
-    }
-    case FMS_ROBOT_STATE_VISION_START:
-    {
-        if(--yujin_timeout > 0)
-            break;
-        if(yujin_scene.size() > 0){
-            ui->le_scenario->setStyleSheet("QLineEdit{background-color:green}");
-            if(yujin_scene[0] == "vision"){
-                on_pb_shutter_clicked();
-            }
-        }
-        else{
-            ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-            qDebug() << "SCENE DONE";
-            cur_step_yj = FMS_ROBOT_STATE_NOT_READY;
-            web.cur_step = cur_step_yj;
-        }
-        yujin_timeout = 2000/100;
-
-        cur_step_yj = FMS_ROBOT_STATE_VISION_MOVE_CHECK;
-        web.cur_step = cur_step_yj;
-        break;
-    }
-    case FMS_ROBOT_STATE_VISION_MOVE_CHECK:
-    {
-        if(--yujin_timeout > 0)
-            break;
-
-        cur_step_yj = FMS_ROBOT_STATE_VISION_WAIT;
-        web.cur_step = cur_step_yj;
-        break;
-    }
-
-    case FMS_ROBOT_STATE_VISION_WAIT:
-    {
-        //내부 조건 만족하지 않을 시.
-
-        QString vision_msg = ui->lb_keti_point->text();
-        //        qDebug()<<"vision_msg!!!!!!!!!!!!!!!!:"<<vision_msg;
-        if(vision_msg=="OBJ_NONE")
-        {
-            yujin_scene.clear();
-            yujin_scene.append("robot mid left");
-            yujin_scene.append("lift_down");
-            yujin_scene.append("scene done");
-            cur_step_yj = FMS_ROBOT_STATE_CHECK_SCENE;
-        }
-        else if(vision_msg == "")
-        {
-            // 빈 배열 메시지가 들어오면 비전 again
-            qDebug()<<"비전 again";
-            cur_step_yj = FMS_ROBOT_STATE_VISION_START;
-        }
-        else
-        {
-            cur_step_yj = FMS_ROBOT_STATE_VISION_DONE;
-        }
-        web.cur_step = cur_step_yj;
-        break;
-    }
-    case FMS_ROBOT_STATE_VISION_DONE:
-    {
-        if(flag_circle)
-        {
-            QString last = yujin_scene[0];
-            yujin_scene.pop_front();
-            yujin_scene.append(last);
-        }
-        else
-        {
-            yujin_scene.pop_front();
-        }
-        cur_step_yj = FMS_ROBOT_STATE_CHECK_SCENE;
-        web.cur_step = cur_step_yj;
-        break;
-    }
-
-    case FMS_ROBOT_STATE_AMR_START:
-    {
-        if(--yujin_timeout > 10)
-            break;
-        if(yujin_scene.size() > 0){
-            if(yujin_scene[0] == "mobile move1"){
-
-                QJsonObject json_output;
-                json_output["MSG_TYPE"] = "MOVE";
-                json_output["POSE_x"] = 0;
-                json_output["POSE_y"] = -1.13;
-                json_output["POSE_theta"] = 0; ///yujin 에서는 라디안으로 줌.
-                QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
-                mb.cmdSendData(json_string);
-
-                ui->le_mobile_move_status->setStyleSheet("QLineEdit{background-color:red}");
-                qDebug()<<"mobile working";
-            }
-            else if(scene[0] == "mobile move2"){
-
-                QJsonObject json_output;
-                json_output["MSG_TYPE"] = "MOVE";
-                json_output["POSE_x"] = 2.16;
-                json_output["POSE_y"] = 0.34;
-                json_output["POSE_theta"] = 0; ///yujin 에서는 라디안으로 줌.
-                QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
-                mb.cmdSendData(json_string);
-
-                ui->le_mobile_move_status->setStyleSheet("QLineEdit{background-color:red}");
-                qDebug()<<"mobile working";
-            }
-        }
-        else
-        {
-            qDebug() << "SCENE DONE";
-            cur_step_yj = FMS_ROBOT_STATE_NOT_READY;
-        }
-        yujin_timeout = 1000/200;
-        cur_step_yj = FMS_ROBOT_STATE_AMR_MOVE_CHECK;
-        break;
-    }
-    case FMS_ROBOT_STATE_AMR_MOVE_CHECK:
-    {
-        if(--yujin_timeout > 5)
-            break;
-
-        if(mobile_moving_flag){
-            qDebug() << "moving";
-            cur_step_yj = FMS_ROBOT_STATE_AMR_MOVE_WAIT_ARRIVE;
-        }
-        //        else if(abs(mb.pose_x-5.67)>0.5){
-        //            qDebug() << "mobile not moving";
-        ////            cur_step = ROBOT_STATE_AMR_START;4
-
-        //            cur_step = ROBOT_STATE_AMR_START;
-        //        }
-        break;
-    }
-
-    case FMS_ROBOT_STATE_AMR_MOVE_WAIT_ARRIVE:
-    {
-        if(mobile_moving_flag){
-            qDebug() << "move done check";
-            cur_step_yj = FMS_ROBOT_STATE_AMR_MOVE_CHECK;
-            //             ui->le_mobile_move_status->setStyleSheet("QLineEdit{background-color:green}");
-        }
-        else if(mobile_moving_flag==false)
-        {
-            qDebug() << "move done check";
-            if(scene[0] == "mobile move1"){
-
-                if(abs(mb.pose_x-0)>1.0)
-                {
-                    cur_step_yj = FMS_ROBOT_STATE_AMR_START;
-                }
-                else{
-                    cur_step_yj = FMS_ROBOT_STATE_AMR_MOVE_DONE;
-                }
-            }
-            else if(scene[0] == "mobile move2"){
-
-                if(abs(mb.pose_x-2.16)>1.0)
-                {
-                    cur_step_yj = FMS_ROBOT_STATE_AMR_START;
-                }
-                else{
-                    cur_step_yj = FMS_ROBOT_STATE_AMR_MOVE_DONE;
-                }
-            }
-
-            mobile_moving_flag = false;
-            ui->le_mobile_move_status->setStyleSheet("QLineEdit{background-color:green}");
-        }
-
-        break;
-    }
-    case FMS_ROBOT_STATE_AMR_MOVE_DONE:
-    {
-        if(flag_circle){
-            QString last = scene[0];
-            scene.pop_front();
-            scene.append(last);
-        }else{
-            scene.pop_front();
-        }
-        cur_step_yj = FMS_ROBOT_STATE_CHECK_SCENE;
-        break;
-    }
-
-    case FMS_ROBOT_STATE_LIFT_START:
-    {
-        if(--yujin_timeout > 0)
-            break;
-
-        QStringList lift = yujin_scene[0].split(",");
-        lift_hight = lift[1].toDouble();
-
-        md_mot.move_position(lift_hight);
-        md_mot.move_position(lift_hight);
-        md_mot.move_position(lift_hight);
-
-        cur_step_yj = FMS_ROBOT_STATE_LIFT_MOVE_CHECK;
-        web.cur_step = cur_step_yj;
-        yujin_timeout = 1000/100;
-
-        break;
-    }
-    case FMS_ROBOT_STATE_LIFT_MOVE_CHECK:
-    {
-        if(--yujin_timeout > 0)
-            break;
-        qDebug()<<"FMS_ROBOT_STATE_LIFT_MOVE_CHECK";
-        // 리프트 높이가 요청한 높이에서 2mm이상 차이 나는 경우 대기로 넘어가기.
-        if(abs(lift_pos-lift_hight)<10)
-        {
-            qDebug() << "mobile not moving";
-            qDebug() << "lift_pos : "<<lift_pos;
-            qDebug() << "lift_hight : "<<lift_hight;
-
-            // when self or ext collision occured -> stop the e/v
-            if(cobot.systemStat.sdata.op_stat_collision_occur == 1 || cobot.systemStat.sdata.op_stat_self_collision == 1)
-            {
-                //내부에 가둬버리기
-                bt_rpmZero();
-                ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-            }
-            else
-            {
-                cur_step_yj = FMS_ROBOT_STATE_LIFT_WAIT;
-            }
-        }
-        else
-        {
-            cur_step_yj = FMS_ROBOT_STATE_LIFT_MOVE_CHECK;
-        }
-        web.cur_step = cur_step_yj;
-
-        yujin_timeout = 500/100;
-
-        break;
-    }
-    case FMS_ROBOT_STATE_LIFT_WAIT:
-    {
-        qDebug()<<"sssssssssssssssssssssssssssssssssss";
-        if(lift_state == "done")
-        {
-            qDebug()<<"done :"<<abs(lift_pos-lift_hight);
-            //                if(integrate_ui.lift_state == lift_hight){
-            if (abs(lift_pos)-abs(lift_hight)<2)
-            {
-                qDebug() << "lift not moving";
-                cur_step_yj = FMS_ROBOT_STATE_LIFT_DONE;
-            }
-            else
-            {
-
-                //                cur_step_yj = FMS_ROBOT_STATE_LIFT_DONE;
-                //3회까지 retry 하고 실패시 fail
-                if(lift_yujin_retry<3)
-                {
-                    lift_yujin_retry++;
-                    cur_step = FMS_ROBOT_STATE_LIFT_START;
-                    qDebug()<<"lift Retry";
-                }
-                else
-                {
-                    //내부에 가둬버리기
-                    lift_yujin_retry = 0;
-                    ui->le_scenario->setStyleSheet("QLineEdit{background-color:green}");
-                    qDebug()<<"lift Error";
-                }
-                web.cur_step = cur_step_yj;
-
-            }
-            break;
-        }
-    case FMS_ROBOT_STATE_LIFT_DONE:
-        {
-            qDebug() << "LIFT DONE";
-            if(flag_circle)
-            {
-                QString last = yujin_scene[0];
-                yujin_scene.pop_front();
-                yujin_scene.append(last);
-            }
-            else
-            {
-                yujin_scene.pop_front();
-            }
-            cur_step_yj = FMS_ROBOT_STATE_CHECK_SCENE;
-            web.cur_step = cur_step_yj;
-            break;
-        }
-
-        case FMS_ROBOT_STATE_ROBOT_START:
-        {
-
-            bool json_rb_val = yujin_scene[0].contains(",", Qt::CaseInsensitive);
-            if(json_rb_val)
-            {
-                QStringList rb = yujin_scene[0].split(",");
-                cv::Vec6d rb_pose;
-                for(int a=1;a<7;a++) // get from saved json file
-                {
-                    rb_pose[a-1] = rb[a].toDouble();
-                }
-
-                if(rb[0] == "robot vision"){
-                    qDebug()<<rb_pose[0]<<rb_pose[1]<<rb_pose[2]<<rb_pose[3]<<rb_pose[4]<<rb_pose[5];
-                    cobot.MoveJoint(rb_pose[0],rb_pose[1],rb_pose[2],rb_pose[3],rb_pose[4],rb_pose[5], -1, -1);
-                }
-
-            }
-
-            if(yujin_scene[0] == "robot init"){
-                on_BTN_MOVE_JOINT_MID_RIGHT_clicked();
-            }
-            else if(yujin_scene[0] == "robot vision box center"){
-                //            when i use handeye program
-                //            on_BTN_MOVE_JOINT_BOX_CENTER_clicked();
-                //            when i use keti program
-                on_BTN_MOVE_JOINT_BOX_CENTER_KETI_clicked();
-            }
-            else if(yujin_scene[0] == "robot mid vision"){
-                on_BTN_MOVE_JOINT_MID_clicked();
-            }
-            else if(yujin_scene[0] == "robot high vision"){
-                on_BTN_MOVE_JOINT_HIGH_clicked();
-            }
-            else if(yujin_scene[0] == "robot low vision"){
-                on_BTN_MOVE_JOINT_LOW_clicked();
-            }
-
-            else if(yujin_scene[0] == "robot init pick"){
-                cobot.MoveTCP(-231,-78,617,0,0,-90,-1,-1);
-            }
-            else if(yujin_scene[0] == "robot move"){
-                //            cobot.MoveJointBlend_Clear();
-                //            cobot.MoveJointBlend_AddPoint(-90, 25.14, -143, 36,-93, 0, -1, -1);
-                //            cobot.MoveJointBlend_AddPoint(-175, 25, -143, 28, -90, 3.6, -1, -1);
-                //            cobot.MoveJointBlend_AddPoint(-186, -14, -121, 45, -89, 6, -1, -1);
-                //            cobot.MoveJointBlend_MovePoint();
-
-                cobot.MoveJoint(-186, -14, -121, 45, -89, 6, 0.8, 0.8);
-            }
-            else if(yujin_scene[0] == "robot push"){
-                on_bt_cobot_push_clicked();
-            }
-            else if(yujin_scene[0] == "robot pop"){
-                on_BTN_MOVE_JOINT_POP_clicked();
-            }
-            else if(yujin_scene[0] == "robot mid left"){
-                on_BTN_MOVE_JOINT_MID_LEFT_clicked();
-            }
-            else if(yujin_scene[0] == "robot mid right"){
-                on_BTN_MOVE_JOINT_MID_RIGHT_clicked();
-            }
-            else if(yujin_scene[0] == "robot approach"){
-                on_bt_cobot_move2object_approach_clicked();
-            }
-            else if(yujin_scene[0] == "robot pick"){
-                bt_cobot_move2object();
-            }
-            else if(yujin_scene[0] == "robot pump off"){
-                //            cobot.MoveTCP(497, 55, 202, 90, 0, 90, 0.5, 0.5);
-                cobot.ControlBoxDigitalOut(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-            }
-            else if(yujin_scene[0] == "robot pump on"){
-                //            cobot.MoveTCP(497, 55, 202, 90, 0, 90, 0.5, 0.5);
-                cobot.ControlBoxDigitalOut(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-            }
-
-            else if(yujin_scene[0] == "robot high vision"){
-                on_BTN_MOVE_JOINT_HIGH_clicked();
-
-            }
-            else if(yujin_scene[0] == "robot done"){
-                //            cobot.MoveJointBlend_Clear();
-
-                //            cobot.MoveJointBlend_AddPoint(-175,25,-143,28,-90,0,-1,-1);
-                //            cobot.MoveJointBlend_AddPoint(-186,-14,-121,45,-90,6,-1,-1);
-                //            cobot.MoveJointBlend_AddPoint(-231,-78,61,0,0,-90,-1,-1);// check
-
-                cobot.MoveJoint(-15, 41, -128, 87, -74 ,0 , -1, -1);
-            }
-            cur_step_yj = FMS_ROBOT_STATE_ROBOT_MOVE_CHECK;
-            web.cur_step = cur_step_yj;
-            //            yujin_timeout = 1000/200;
-            break;
-        }
-        case FMS_ROBOT_STATE_ROBOT_MOVE_CHECK:
-        {
-
-            ui->le_scenario->setStyleSheet("QLineEdit{background-color:green}");
-            //        qDebug()<<"rb5 robot_state : "<<cobot.systemStat.sdata.robot_state;
-
-            //파지 직후에 떨어진것도 잡기 위해 체크 넣음.
-            if(cobot.systemStat.sdata.robot_state == 3){
-                qDebug() << "robot moving check";
-                if(yujin_scene[0] == "robot mid left"||yujin_scene[0] == "robot mid right")
-                {
-                    QString gripper = ui->le_pick->styleSheet();
-                    bool gripper_state = gripper.contains("red", Qt::CaseInsensitive);
-                    //                qDebug()<<"moving to basket : "<<gripper_state;
-
-                    if(gripper_state)
-                    {
-                        //물체 감지가 일어난 경우 robot pop 단어 삭제. 이후 다음 과정 진행.
-                        cur_step_yj = FMS_ROBOT_STATE_ROBOT_WAIT;
-                    }
-                    else
-                    {
-                        ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-                        qDebug()<<"ERROR!!!!";
-                        cur_step_yj = FMS_ROBOT_STATE_NOT_READY;
-                    }
-                }
-                else{
-                    cur_step_yj = FMS_ROBOT_STATE_ROBOT_WAIT;
-                }
-
-                yujin_timeout = 1000/100;
-            }
-            else{
-                cur_step_yj = FMS_ROBOT_STATE_ROBOT_WAIT;
-                yujin_timeout = 1000/100;
-            }
-
-            break;
-        }
-        case FMS_ROBOT_STATE_ROBOT_WAIT:
-        {
-            if(--yujin_timeout > 0)
-                break;
-            if(cobot.systemStat.sdata.robot_state == 1){
-                qDebug() << "robot moving done check";
-                cur_step_yj = FMS_ROBOT_STATE_ROBOT_DONE;
-                web.cur_step = cur_step_yj;
-                break;
-            }
-            break;
-        }
-        case FMS_ROBOT_STATE_ROBOT_DONE:
-        {
-            if(--yujin_timeout > 0)
-                break;
-
-            if(flag_circle)
-            {
-                QString last = yujin_scene[0];
-                yujin_scene.pop_front();
-                yujin_scene.append(last);
-            }
-            else if(yujin_scene[0] == "robot pop")
-            {
-                // 로봇팔이 물체를 드는 과정에서 석션, 그리퍼에 물체 감지가 되지 않는 경우 다시 비전 자세로 돌아가도록 scene에 명령을 넣어줌.
-                QString gripper = ui->le_pick->styleSheet();
-                bool gripper_state = gripper.contains("red", Qt::CaseInsensitive);
-                qDebug()<<gripper_state;
-
-                if(gripper_state)
-                {
-                    //물체 감지가 일어난 경우 robot pop 단어 삭제. 이후 다음 과정 진행.
-                    yujin_scene.pop_front();
-                }
-                else
-                {
-                    if(yujin_robot_pop_retry<3)
-                    {
-                        //                    scene.pop_front();
-                        qDebug()<<"robot retry!!!!!";
-
-                        QStringList retry_msg;
-
-                        retry_msg.append("wait");
-                        retry_msg.append("robot vision box center");
-                        retry_msg.append("wait");
-                        retry_msg.append("vision");
-                        retry_msg.append("wait");
-                        retry_msg.append("robot pick");
-                        retry_msg.append("robot push");
-                        retry_msg.append("wait");
-                        retry_msg.append("robot pump on");
-
-                        yujin_scene=retry_msg+yujin_scene;
-
-                        yujin_scene.prepend("robot pump off");
-
-                        if (lift_pos>500)
-                        {
-                            yujin_scene.prepend("robot high vision");
-                        }
-                        else if(lift_pos<500)
-                        {
-                            yujin_scene.prepend("robot midvision");
-                        }
-                        else if(lift_pos<100)
-                        {
-                            yujin_scene.prepend("robot low vision");
-
-                        }
-                        else
-                        {
-                            yujin_scene.prepend("robot mid vision");
-                        }
-
-                        ui->le_scenario->setStyleSheet("QLineEdit{background-color:green}");
-                        yujin_robot_pop_retry++;
-                        qDebug()<<"Retry :"<<yujin_robot_pop_retry;
-                    }
-                    else
-                    {
-                        yujin_robot_pop_retry = 0;
-                        // 현재 명령 지우기
-                        yujin_scene.clear();
-                        // lift 및 로봇 상태 원상복구
-                        yujin_scene.prepend("lift_mid,1");
-                        // lift 에 따른 로봇의 위치를 파악 후 로봇의 위치 원상복귀 시킴.
-                        yujin_scene.prepend("robot mid left");
-                        ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-                    }
-                }
-            }
-
-            else{
-                yujin_scene.pop_front();
-                ui->le_scenario->setStyleSheet("QLineEdit{background-color:green}");
-            }
-            cur_step_yj = FMS_ROBOT_STATE_CHECK_SCENE;
-            break;
-        }
-
-        case FMS_ROBOT_STATE_GRIPPER_START:
-        {
-            //        if(scene[0] == "robot_grasp_ready"){
-            //            integrate_ui.onSocketWrite("open gripper");
-            //        }
-            //        else if(scene[0] == "robot_grasp"){
-            //            integrate_ui.onSocketWrite("close gripper"); //400
-            //            //                scene.pop_front();
-            //        }
-            cur_step_yj = FMS_ROBOT_STATE_GRIPPER_MOVE_CHECK;
-            yujin_timeout = 600/100;
-            break;
-        }
-        case FMS_ROBOT_STATE_GRIPPER_MOVE_CHECK:
-        {
-            if(--yujin_timeout > 0)
-                break;
-            cur_step_yj = FMS_ROBOT_STATE_GRIPPER_DONE;
-            //            if(integrate_ui.robot_state == 3){
-            //                qDebug() << "robot moving check";
-            //                cur_step = ROBOT_STATE_ROBOT_WAIT;
-            //            }else{
-            //                qDebug() << "robot not moving";
-
-            //                cur_step = ROBOT_STATE_ROBOT_START;
-            //            }
-
-            break;
-        }
-        case FMS_ROBOT_STATE_GRIPPER_WAIT:
-        {
-            if(--yujin_timeout > 0)
-                break;
-            //        if(integrate_ui.robot_state == 1){
-            //            qDebug() << "robot moving done check";
-            //            cur_step = ROBOT_STATE_ROBOT_DONE;
-            //            break;
-            //        }
-            break;
-        }
-
-        case FMS_ROBOT_STATE_WAIT:{
-            //        scene.append("wait");
-            //        qDebug()<<"wait";
-            //        qDebug()<<"timeout"<<timeout;
-
-            cur_step_yj = FMS_ROBOT_STATE_WAIT_OUT;
-            yujin_timeout = 3000/200;
-            break;
-        }
-
-        case FMS_ROBOT_STATE_WAIT_OUT:{
-            //        qDebug()<<"wait out";
-            if(--yujin_timeout > 0)
+            if(idx >= 5)
             {
                 break;
             }
-            //            qDebug()<<yujin_scene;
-            yujin_scene.pop_front();
-            //            qDebug()<<yujin_scene;
-            cur_step_yj = FMS_ROBOT_STATE_CHECK_SCENE;
-            break;
-        }
 
-        case FMS_ROBOT_STATE_GRIPPER_DONE:
-        {
-            if(flag_circle)
+            bool is_broken = false;
+            bool is_far = false;
+
+            cv::Mat travel_map = unimap.get_map_travel();
+
+            cv::Vec2d pos0(resting_locs[p][0], resting_locs[p][1]);
+            cv::Vec2d pos1(charging_locs[q][0], charging_locs[q][1]);
+
+            cv::Vec2i uv0 = unimap.xy_uv(pos0);
+            cv::Vec2i uv1 = unimap.xy_uv(pos1);
+
+            is_far = check_approach_travel_line(travel_map, uv0, uv1);
+
+            std::vector<cv::Vec2i> path = ctrl.path_finding(~travel_map, uv0, uv1);
+            if(path.size() == 0)
             {
-                QString last = yujin_scene[0];
-                yujin_scene.pop_front();
-                yujin_scene.append(last);
+                is_broken = true;
             }
-            else
+
+            if(is_far == true || is_broken == true)
             {
-                yujin_scene.pop_front();
-            }
-            cur_step_yj = FMS_ROBOT_STATE_CHECK_SCENE;
-            break;
-        }
+                if(idx < 5)
+                {
+                    uint8_t _is_broken = uint8_t(is_broken);
+                    uint8_t _is_far = uint8_t(is_far);
+                    QString _group = "charging_locations";
+                    QString _name = "";
 
-        case FMS_ROBOT_STATE_NOT_READY:
-        {
-            yujin_scene.append("not ready");
-            break;
-        }
+                    memcpy(&msg.is_broken[idx], &_is_broken, sizeof(uint8_t));
+                    memcpy(&msg.is_far[idx],&_is_far, sizeof(uint8_t));
+                    memcpy(&msg.group[idx], _group.toUtf8().data(), 255);
+                    memcpy(&msg.name[idx], _name.toUtf8().data(), 255);
+                }
+                idx++;
+            }
         }
     }
-    //     order_yj_list_msg.pop();// loop 안에서 pop해야함.*/
-}
 
-void MainWindow::seqLoop()
-{
-    //    /*
-    int seq = 0;
-    static int timeout = 0;
-
-    QTime time = QTime::currentTime();
-    QString timeString = time.toString();
-
-    int new_msg_size = order_list_msg.size();
-    //    static int old_msg_size = 0;
-
-    // 여러 메시지가 들어올 때 que 에 저장해놓고 사용하기 위함.
-    if (order_list_msg.size()!=0){
-        if(old_msg_size - new_msg_size > 0 && que_time !=0)
-        {
-            scene = order_list_msg.front();
-            cur_step = ROBOT_STATE_START;
-
-            qDebug()<<"size check 진행중...";
-            qDebug()<<"old msg size : "<<old_msg_size;
-            qDebug()<<"new msg size : "<<new_msg_size;
-
-        }
-        else if(que_time == 0)
-        {
-            scene = order_list_msg.front();
-            cur_step = ROBOT_STATE_START;
-
-            qDebug()<<"seqloop 처음으로 루프 진행중...";
-            qDebug()<<"old msg size : "<<old_msg_size;
-            qDebug()<<"new msg size : "<<new_msg_size;
-        }
-        old_msg_size = new_msg_size;
-        que_time ++;
-    }
-
-    switch(cur_step){
-    qDebug()<<"seqLoop START!!";
-
-    case ROBOT_STATE_START:{
-
-        scene.prepend("init");
-        if (flag_circle == false)
-        {
-            scene.append("scene done");
-        }
-        qDebug()<<"scene : "<<scene;
-
-        cur_step = ROBOT_STATE_CHECK_SCENE;
-        timeout = 500/100;
-        break;
-    }
-    case ROBOT_STATE_CHECK_SCENE:{
-        if(--timeout > 0)
-            break;
-
-        if(scene.size() > 0)
-        {
-            ui->te_status->setText(scene[0]);
-
-            QString log = "["+timeString +"] " + scene[0];
-            save_log(log);
-            qDebug() << "check scene " << scene[0] << scene.size();
-
-            ui->le_scenario->setStyleSheet("QLineEdit{background-color:green}");
-            if(scene[0] == "move_point_1" || scene[0] == "move_point_2"|| scene[0] == "robot origin")
-            {
-                qDebug() << "move point";
-                cur_step = ROBOT_STATE_AMR_START;
-            }
-            else if(scene[0] == "init" || scene[0] == "robot_init"){
-                cur_step = ROBOT_STATE_ROBOT_START;
-            }
-            else if(scene[0].left(4) == "lift"){
-                cur_step = ROBOT_STATE_LIFT_START;
-            }
-            else if(scene[0].left(5) == "robot"){
-                cur_step = ROBOT_STATE_ROBOT_START;
-            }
-            else if(scene[0] == "vision"){
-                cur_step = ROBOT_STATE_VISION_START;
-            }
-            else if(scene[0].left(5) == "grasp"){
-                cur_step = ROBOT_STATE_GRIPPER_START;
-            }
-            else if(scene[0] == "lift_down"){
-                cur_step = ROBOT_STATE_LIFT_START;
-            }
-            else if(scene[0] == "lift_mid"){
-                cur_step = ROBOT_STATE_LIFT_START;
-            }
-            else if(scene[0] == "lift_high"){
-                cur_step = ROBOT_STATE_LIFT_START;
-            }
-            else if(scene[0].left(6) == "mobile"){
-                cur_step = ROBOT_STATE_AMR_START;
-            }
-            else if(scene[0] == "wait"){
-                cur_step = ROBOT_STATE_WAIT;
-            }
-            else if(scene[0] == "success"){
-                cur_step = ROBOT_STATE_SUCCESS;
-            }
-            else
-            {
-                qDebug() << "SCENE DONE";
-                order_list_msg.pop();
-                cur_step = ROBOT_STATE_NOT_READY;
-            }
-            timeout = 1000/100;
-            break;
-        }
-    }
-    case ROBOT_STATE_VISION_START:{
-        if(--timeout > 0)
-            break;
-
-        if(scene.size() > 0){
-            ui->le_scenario->setStyleSheet("QLineEdit{background-color:green}");
-            if(scene[0] == "vision")
-            {
-                on_pb_shutter_clicked();
-            }
-        }
-        else{
-            ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-            qDebug() << "SCENE DONE";
-            cur_step = ROBOT_STATE_NOT_READY;
-        }
-        timeout = 2000/100;
-        cur_step = ROBOT_STATE_VISION_MOVE_CHECK;
-        break;
-    }
-    case ROBOT_STATE_VISION_MOVE_CHECK:{
-        if(--timeout > 0)
-            break;
-
-        cur_step = ROBOT_STATE_VISION_WAIT;
-        break;
-    }
-
-    case ROBOT_STATE_VISION_WAIT:{
-        //내부 조건 만족하지 않을 시.
-
-        QString vision_msg = ui->lb_keti_point->text();
-        qDebug()<<"vision_msg!!!!!!!!!!!!!!!!:"<<vision_msg;
-        if(vision_msg == "OBJ_NONE")
-        {
-            scene.clear();
-            scene.append("robot mid left");
-            scene.append("lift_high,1");
-            scene.append("scene done");
-            cur_step = ROBOT_STATE_CHECK_SCENE;
-        }
-        else if(vision_msg == "")
-        {
-            // 빈 배열 메시지가 들어오면 기다려
-            cur_step = ROBOT_STATE_VISION_WAIT;
-            //            scene.append("wait");
-        }
-        else
-        {
-            cur_step = ROBOT_STATE_VISION_DONE;
-        }
-        break;
-    }
-    case ROBOT_STATE_VISION_DONE:{
-        if(flag_circle)
-        {
-            QString last = scene[0];
-            scene.pop_front();
-            scene.append(last);
-        }
-        else
-        {
-            scene.pop_front();
-        }
-        cur_step = ROBOT_STATE_CHECK_SCENE;
-        break;
-    }
-
-    case ROBOT_STATE_AMR_START:{
-        if(--timeout > 0)
-            break;
-
-        //        qDebug()<<"wwwwwwwwww";
-        if(scene.size() > 0){
-            if(scene[0] == "mobile move1"){
-
-                QJsonObject json_output;
-                json_output["MSG_TYPE"] = "MOVE";
-                json_output["POSE_x"] = 4.92;
-                json_output["POSE_y"] = 1.79;
-                json_output["POSE_theta"] = 0.0; ///yujin 에서는 라디안으로 줌.
-                QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
-                mb.cmdSendData(json_string);
-
-                ui->le_mobile_move_status->setStyleSheet("QLineEdit{background-color:red}");
-                ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-                //                mobile_moving_flag=true;
-                qDebug()<<"mobile working";
-            }
-            else if(scene[0] == "mobile move2"){
-
-                QJsonObject json_output;
-                json_output["MSG_TYPE"] = "MOVE";
-                json_output["POSE_x"] = 5.09;
-                json_output["POSE_y"] = 0.47;
-                json_output["POSE_theta"] = 0.0; ///yujin 에서는 라디안으로 줌.
-                QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
-                mb.cmdSendData(json_string);
-
-                ui->le_mobile_move_status->setStyleSheet("QLineEdit{background-color:red}");
-                ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-                //                mobile_moving_flag = true;
-                qDebug()<<"mobile working";
-            }
-            cur_step = ROBOT_STATE_AMR_MOVE_CHECK;
-        }
-        else
-        {
-            qDebug() << "SCENE DONE";
-            cur_step = ROBOT_STATE_NOT_READY;
-        }
-        timeout = 1000/200;
-        cur_step = ROBOT_STATE_AMR_MOVE_CHECK;
-        break;
-    }
-    case ROBOT_STATE_AMR_MOVE_CHECK:{
-        if(--timeout > 10)
-            break;
-
-        ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-        if(mobile_moving_flag)
-        {
-            //            qDebug() << "moving";
-            cur_step = ROBOT_STATE_AMR_MOVE_CHECK;
-        }
-        else
-        {
-            cur_step = ROBOT_STATE_AMR_MOVE_WAIT_ARRIVE;
-        }
-        break;
-    }
-
-    case ROBOT_STATE_AMR_MOVE_WAIT_ARRIVE:
+    for(size_t p = 0; p < resting_locs.size(); p++)
     {
-        qDebug()<<"mobile_moving_flag : "<<mobile_moving_flag;
-        if(mobile_moving_flag){
-            qDebug() << "moving";
-            cur_step = ROBOT_STATE_AMR_MOVE_CHECK;
-            //             ui->le_mobile_move_status->setStyleSheet("QLineEdit{background-color:green}");
-        }
-        else if(mobile_moving_flag == false)
+        for(size_t q = 0; q < cleaning_locs.size(); q++)
         {
-
-            qDebug() << "move done check";
-            if(scene[0] == "mobile move1"){
-                if(abs(mb.pose_x-4.92)>3)
-                {
-                    cur_step = ROBOT_STATE_AMR_START;
-                }
-                else{
-                    cur_step = ROBOT_STATE_AMR_MOVE_DONE;
-                }
-            }
-            else if(scene[0] == "mobile move2"){
-                if(abs(mb.pose_x - 5.09)>3)
-                {
-                    cur_step = ROBOT_STATE_AMR_START;
-                }
-                else{
-                    cur_step = ROBOT_STATE_AMR_MOVE_DONE;
-                }
-            }
-
-            ui->le_mobile_move_status->setStyleSheet("QLineEdit{background-color:green}");
-            ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-        }
-
-        break;
-    }
-    case ROBOT_STATE_AMR_MOVE_DONE:{
-        if(flag_circle){
-            QString last = scene[0];
-            scene.pop_front();
-            scene.append(last);
-        }else{
-            scene.pop_front();
-        }
-        cur_step = ROBOT_STATE_CHECK_SCENE;
-        break;
-    }
-
-    case ROBOT_STATE_LIFT_START:{
-        if(--timeout > 0)
-            break;
-
-        QStringList lift = scene[0].split(",");
-        lift_hight = lift[1].toDouble();
-
-        qDebug()<<"lift : "<<lift;
-        qDebug()<<"lift_hight : "<<lift_hight;
-
-        md_mot.move_position(lift_hight);
-        md_mot.move_position(lift_hight);
-        md_mot.move_position(lift_hight);
-
-        cur_step = ROBOT_STATE_LIFT_MOVE_CHECK;
-        timeout = 1000/100;
-
-        break;
-    }
-    case ROBOT_STATE_LIFT_MOVE_CHECK:{
-        if(--timeout > 0)
-            break;
-        qDebug()<<"ROBOT_STATE_LIFT_MOVE_CHECK";
-        //        ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-
-        // 리프트 높이가 요청한 높이에서 5mm이상 차이 나는 경우 대기로 넘어가기.
-        if(abs(lift_pos-lift_hight)>5){
-            qDebug() << "lift not moving";
-
-            cur_step = ROBOT_STATE_LIFT_WAIT;
-        }
-        else
-        {
-            cur_step = ROBOT_STATE_LIFT_WAIT;
-        }
-        //cur_step = ROBOT_STATE_LIFT_WAIT;
-        timeout = 300/100; //(wait 3회전)
-
-        break;
-    }
-    case ROBOT_STATE_LIFT_WAIT:
-    {
-        qDebug()<<"ROBOT_STATE_LIFT_WAIT";
-        if(lift_state == "done")
-        {
-            if (abs(lift_pos-lift_hight)<10)
-            {
-                qDebug() << "lift not moving";
-                cur_step = ROBOT_STATE_LIFT_DONE;
-            }
-            else
-            {
-                //3회까지 retry 하고 실패시 fail
-                if(lift_retry<3)
-                {
-                    lift_retry++;
-                    cur_step = ROBOT_STATE_LIFT_START;
-                    qDebug()<<"lift Retry";
-                }
-                else
-                {
-                    //내부에 가둬버리기
-                    lift_retry = 0;
-                    ui->le_scenario->setStyleSheet("QLineEdit{background-color:green}");
-                    qDebug()<<"lift Error";
-                    web.CMD_RESULT("faillure");
-                    web.pick_item_failure_count ++;
-                }
-            }
-        }
-        break;
-    }
-    case ROBOT_STATE_LIFT_DONE:{
-        qDebug() << "LIFT DONE";
-        if(flag_circle)
-        {
-            QString last = scene[0];
-            scene.pop_front();
-            scene.append(last);
-        }
-        else
-        {
-            scene.pop_front();
-            //            qDebug()<<scene;
-        }
-        cur_step = ROBOT_STATE_CHECK_SCENE;
-        //        qDebug()<<scene;
-        break;
-    }
-
-    case ROBOT_STATE_ROBOT_START:{
-        qDebug() << "ROBOT_STATE_ROBOT_START";
-
-        bool json_rb_val = scene[0].contains(",", Qt::CaseInsensitive);
-        if(json_rb_val)
-        {
-            QStringList rb = scene[0].split(",");
-            cv::Vec6d rb_pose;
-            for(int a=1; a<7; a++) // get from saved json file
-            {
-                rb_pose[a-1] = rb[a].toDouble();
-            }
-
-            if(rb[0] == "robot vision")
-            {
-                qDebug()<<rb_pose[0]<<rb_pose[1]<<rb_pose[2]<<rb_pose[3]<<rb_pose[4]<<rb_pose[5];
-                cobot.MoveJoint(rb_pose[0],rb_pose[1],rb_pose[2],rb_pose[3],rb_pose[4],rb_pose[5], -1, -1);
-            }
-
-        }
-
-        if(scene[0] == "init")
-        {
-            on_BTN_MOVE_JOINT_MID_RIGHT_clicked();
-        }
-        else if(scene[0] == "robot vision box center"){
-            //            when i use handeye program
-            //            on_BTN_MOVE_JOINT_BOX_CENTER_clicked();
-            //            when i use keti program
-            on_BTN_MOVE_JOINT_BOX_CENTER_KETI_clicked();
-        }
-        else if(scene[0] == "robot mid vision"){
-            on_BTN_MOVE_JOINT_MID_clicked();
-        }
-        else if(scene[0] == "robot high vision"){
-            on_BTN_MOVE_JOINT_HIGH_clicked();
-        }
-        else if(scene[0] == "robot low vision"){
-            on_BTN_MOVE_JOINT_LOW_clicked();
-        }
-
-        else if(scene[0] == "robot init pick"){
-            cobot.MoveTCP(-231,-78,617,0,0,-90,-1,-1);
-        }
-        else if(scene[0] == "robot move"){
-            //            cobot.MoveJointBlend_Clear();
-            //            cobot.MoveJointBlend_AddPoint(-90, 25.14, -143, 36,-93, 0, -1, -1);
-            //            cobot.MoveJointBlend_AddPoint(-175, 25, -143, 28, -90, 3.6, -1, -1);
-            //            cobot.MoveJointBlend_AddPoint(-186, -14, -121, 45, -89, 6, -1, -1);
-            //            cobot.MoveJointBlend_MovePoint();
-
-            cobot.MoveJoint(-186, -14, -121, 45, -89, 6, 0.8, 0.8);
-        }
-        else if(scene[0] == "robot push"){
-            on_bt_cobot_push_clicked();
-        }
-        else if(scene[0] == "robot pop"){
-            on_BTN_MOVE_JOINT_POP_clicked();
-        }
-        else if(scene[0] == "robot mid left"){
-            on_BTN_MOVE_JOINT_MID_LEFT_clicked();
-        }
-        else if(scene[0] == "robot mid right"){
-            on_BTN_MOVE_JOINT_MID_RIGHT_clicked();
-        }
-        else if(scene[0] == "robot approach"){
-            on_bt_cobot_move2object_approach_clicked();
-        }
-        else if(scene[0] == "robot pick"){
-            bt_cobot_move2object();
-        }
-        else if(scene[0] == "robot pump off"){
-            //            cobot.MoveTCP(497, 55, 202, 90, 0, 90, 0.5, 0.5);
-            cobot.ControlBoxDigitalOut(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-            cur_step = ROBOT_STATE_ROBOT_DONE;
-            break;
-        }
-        else if(scene[0] == "robot pump on"){
-            //            cobot.MoveTCP(497, 55, 202, 90, 0, 90, 0.5, 0.5);
-            cobot.ControlBoxDigitalOut(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-            cur_step = ROBOT_STATE_ROBOT_DONE;
-            break;
-        }
-
-        else if(scene[0] == "robot high vision"){
-            on_BTN_MOVE_JOINT_HIGH_clicked();
-
-        }
-        else if(scene[0] == "robot done"){
-            //            cobot.MoveJointBlend_Clear();
-
-            //            cobot.MoveJointBlend_AddPoint(-175,25,-143,28,-90,0,-1,-1);
-            //            cobot.MoveJointBlend_AddPoint(-186,-14,-121,45,-90,6,-1,-1);
-            //            cobot.MoveJointBlend_AddPoint(-231,-78,61,0,0,-90,-1,-1);// check
-
-            cobot.MoveJoint(-15, 41, -128, 87, -74 ,0 , -1, -1);
-        }
-        cur_step = ROBOT_STATE_ROBOT_MOVE_CHECK;
-        break;
-    }
-    case ROBOT_STATE_ROBOT_MOVE_CHECK:{
-        ui->le_scenario->setStyleSheet("QLineEdit{background-color:green}");
-        //        qDebug()<<"rb5 robot_state : "<<cobot.systemStat.sdata.robot_state;
-
-        //파지 직후에 떨어진것도 잡기 위해 체크 넣음.
-        if(cobot.systemStat.sdata.robot_state == 3){
-            qDebug() << "robot moving check";
-            if(scene[0] == "robot mid left"||scene[0] == "robot mid right")
-            {
-                QString vision_msg = ui->lb_keti_point->text();
-                qDebug()<<"aaaaaaaaa vision_msg : "<<vision_msg;
-                if(vision_msg != "OBJ_NONE")
-                {
-                    QString gripper = ui->le_pick->styleSheet();
-                    bool gripper_state = gripper.contains("red", Qt::CaseInsensitive);
-                    //                qDebug()<<"moving to basket : "<<gripper_state;
-
-                    if(gripper_state)
-                    {
-                        //물체 감지가 일어난 경우 robot pop 단어 삭제. 이후 다음 과정 진행.
-                        cur_step = ROBOT_STATE_ROBOT_WAIT;
-                    }
-                    else
-                    {
-                        ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-                        qDebug()<<"GRIPPER ERROR!!!!";
-                        web.CMD_RESULT("faillure");
-                        web.pick_item_failure_count ++;
-                        cur_step = ROBOT_STATE_NOT_READY;
-                    }
-                }
-                else
-                {
-                    cur_step = ROBOT_STATE_ROBOT_WAIT;
-                }
-            }
-            else
-            {
-                cur_step = ROBOT_STATE_ROBOT_WAIT;
-            }
-
-            timeout = 1000/100;
-        }
-        else
-        {
-            if (caution_flag)
-                // （비전에서 위치 이상하게 줘서 이동 못한 경우에는 비전 추가하고 스테이트 확인으로 옮기기)
-            {
-                scene.append("vision");
-                cur_step = ROBOT_STATE_ROBOT_START;
-
-            }
-            else
-            {
-                cur_step = ROBOT_STATE_CHECK_SCENE;
-                timeout = 1000/100;
-            }
-        }
-
-        break;
-    }
-    case ROBOT_STATE_ROBOT_WAIT:{
-        if(--timeout > 0)
-            break;
-        if(cobot.systemStat.sdata.robot_state == 1)
-        {
-            qDebug() << "robot moving done check";
-            cur_step = ROBOT_STATE_ROBOT_DONE;
-            break;
-        }
-        if(cobot.systemStat.sdata.robot_state == 3)
-        {
-            if(scene[0] == "robot mid left"||scene[0] == "robot mid right")
-            {
-                QString vision_msg = ui->lb_keti_point->text();
-                if(vision_msg != "OBJ_NONE")
-                {
-                    QString gripper = ui->le_pick->styleSheet();
-                    bool gripper_state = gripper.contains("red", Qt::CaseInsensitive);
-                    //                qDebug()<<"moving to basket : "<<gripper_state;
-
-                    if(gripper_state)
-                    {
-                        //물체 감지가 일어난 경우 robot pop 단어 삭제. 이후 다음 과정 진행.
-                        cur_step = ROBOT_STATE_ROBOT_WAIT;
-                    }
-                    else
-                    {
-                        ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-                        qDebug()<<"RB5 ERROR!!!!";
-                        web.CMD_RESULT("faillure");
-                        web.pick_item_failure_count ++;
-
-                        cobot.MotionHalt();
-                        cur_step = ROBOT_STATE_NOT_READY;
-                    }
-                }
-                else
-                {
-                    cur_step = ROBOT_STATE_ROBOT_DONE;
-                }
-            }
-        }
-        break;
-    }
-
-    case ROBOT_STATE_ROBOT_DONE:
-    {
-        if(--timeout > 0)
-            break;
-
-        if(flag_circle){
-            QString last = scene[0];
-            scene.pop_front();
-            scene.append(last);
-            ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-        }
-        else if(scene[0] == "robot pop")
-        {
-            // 로봇팔이 물체를 드는 과정에서 석션, 그리퍼에 물체 감지가 되지 않는 경우 다시 비전 자세로 돌아가도록 scene에 명령을 넣어줌.
-            QString gripper = ui->le_pick->styleSheet();
-            bool gripper_state = gripper.contains("red", Qt::CaseInsensitive);
-            qDebug()<<gripper_state;
-            if(gripper_state)
-            {
-                //물체 감지가 일어난 경우 robot pop 단어 삭제. 이후 다음 과정 진행.
-                scene.pop_front();
-            }
-            else
-            {
-                if(robot_pop_retry<3)
-                {
-                    //                    scene.pop_front();
-                    qDebug()<<"robot retry!!!!!";
-
-                    QStringList retry_msg;
-
-                    if(lift_hight < 600)
-                    {
-                        retry_msg.append("wait");
-                        retry_msg.append("robot vision box center");
-                    }
-                    retry_msg.append("wait");
-                    retry_msg.append("vision");
-                    retry_msg.append("wait");
-                    retry_msg.append("robot pick");
-                    retry_msg.append("robot push");
-                    retry_msg.append("wait");
-                    retry_msg.append("robot pump on");
-
-                    scene = retry_msg+scene;
-
-                    if (lift_pos>600)
-                    {
-                        scene.prepend("robot high vision");
-                    }
-                    else if(lift_pos<20)
-                    {
-                        scene.prepend("robot low vision");
-                    }
-                    else
-                    {
-                        scene.prepend("robot mid vision");
-                    }
-
-                    scene.prepend("robot pump off");
-
-                    ui->le_scenario->setStyleSheet("QLineEdit{background-color:green}");
-                    robot_pop_retry++;
-                    qDebug()<<"Retry :"<<robot_pop_retry;
-                }
-                else
-                {
-                    robot_pop_retry = 0;
-                    // 현재 명령 지우기
-                    scene.clear();
-                    // lift 및 로봇 상태 원상복구
-                    scene.prepend("lift_mid,1");
-                    // lift 에 따른 로봇의 위치를 파악 후 로봇의 위치 원상복귀 시킴.
-                    scene.prepend("robot mid left");
-                    ui->le_scenario->setStyleSheet("QLineEdit{background-color:red}");
-                    web.CMD_RESULT("faillure");
-                    web.pick_item_failure_count ++;
-                }
-            }
-        }
-
-        else{
-            scene.pop_front();
-            ui->lb_keti_point->setText("");
-            ui->le_scenario->setStyleSheet("QLineEdit{background-color:green}");
-        }
-        cur_step = ROBOT_STATE_CHECK_SCENE;
-        break;
-    }
-
-    case ROBOT_STATE_GRIPPER_START:{
-        //
-        if(scene[0] == "grasp ready"){
-            bool json_rb_val = scene[0].contains(",", Qt::CaseInsensitive);
-            if(json_rb_val)
-            {
-                QStringList grip = scene[0].split(",");
-                //                cv::Vec2d gripper_pose;
-                //                for(int a=1; a<3; a++) // get from saved json file
-                //                {
-                //                    gripper_pose[a-1] = gripper[a];
-                //                }
-                QString text = grip[1]+grip[2];
-                QByteArray br = text.toUtf8();
-                gripper.Kitech_Client->write(br);
-            }
-
-            //            integrate_ui.onSocketWrite("open gripper");
-            //        }
-            //        else if(scene[0] == "robot_grasp"){
-            //            integrate_ui.onSocketWrite("close gripper"); //400
-            //            //                scene.pop_front();
-            //        }
-            cur_step = ROBOT_STATE_GRIPPER_MOVE_CHECK;
-            timeout = 600/100;
-            break;
-        }
-    case ROBOT_STATE_GRIPPER_MOVE_CHECK:{
-
-            if(--timeout > 0)
-                break;
-            cur_step = ROBOT_STATE_GRIPPER_DONE;
-            //            if(integrate_ui.robot_state == 3){
-            //                qDebug() << "robot moving check";
-            //                cur_step = ROBOT_STATE_ROBOT_WAIT;
-            //            }else{
-            //                qDebug() << "robot not moving";
-
-            //                cur_step = ROBOT_STATE_ROBOT_START;
-            //            }
-
-            break;
-        }
-        case ROBOT_STATE_GRIPPER_WAIT:{
-            if(--timeout > 0)
-                break;
-            //        if(integrate_ui.robot_state == 1){
-            //            qDebug() << "robot moving done check";
-            //            cur_step = ROBOT_STATE_ROBOT_DONE;
-            //            break;
-            //        }
-            break;
-        }
-
-        case ROBOT_STATE_GRIPPER_DONE:{
-            if(flag_circle){
-                QString last = scene[0];
-                scene.pop_front();
-                scene.append(last);
-            }else{
-                scene.pop_front();
-            }
-            cur_step = ROBOT_STATE_CHECK_SCENE;
-            break;
-        }
-        case ROBOT_STATE_WAIT:{
-            //        scene.append("wait");
-            //        qDebug()<<"wait";
-            //        qDebug()<<"timeout"<<timeout;
-
-            cur_step = ROBOT_STATE_WAIT_OUT;
-            timeout = 3000/200;
-            break;
-        }
-        case ROBOT_STATE_WAIT_OUT:{
-            //        qDebug()<<"wait out";
-            if(--timeout > 0)
+            if(idx >= 5)
             {
                 break;
-
             }
-            scene.pop_front();
-            cur_step = ROBOT_STATE_CHECK_SCENE;
-            break;
-        }
 
-        case ROBOT_STATE_NOT_READY:{
-            scene.append("not ready");
-            //            qDebug()<<"not ready";
-            break;
-        }
+            bool is_broken = false;
+            bool is_far = false;
 
-        case ROBOT_STATE_SUCCESS:{
-            qDebug()<<"success";
-            scene.pop_front();
-            web.CMD_RESULT("success");
-            web.pick_item_success_count ++;
-            cur_step = ROBOT_STATE_CHECK_SCENE;
-            break;
-        }
+            cv::Mat travel_map = unimap.get_map_travel();
 
+            cv::Vec2d pos0(resting_locs[p][0], resting_locs[p][1]);
+            cv::Vec2d pos1(cleaning_locs[q][0], cleaning_locs[q][1]);
+
+            cv::Vec2i uv0 = unimap.xy_uv(pos0);
+            cv::Vec2i uv1 = unimap.xy_uv(pos1);
+
+            is_far = check_approach_travel_line(travel_map, uv0, uv1);
+
+            std::vector<cv::Vec2i> path = ctrl.path_finding(~travel_map, uv0, uv1);
+            if(path.size() == 0)
+            {
+                is_broken = true;
+            }
+
+            if(is_far == true || is_broken == true)
+            {
+                if(idx < 5)
+                {
+                    uint8_t _is_broken = uint8_t(is_broken);
+                    uint8_t _is_far = uint8_t(is_far);
+                    QString _group = "cleaning_locations";
+                    QString _name = "";
+
+                    memcpy(&msg.is_broken[idx], &_is_broken, sizeof(uint8_t));
+                    memcpy(&msg.is_far[idx],&_is_far, sizeof(uint8_t));
+                    memcpy(&msg.group[idx], _group.toUtf8().data(), 255);
+                    memcpy(&msg.name[idx], _name.toUtf8().data(), 255);
+                }
+                idx++;
+            }
         }
-        //*/
     }
+
+    if(idx == 0)
+    {
+        logger.write("[PATH_CHECK] all path success", true);
+    }
+    else
+    {
+        QString str;
+        str.sprintf("[PATH_CHECK] some path: %d wrong", idx);
+        logger.write(str, true);
+    }
+
+    msg.num = idx;
+    ipc.set_check_travel(msg);
 }
 
-void MainWindow::bt_auto_homing()
+void MainWindow::bt_SendMaps()
 {
-    auto_homing_clicked = auto_homing_start;
-    //     shutter_clicked = vison_cap_vision_cmd;
-}
+    QString ip = ui->le_IP2Send->text();
+    QString id = ui->le_ID2Send->text();
+    QString pw = ui->le_PW2Send->text();
 
-void MainWindow::auto_homming_seq()
-{
-    //    qDebug()<<"auto_homing_clicked : "<<auto_homing_clicked;
-
-    static int homming_timeout = 0;
-
-    if(auto_homing_clicked == auto_homing_start)
+    if(ip == "" || id == "" || pw == "")
     {
-        bt_move_rpm();
-        bt_move_rpm();
-        bt_move_rpm();
+        ip = setting_config.fms_ip;
+        id = setting_config.fms_id;
+        pw = setting_config.fms_pw;
 
-        homming_timeout = 1000/100;
-        auto_homing_clicked = auto_homing_lift_wait;
-    }
-    else if(auto_homing_clicked == auto_homing_lift_wait)
-    {
-        if(--homming_timeout > 0)
+        if(ip == "" || id == "" || pw == "")
         {
-            //            qDebug()<<homming_timeout;
-            auto_homing_clicked = auto_homing_lift_wait;
-        }
-        else
-        {
-            auto_homing_clicked = auto_homing_lift_working;
+            logger.write("[SERVER] no exist infos", true);
+            return;
         }
     }
-    else if(auto_homing_clicked == auto_homing_lift_working)
-    {
 
-        QString color = ui -> le_lift_move_status->styleSheet();
-        QStringList color_list = color.split(":");
-
-        if(color_list[1] == "green}")
-        {
-            auto_homing_clicked=auto_homing_start;
-        }
-        else if(color_list[1] == "red}")
-        {
-            bt_rpmZero();
-            bt_rpmZero();
-            auto_homing_clicked = auto_homing_working;
-        }
-    }
-    else if(auto_homing_clicked == auto_homing_working)
-    {
-        bt_homing();
-        bt_homing();
-        homming_timeout = 1000/100;
-        auto_homing_clicked = auto_homing_wait;
-    }
-    else if(auto_homing_clicked == auto_homing_wait)
-    {
-        if(--homming_timeout > 0)
-        {
-            qDebug()<<homming_timeout;
-            auto_homing_clicked=auto_homing_done;
-        }
-        else
-        {
-            auto_homing_clicked = auto_homing_done;
-        }
-    }
-    else if(auto_homing_clicked == auto_homing_done)
-    {
-        //        qDebug()<<"homing done!!!";
-        ui->bt_homing->setEnabled(false);
-        ui->bt_lift_homimg->setEnabled(false);
-        ui->bt_auto_homing->setEnabled(false);
-    }
-}
-
-void MainWindow::on_pb_shutter_clicked()
-{
-    //REQ,VISION,DETECT
-    //    BTN_GRIPPER_VISION();
-
-    shutter_clicked = vison_cap_gripper_cmd;
-    //     shutter_clicked = vison_cap_vision_cmd;
-}
-
-void MainWindow::vision_img_capture()
-{
-    static int vision_hand_timeout = 0;
-    switch(shutter_clicked)
-    {
-    case vison_cap_gripper_cmd:
-    {
-        BTN_GRIPPER_VISION();
-        vision_hand_timeout = 1000/100;
-        shutter_clicked = vison_cap_gripper_wait;
-
-        break;
-    }
-    case vison_cap_gripper_wait:
-    {
-        shutter_clicked = vison_cap_vision_cmd;
-
-        break;
-    }
-    case vison_cap_vision_cmd:
-    {
-        if(--vision_hand_timeout > 0)
-        {
-            qDebug()<<vision_hand_timeout;
-            break;
-        }
-
-        if(keti_box_request == false)
-        {
-            QString obj_cmd = ui->cb_get_object_id_vision->currentText();
-            //            QString keti_cmd = "REQ,VISION,DETECT,"+obj_cmd;
-            QString keti_cmd = "REQ,VISION,DETECT";
-            qDebug()<<keti_cmd;
-            vision.Keti_Client->write(keti_cmd.toUtf8());
-
-            IPC::Handeye_FLAG handeye_flag;
-            handeye_flag.flag = true;
-            ipc.set_handeye_flag(handeye_flag);
-            detecting_flag = true;
-            shutter_clicked = vison_cap_done;
-            break;
-        }
-        else if(keti_box_request)
-        {
-            vision.Keti_Client->write("REQ,VISION,BOX_CENT");
-            shutter_clicked = vison_cap_done;
-            keti_box_request = false;
-        }
-    }
-    case vison_cap_done:
-    {
-        break;
-    }
-    }
-}
-
-void MainWindow::on_bt_vision_cmd_capture_clicked()
-{
-    capture_flag = true;
-    qDebug()<<"keti capture";
-}
-
-void MainWindow::on_BTN_MOVE_JOINT_MID_LEFT_clicked()
-{
-    /*
-    qDebug()<<"mmmmmmmmmiiiiiiiiiiiiiddddddddddddd";
-    cobot.MoveJointBlend_Clear();
-    cobot.MoveJointBlend_AddPoint(6.075,-13.372,-109.094,57.454,-92.694,-95.605, 2, -1);
-    cobot.MoveJointBlend_AddPoint(150.682,0.000,-97.412,9.989,-90.000,-88.900 , 0.5, 0.5);
-    cobot.MoveJointBlend_MovePoint();
-    //    cobot.MoveJoint(150.682, 0.0, -97.412, 10.0, -90.0 ,-88.90 , 0.5, 0.5);*/
-
-    float spd = 100.0;
-    float acc = 70.0;
-    float blending_value = 0.2;
-
-    cobot.move_jb2_clear();
-    cobot.move_jb2_add(6.075,-13.372,-109.094,57.454,-92.694,-95.605, spd, acc, blending_value);
-    cobot.move_jb2_add(150.682,0.000,-97.412,9.989,-90.000,-88.900, spd, acc, blending_value);
-    cobot.move_jb2_run();
-    //    cobot.MoveJoint(150.682, 0.0, -97.412, 10.0, -90.0 ,-88.90 , 0.5, 0.5);
-}
-
-void MainWindow::on_ALL_STOP_clicked()
-{
-    bt_rpmZero();
-    cobot.MotionHalt();
-    qDebug()<<"mobile robot stop";
-
-    while (!order_list_msg.empty())
-    {
-        order_list_msg.pop();
-    }
-    cobot.ControlBoxDigitalOut(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-    cur_step = ROBOT_STATE_NOT_READY;
-    flag_circle = false;
-
-    QJsonObject json_output;
-    json_output["MSG_TYPE"] = "STOP";
-
-    QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
-    mb.cmdSendData(json_string);
-    web.CMD_RESULT("cancelled");
-
-}
-
-void MainWindow::on_BTN_MOVE_TOTAL_clicked()
-{
-    scene.clear();
-    //    scene.append("robot init");
-    scene.append("lift_down");//리프트 이동
-    //    scene.append("mobile move1");// 모바일 이동.
-
-    //when lift high
-    scene.append("lift_high");//리프트 이동
-    scene.append("robot high vision");
-    scene.append("vision");
-    //    scene.append("robot high vision point");
-    scene.append("robot pick");
-    scene.append("robot push");
-    scene.append("robot pop");
-    scene.append("robot left");
-    scene.append("lift_down");
-    scene.append("robot pump off");
-    //    scene.append("robot done");
-
-    scene.append("lift_down");//리프트 이동
-    scene.append("robot mid vision");
-    scene.append("vision");
-    //    scene.append("robot high vision point");
-    scene.append("robot pick");
-    scene.append("robot push");
-    scene.append("robot pop");
-    scene.append("robot right");
-    //    scene.append("lift_down");
-    scene.append("robot pump off");
-
-    //    scene.append("mobile rest");// 모바일 대기장소.
-
-    cur_step = ROBOT_STATE_START;
-}
-
-void MainWindow::on_BTN_MOVE_TOTAL_2_clicked()
-{
-    //중간층에 물건 하나 있을 때
-    scene.clear();
-    scene.append("lift_down");//리프트 이동
-    scene.append("robot mid vision");
-    scene.append("vision");
-    scene.append("robot pick");
-    scene.append("robot push");
-    scene.append("robot pop");
-    scene.append("robot right");
-    //    scene.append("lift_down");
-    scene.append("robot pump off");
-
-    scene.append("mobile rest");// 모바일 대기장소.
-
-    cur_step = ROBOT_STATE_START;
-}
-
-void MainWindow::on_BTN_MOVE_TOTAL_3_clicked()
-{
-    scene.clear();
-    //when lift high
-    scene.append("lift_high");//리프트 이동
-    scene.append("robot high vision");
-    scene.append("vision");
-    //    scene.append("robot high vision point");
-    scene.append("robot pick");
-    scene.append("robot push");
-    scene.append("robot pop");
-    scene.append("robot left");
-    scene.append("lift_down");
-    scene.append("robot pump off");
-
-    //when lift high
-    scene.append("lift_high");//리프트 이동
-    scene.append("robot high vision");
-    scene.append("vision");
-    //    scene.append("robot high vision point");
-    scene.append("robot pick");
-    scene.append("robot push");
-    scene.append("robot pop");
-    scene.append("robot right");
-    scene.append("lift_down");
-    scene.append("robot pump off");
-
-    cur_step = ROBOT_STATE_START;
-}
-
-void MainWindow::on_BTN_MOVE_TOTAL_4_clicked()
-{
-    scene.clear();
-    scene.append("lift_mid");//리프트 이동
-    scene.append("robot mid vision");
-    scene.append("vision");
-    //    scene.append("robot high vision point");
-    scene.append("robot pick");
-    scene.append("robot push");
-    scene.append("robot pop");
-    scene.append("robot right");
-    //    scene.append("lift_down");
-    scene.append("robot pump off");
-
-    cur_step = ROBOT_STATE_START;
-}
-
-void MainWindow::on_pb_file_choose_clicked()
-{
-
-    QString filepath = QFileDialog::getOpenFileName(this,"open","../");
-    QString ip = amr_config.AMR_ip;
-    QString id = amr_config.AMR_id;
-    QString pw = amr_config.AMR_pw;
-
+    QString send_path = QDir::homePath() + "/RB_MOBILE/maps";
+    //    QString send_path = QDir::homePath() + "/maps";
     QString destination_path = "/home/" + id + "/RB_MOBILE";
+    //    QString destination_path = "/home/" + id;
 
-    QString cmd = "sshpass -p " + pw + " rsync -avz -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' " + filepath + " " + id + "@" + ip + ":" + destination_path;
-
-    qDebug()<<cmd;
-    std::system(cmd.toLocal8Bit().data());
-
+    QString cmd = "sshpass -p " + pw + " rsync -avz -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'" + send_path + " " + id + "@" + ip + ":" + destination_path;
     int result = system(cmd.toStdString().c_str());
-
+    std::cout<<"file transfer result : "<<result<<std::endl;
     if(result != 0)
     {
-        //            logger.write("[SERVER] rsync command failed.", true);
+        logger.write("[SERVER] rsync command failed.", true);
     }
     else
     {
-        std::cout<<"file transfer done!!"<<std::endl;
+        std::cout<<"file transfer done!"<<std::endl;
+        logger.write("[SERVER] successfully transferred using rsync..", true);
     }
-
 }
 
-void MainWindow::on_bt_rb5_pause_clicked()
+// travel line drawing interface
+void MainWindow::bt_DrawStart()
 {
-    cobot.MotionPause();
+    slam.is_travel = 1;
 }
 
-void MainWindow::on_bt_rb5_resume_clicked()
+void MainWindow::bt_DrawStop()
 {
-    cobot.MotionResume();
+    slam.is_travel = 0;
+    unimap.save_travel_map();
 }
 
-void MainWindow::on_bt_rb5_halt_clicked()
+void MainWindow::bt_SimEmoPush()
 {
-    cobot.MotionHalt();
+    // emo pushed
+#ifdef USE_SIM
+    MOBILE_STATUS status;
+    status.is_ok = true;
+
+    status.emo_state = 0;
+    status.charge_state = 0;
+    status.power_state = 1;
+
+    status.connection_m0 = 1;
+    status.connection_m1 = 1;
+
+    status.status_m0 = 0;
+    status.status_m1 = 0;
+
+    mobile.status_received(status);
+#endif
 }
 
-void MainWindow::set_ui_item_from_unimap()
+void MainWindow::bt_SimEmoRelease()
 {
-    //clear
-    ui->cb_sn_cmd->clear();
+    // emo released
+#ifdef USE_SIM
+    MOBILE_STATUS status;
+    status.is_ok = true;
 
-    QDir dir("/home/rainbow/maps");
-    foreach(QFileInfo item, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries))
+    status.emo_state = 1;
+    status.charge_state = 0;
+    status.power_state = 1;
+
+    status.connection_m0 = 1;
+    status.connection_m1 = 1;
+
+    status.status_m0 = 1;
+    status.status_m1 = 1;
+
+    mobile.status_received(status);
+#endif
+}
+
+void MainWindow::bt_RobotSetLed()
+{
+    int target = ui->spb_LedTarget->value();
+    int mode = ui->spb_LedMode->value();
+    mobile.led(target, mode);
+}
+
+void MainWindow::bt_SoftReload()
+{
+    QString path = QFileDialog::getExistingDirectory(this, "Select dir", QDir::homePath() + "/RB_MOBILE/maps");
+    if (!path.isNull())
     {
-        if(item.isDir())
+        // soft map-reload
+        unimap.clear_map_soft();
+        unimap.load_map_soft(path);
+        if(unimap.is_loaded)
         {
-            QString filelist = item.baseName();
-            //            qDebug()<<filelist;
-            ui->cb_sn_cmd->addItem(filelist);
+            unimap.load_locations();
+            set_ui_items_from_unimap();
+
+            logger.write("[CMD] soft map re-loaded", true);
         }
     }
 }
 
-void MainWindow::on_bt_sn_cmd_set_clicked()
+void MainWindow::bt_HardReload()
 {
-    QJsonObject json_output;
-    json_output["MSG_TYPE"] = "CHANGE MAP";
-    json_output["map_name"] = ui->cb_sn_cmd->currentText();
-
-    QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
-
-    mb.cmdSendData(json_string);
+    bt_LocalizationLoad();
+    logger.write("[CMD] hard map re-loaded", true);
 }
 
-void MainWindow::bt_amr_motor_init()
+void MainWindow::process_command(CMD cur_cmd)
 {
-    QJsonObject json_output;
-    json_output["MSG_TYPE"] = "INIT";
-    QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
-    mb.cmdSendData(json_string);
+    int cmd = cur_cmd.cmd;
+    uint8_t* params = cur_cmd.params;
 
-}
+    QString str;
+    str.sprintf("[CMD] cmd:%d, accepted", cmd);
+    logger.write(str, true);
 
-void MainWindow::on_BTN_show_clicked()
-{
-    scene.clear();
-    scene.append("robot init");
-    scene.append("lift_down");//리프트 이동
-    scene.append("mobile move1");// 모바일 이동.
-
-    //when lift high
-    scene.append("lift_high");//리프트 이동
-    scene.append("robot high vision");
-    scene.append("vision");
-    //    scene.append("robot high vision point");
-    scene.append("robot pick");
-    scene.append("robot push");
-    scene.append("robot pop");
-    scene.append("robot left");
-    scene.append("lift_down");
-    scene.append("robot pump off");
-    //    scene.append("robot done");
-
-    scene.append("mobile move2");// 모바일 이동.
-    scene.append("lift_down");//리프트 이동
-    scene.append("robot mid vision");
-    scene.append("vision");
-    //    scene.append("robot high vision point");
-    scene.append("robot pick");
-    scene.append("robot push");
-    scene.append("robot pop");
-    scene.append("robot right");
-    //    scene.append("lift_down");
-    scene.append("robot pump off");
-
-    //    scene.append("mobile rest");// 모바일 대기장소.
-
-    cur_step = ROBOT_STATE_START;
-    flag_circle =true;
-
-}
-
-//QJsonArray arr;
-
-void MainWindow::bt_save_annot()
-{
-    cv::Vec3d AMR_pose(mb.pose_x, mb.pose_y, mb.pose_th);
-    QString id = ui->cb_shelf_id->currentText();
-    QString lift = QString::number(lift_pos);
-    QString obj_direction = ui->cb_obj_direction->currentText();
-
-    std::vector<float> rb_5;
-    float jnt_1 = ui->LE_JNT_REF_1->text().toFloat();
-    float jnt_2 = ui->LE_JNT_REF_2->text().toFloat();
-    float jnt_3 = ui->LE_JNT_REF_3->text().toFloat();
-
-    float jnt_4 = ui->LE_JNT_REF_4->text().toFloat();
-    float jnt_5 = ui->LE_JNT_REF_5->text().toFloat();
-    float jnt_6 = ui->LE_JNT_REF_6->text().toFloat();
-
-    rb_5.push_back(jnt_1);
-    rb_5.push_back(jnt_2);
-    rb_5.push_back(jnt_3);
-    rb_5.push_back(jnt_4);
-    rb_5.push_back(jnt_5);
-    rb_5.push_back(jnt_6);
-
-    QJsonObject obj;
-    obj["shelf_id"] = id+"_"+obj_direction;
-    obj["AMR_pose"] = pose_to_array(AMR_pose);
-    //    obj["obj_direction"] = obj_direction;
-    obj["lift_pose"] = lift;
-
-    obj["RB_5_pose"] = pose_to_array(rb_5);
-
-    QDate date = QDate::currentDate();
-    QString dateString = date.toString();
-
-    obj["dateString"] = dateString;// 날짜
-
-    QTime time = QTime::currentTime();
-    QString timeString = time.toString();
-    obj["timeString"] = timeString;// time
-
-    arr.append(obj);
-    QJsonDocument doc(arr);
-    QString str_json(doc.toJson(QJsonDocument::Indented));
-    ui->te_scen ->setText(str_json);
-
-}
-
-void MainWindow::bt_save_annot_2()
-{
-    QString obj_id = ui->cb_get_object_id->currentText();
-    QString ready_grap = ui->CB_GRIPPER_GRAPS_3->currentText()+","+ui->CB_GRIPPER_GRAPS_3->currentText();
-    QString real_grap = ui->CB_GRIPPER_GE_MODE_3->currentText()+","+ui->CB_GRIPPER_GE_GRAPS_3->currentText()+","+ ui->CB_GRIPPER_GE_POWER_3->currentText()+","+ui->CB_GRIPPER_GE_SUCTION_POWER_3->currentText();
-
-    //    QString lift = QString::number(lift_pos);
-
-
-    QJsonObject obj;
-    obj["obj_id"] = obj_id;
-    obj["ready_Gripping"] = ready_grap;//2지, 3지, suction 등...
-    obj["real_Gripping"] = real_grap;//2지, 3지, suction 등...
-
-    QDate date = QDate::currentDate();
-    QString dateString = date.toString();
-
-    obj["dateString"] = dateString;// 날짜
-
-    QTime time = QTime::currentTime();
-    QString timeString = time.toString();
-    obj["timeString"] = timeString;// time
-
-    arr1.append(obj);
-    QJsonDocument doc(arr1);
-    QString str_json(doc.toJson(QJsonDocument::Indented));
-    ui->te_scen_2 ->setText(str_json);
-}
-
-void MainWindow::bt_delete_annot()
-{
-    arr.pop_back();
-    QJsonDocument doc(arr);
-    QString str_json(doc.toJson(QJsonDocument::Indented));
-    ui->te_scen ->setText(str_json);
-}
-
-void MainWindow::bt_save_all_annot()
-{
-    QString annot_path = QDir::homePath() + "/order_json/shelf_infomation.json";
-    QFile file(annot_path);
-    if(file.open(QIODevice::Append))
+    if(cmd == CMD_MOVE_TARGET0)
     {
-        QJsonDocument doc(arr);
-        file.write(doc.toJson());
-        file.close();
-
-        printf("[save_annot] %s saved\n", annot_path.toStdString().c_str());
-    }
-}
-
-void MainWindow::bt_delete_annot_2()
-{
-    arr1.pop_back();
-    QJsonDocument doc(arr1);
-    QString str_json(doc.toJson(QJsonDocument::Indented));
-    ui-> te_scen_2 ->setText(str_json);
-}
-
-void MainWindow::bt_save_all_annot_2()
-{
-    //    shelf_infomation
-    QString annot_path = QDir::homePath() + "/order_json/object_infomation.json";
-    QFile file(annot_path);
-    if(file.open(QIODevice::Append))
-    {
-        QJsonDocument doc(arr1);
-        file.write(doc.toJson());
-        file.close();
-
-        printf("[save_annot] %s saved\n", annot_path.toStdString().c_str());
-    }
-}
-
-void MainWindow::bt_order()
-{
-    QJsonObject json;
-    QJsonObject json_parm;
-    QJsonObject json_destination_box;
-
-    QString shelf_hight = ui->le_shelf_hight->text();
-    QString count = ui -> CB_gripper_num -> currentText();
-    QString shelf_name = ui->CB_shelf->currentText()+"_"+ui->cb_obj_direction_2->currentText();
-    QString obj_name = ui->cb_get_object_id->currentText();
-
-    json["msg_type"] = "command";
-    json["entry"] = "manipulator";
-    json["do"] = "pick_item";
-
-    json_parm["item_count"] = count.toDouble();
-    json_parm["shelve_height"] = shelf_hight.toDouble();
-    json_parm["shelve_degree"] = 45;
-    json_parm["shelve_name"] = shelf_name;
-
-    //db 에 저장되어있는 내용
-    json_destination_box["name"] = obj_name;
-    json_destination_box["id"] = obj_name;
-    json_parm["destination_box"] = json_destination_box;
-    json["params"] = json_parm;
-
-    QJsonDocument doc_json(json);
-    QString str_json(doc_json.toJson(QJsonDocument::Indented));
-
-    // order msg kipping
-    mtx.lock();
-    order_json_msg.push(str_json);
-    mtx.unlock();
-
-    bt_order_check();
-    ui -> te_order -> append(str_json);
-}
-
-void MainWindow::bt_order_check()
-{
-    // order msg save -> parsing -> making parsing msg to qstringlist -> que astringlist
-    //    qDebug()<<order_json_msg.front();
-
-    //    QString shelf_hight = ui->le_shelf_hight->text();
-    int count = ui -> CB_gripper_num -> currentText().toInt();
-    //    QString shelf_name = ui->CB_shelf->currentText();
-
-    for(auto& it: shelf_infos) // get from saved json
-    {
-        if(it.second == nullptr)
+        if(unimap.is_loaded == false)
         {
-            continue;
+            logger.write("[CMD] ID:01, unimap is not loaded", true);
+            return;
         }
 
-        QStringList order_msg;
-        QString new_msg = order_json_msg.front();
-        QJsonDocument doc_json = QJsonDocument::fromJson(new_msg.toUtf8());
-        QJsonObject json = doc_json.object();
+        // motor init
+        mobile.init();
 
-        QVariantMap json_pa = json.toVariantMap();
-        QVariantMap json_parm = json_pa["params"].toMap();
-        QVariantMap json_destination_box = json_parm["destination_box"].toMap();
+        float x; memcpy(&x, &params[0], 4);
+        float y; memcpy(&y, &params[4], 4);
+        float th; memcpy(&th, &params[8], 4);
+        uint8_t preset_idx; memcpy(&preset_idx, &params[12], 1);
 
-        float shelve_height = json_parm["shelve_height"].toDouble();
-        //        shelf_info->RB_5_pose;
-
-        if (order_list_msg.size() == 0)
+        cv::Vec3d goal = cv::Vec3d(x, y, th);
+        if(setting_config.robot_use_multi)
         {
-            qDebug()<<"msg order que is 0!!!";
-            que_time = 0;
+            mctrl.run(goal, preset_idx);
+        }
+        else
+        {
+            ctrl.run(goal, preset_idx);
         }
 
-        // 명령에 맞게 리스트를 만든후 que 에 넣음. -> loop start ->
-
-        //        qDebug()<<json_parm["shelve_name"].toString()+"_"+json_destination_box["name"].toString();
-        /*  qDebug()<<it.second->shelf_id;
-        qDebug()<<json_parm["shelve_name"].toString()+"_"+QString::number(shelve_height);
-        */
-
-        if (it.second->shelf_id == json_parm["shelve_name"].toString()+"_"+QString::number(shelve_height))
+        QString str;
+        str.sprintf("[CMD] ID:01, move target0, %f, %f, %f, %d", x, y, th*R2D, preset_idx);
+        logger.write(str, true);
+    }
+    else if(cmd == CMD_MOVE_TARGET)
+    {
+        if(unimap.is_loaded == false)
         {
-            //            qDebug()<<it.second->shelf_id;
-            // 정해진 위치에 해당하는 명령이 들어온다면.
-            if (it.second->lift_pose == shelve_height)
+            logger.write("[CMD] ID:02, unimap is not loaded", true);
+            return;
+        }
+
+        float x; memcpy(&x, &params[0], 4);
+        float y; memcpy(&y, &params[4], 4);
+        float th; memcpy(&th, &params[8], 4);
+        uint8_t preset_idx; memcpy(&preset_idx, &params[12], 1);
+
+        if(get_time() - last_accepted_times[CMD_MOVE_TARGET] > 1.0)
+        {
+            // motor init
+            mobile.init();
+
+            cv::Vec3d goal = cv::Vec3d(x, y, th);
+            if(setting_config.robot_use_multi)
             {
-                qDebug()<<"같은 위치 찾음.";
-                std::cout<<it.second->RB_5_pose[0]<<std::endl;
-                QString lift_high = "lift_high,"+QString::number(shelve_height);
-                order_msg.append(lift_high);//리프트 이동
+                mctrl.run(goal, preset_idx);
+            }
+            else
+            {
+                ctrl.run(goal, preset_idx);
+            }
 
-                // vision robot pose -> robot pose blend
-                QString robot_vision = "robot vision,"+QString::number(it.second->RB_5_pose[0])+","+QString::number(it.second->RB_5_pose[1])+","+QString::number(it.second->RB_5_pose[2])+","+QString::number(it.second->RB_5_pose[3])+","+QString::number(it.second->RB_5_pose[4])+","+QString::number(it.second->RB_5_pose[5]);
-                //                qDebug()<<"robot moving :" <<robot_vision;
-                order_msg.append(robot_vision);
-                //                                order_msg.append("robot_high_vision");
+            QString str;
+            str.sprintf("[CMD] ID:02, move target, %f, %f, %f, %d", x, y, th*R2D, preset_idx);
+            logger.write(str, true);
 
-                //                order_msg.append("wait");
-                // 물체가 박스에 있는 경우에만 사용.
-                if(lift_high > 600)
+            last_accepted_times[CMD_MOVE_TARGET] = get_time();
+        }
+    }
+    else if(cmd == CMD_MOVE_JOYSTICK)
+    {
+        logger.write("[CMD] ID:03, move joystick", true);
+    }
+    else if(cmd == CMD_MOVE_MANUAL)
+    {
+        logger.write("[CMD] ID:04, move manual", true);
+    }
+    else if(cmd == CMD_MOVE_STOP)
+    {
+        bt_ManualStop();
+        logger.write("[CMD] ID:05, stop", true);
+    }
+    else if(cmd == CMD_PAUSE)
+    {
+        bt_ManualPause();
+        logger.write("[CMD] ID:06, pause", true);
+    }
+    else if(cmd == CMD_RESUME)
+    {
+        bt_ManualResume();
+        logger.write("[CMD] ID:07, resume", true);
+    }
+    else if(cmd == CMD_SET_VEL)
+    {
+        logger.write("[CMD] ID:08, set velocity", true);
+    }
+    else if(cmd == CMD_RESTART)
+    {
+        logger.write("[CMD] ID:09, restart (kill slamnav)", true);
+        bt_Exit();
+    }
+    else if(cmd == CMD_SET_INIT)
+    {
+        float x; memcpy(&x, &params[0], 4);
+        float y; memcpy(&y, &params[4], 4);
+        float th; memcpy(&th, &params[8], 4);
+
+        loc_manual_init(cv::Vec3d(x,y,th));
+
+        logger.write("[CMD] ID:10, set init", true);
+    }
+    else if(cmd == CMD_LOC_RUN)
+    {
+        slam.run_loc();
+
+        logger.write("[CMD] ID:11, loc run", true);
+    }
+    else if(cmd == CMD_LOC_STOP)
+    {
+        slam.stop_loc();
+
+        logger.write("[CMD] ID:12, loc stop", true);
+    }
+    else if(cmd == CMD_LOC_AUTO)
+    {
+        loc_auto_init_semi();
+
+        logger.write("[CMD] ID:13, semi auto init", true);
+    }
+    else if(cmd == CMD_LOC_AUTO_FULL)
+    {
+        loc_auto_init_full();
+
+        logger.write("[CMD] ID:14, full auto init", true);
+    }
+    else if(cmd == CMD_MAPPING_START)
+    {
+        if(get_time() - last_accepted_times[CMD_MAPPING_START] > 1.0)
+        {
+            int map_size; memcpy(&map_size, &params[0], 4);
+            float grid_size; memcpy(&grid_size, &params[4], 4);
+
+            update_config.robot_map_size = map_size;
+            update_config.robot_grid_size = (double)grid_size;
+
+            unimap.map_w = update_config.robot_map_size;
+            unimap.map_h = update_config.robot_map_size;
+            unimap.map_ou = update_config.robot_map_size/2;
+            unimap.map_ov = update_config.robot_map_size/2;
+            unimap.map_grid_width = update_config.robot_grid_size;
+
+            ui->gv_Screen1->map_size = update_config.robot_map_size;
+            ui->gv_Screen1->grid_size = update_config.robot_grid_size;
+            ui->gv_Screen1->reload_gv_screen();
+
+            slam.run();
+
+            logger.write("[CMD] ID:15, start mapping", true);
+            last_accepted_times[CMD_MAPPING_START] = get_time();
+        }
+    }
+    else if(cmd == CMD_MAPPING_STOP)
+    {
+        // new map load
+        slam.stop();
+        slam.stop_loc();
+
+        QString path = unimap.map_dir;
+        unimap.load_map(path);
+        if(unimap.is_loaded)
+        {
+            slam.set_map();
+
+            unimap.load_locations();
+            set_ui_items_from_unimap();
+
+            ui->gv_Screen1->map_size = unimap.map_w;
+            ui->gv_Screen1->grid_size = unimap.map_grid_width;
+            ui->gv_Screen1->reload_gv_screen();
+            ui->lb_MapName->setText(path);
+        }
+
+        logger.write("[CMD] ID:16, stop mapping", true);
+    }
+    else if(cmd == CMD_REQ_CAMERA)
+    {
+        logger.write("[CMD] ID:17, req camera", true);
+    }
+    else if(cmd == CMD_MAP_SAVE)
+    {
+        slam.stop();
+
+        QByteArray buf = (char*)params;
+        QString str(buf);
+        QString path = QDir::homePath() + "/RB_MOBILE/maps/" + str;
+        QDir dir;
+        dir.mkpath(path);
+
+        unimap.save_map(path);
+        slam.save(path);
+
+        // write robot last pose
+        write_last_pose();
+
+        logger.write("[CMD] ID:18, map save", true);
+    }
+    else if(cmd == CMD_OBS_START)
+    {
+        logger.write("[CMD] ID:19, obs start", true);
+    }
+    else if(cmd == CMD_OBS_STOP)
+    {
+        logger.write("[CMD] ID:20, obs stop", true);
+    }
+    else if(cmd == CMD_OBS_SAVE)
+    {
+        logger.write("[CMD] ID:21, obs save", true);
+    }
+    else if(cmd == CMD_NONE)
+    {
+    }
+    else if(cmd == CMD_MOTOR_LOCK_ON)
+    {
+        double dt = get_time() - last_accepted_times[CMD_MOTOR_LOCK_ON];
+        printf("[CMD] ID:23 dt:%f\n", dt);
+        if(dt > 1.0)
+        {
+            mobile.motor_init();
+
+            logger.write("[CMD] ID:23, motor lock on", true);
+            last_accepted_times[CMD_MOTOR_LOCK_ON] = get_time();
+            is_received_motor_lock_off = false;
+        }
+    }
+    else if(cmd == CMD_DRAW_START)
+    {
+        bt_DrawStart();
+        ui_draw_state = UI_DRAW_START;
+
+        logger.write("[CMD] ID:24, draw start", true);
+    }
+    else if(cmd == CMD_DRAW_STOP_SAVE)
+    {
+        bt_DrawStop();
+        ui_draw_state = UI_DRAW_STOP;
+
+        logger.write("[CMD] ID:25, draw stop", true);
+    }
+    else if(cmd == CMD_ROBOT_MAP_HARD_RELOAD)
+    {
+        double dt = get_time() - last_accepted_times[CMD_ROBOT_MAP_HARD_RELOAD];
+        printf("[CMD] ID:26 dt:%f\n", dt);
+        if(dt > 1.0)
+        {
+            QByteArray buf = (char*)params;
+            QString str(buf);
+            QString path = QDir::homePath() + "/RB_MOBILE/maps/" + str;
+
+            // new map load
+            slam.stop();
+            slam.stop_loc();
+
+            unimap.clear_map();
+            unimap.load_map(path);
+            if(unimap.is_loaded)
+            {
+                slam.set_map();
+
+                unimap.load_locations();
+                set_ui_items_from_unimap();
+
+                ui->gv_Screen1->map_size = unimap.map_w;
+                ui->gv_Screen1->grid_size = unimap.map_grid_width;
+                ui->gv_Screen1->reload_gv_screen();
+                ui->lb_MapName->setText(path);
+
+                logger.write("[CMD] ID:26, hard map re-loaded", true);
+                last_accepted_times[CMD_ROBOT_MAP_HARD_RELOAD] = get_time();
+            }
+        }
+    }
+    else if(cmd == CMD_ROBOT_CONFIG_RELOAD)
+    {
+        update_robot_config();
+        logger.write("[CMD] ID:27, robot_config re-loaded", true);
+    }
+    else if(cmd == CMD_FMS_SEND_MAP)
+    {
+        update_robot_config();
+        bt_SendMaps();
+
+        logger.write("[CMD] ID:28, fms send map", true);
+    }
+    else if(cmd == CMD_CHECK_TRAVEL)
+    {
+        bt_CheckAllPath();
+
+        logger.write("[CMD] ID:29, check all path", true);
+    }
+    else if(cmd == CMD_ROBOT_MAP_SOFT_RELOAD)
+    {
+        QByteArray buf = (char*)params;
+        QString str(buf);
+        QString path = QDir::homePath() + "/RB_MOBILE/maps/" + str;
+
+        // soft map-reload
+        unimap.clear_map_soft();
+        unimap.load_map_soft(path);
+        if(unimap.is_loaded)
+        {
+            unimap.load_locations();
+            set_ui_items_from_unimap();
+
+            logger.write("[CMD] ID:30, soft map re-loaded", true);
+        }
+    }
+    else if(cmd == CMD_MANUAL_LC)
+    {
+        slam.is_manual_lc = true;
+
+        logger.write("[CMD] ID:31, try manual lc", true);
+    }
+    else if(cmd == CMD_LOC_AUTO_RESTING)
+    {
+        loc_auto_init_resting();
+
+        logger.write("[CMD] ID:32, resting auto init", true);
+    }
+    else if(cmd == CMD_MOTOR_LOCK_OFF)
+    {
+        double dt = get_time() - last_accepted_times[CMD_MOTOR_LOCK_OFF];
+        printf("[CMD] ID:33 dt:%f\n", dt);
+        if(dt > 1.0)
+        {
+            mobile.motor_lock_off();
+
+            logger.write("[CMD] ID:33, motor lock off", true);
+            last_accepted_times[CMD_MOTOR_LOCK_OFF] = get_time();
+            is_received_motor_lock_off = true;
+        }
+    }
+    last_accepted_cmd = cmd;
+    last_accepted_time = get_time();
+}
+
+void MainWindow::publish_ipc_status()
+{
+    cv::Vec3d cur_pose = slam.get_cur_pose();
+    std::vector<cv::Vec2d> cur_scan = slam.get_cur_scan();
+    if(cur_scan.size() == 0)
+    {
+        slam.set_cur_scans();
+        cur_scan = slam.get_cur_scan();
+    }
+
+    std::vector<float> cur_scan_sampled(360, 0);
+    if(cur_scan.size() > 0)
+    {
+        for(size_t p = 0; p < cur_scan.size(); p++)
+        {
+            double x = cur_scan[p][0];
+            double y = cur_scan[p][1];
+            double d = std::sqrt(x*x + y*y);
+            double th = std::atan2(y, x);
+            double deg = th*R2D;
+            if(deg < 0)
+            {
+                deg += 360;
+            }
+
+            int idx = std::round(deg);
+            if(cur_scan_sampled[idx] == 0)
+            {
+                cur_scan_sampled[idx] = d;
+            }
+            else
+            {
+                if(d < cur_scan_sampled[idx])
                 {
-                    order_msg.append("robot vision box center");
+                    cur_scan_sampled[idx] = d;
                 }
+            }
+        }
+    }
 
-                order_msg.append("wait");
-                order_msg.append("vision");
-                order_msg.append("wait");
-                order_msg.append("robot approach");
-                order_msg.append("robot pick");
-                //                order_msg.append("wait");
-                order_msg.append("robot push");
-                order_msg.append("wait");
-                //                order_msg.append("robot pump on");
-                //                order_msg.append("robot pop");
-                //                //                order_msg.append("robot pump on");
-                //                order_msg.append("robot mid left");
+    MOBILE_STATUS status = mobile.get_status();
 
-                //                QString lift_down = "lift_high,5";
-                //                order_msg.append(lift_down);//리프트 이동
-                //                order_msg.append("robot pump off");
-                //                order_msg.append("success");
+    IPC::STATUS msg;
+    msg.connection_m0 = status.connection_m0;
+    msg.connection_m1 = status.connection_m1;
 
-                if (count!=1)
+    msg.status_m0 = status.status_m0;
+    msg.status_m1 = status.status_m1;
+
+    msg.temp_m0 = status.temp_m0;
+    msg.temp_m1 = status.temp_m1;
+
+    msg.cur_m0 = status.cur_m0;
+    msg.cur_m1 = status.cur_m1;
+
+    msg.status_charge = status.charge_state;
+    msg.status_power = status.power_state;
+    msg.status_emo = status.emo_state;
+    msg.status_remote = status.remote_state;
+
+    msg.bat_in = status.bat_in;
+    msg.bat_out = status.bat_out;
+    msg.bat_cur = status.bat_current;
+
+    msg.power = status.power;
+    msg.total_power = status.total_power;
+
+    msg.ui_loc_state = ui_loc_state;
+    msg.ui_auto_state = ui_auto_state;
+    msg.ui_obs_state = 0;
+    msg.ui_face_state = ui_face_state;
+    msg.ui_cur_velocity_preset = ui_velocity_preset;
+    msg.ui_motor_lock_state = ui_motor_lock_state;
+    msg.ui_draw_state = ui_draw_state;
+    msg.ui_multi_state = ui_multi_state;
+    msg.ui_fail_state = ui_fail_state;
+
+    msg.ui_loc_inlier_ratio = ui_loc_inlier_ratio;
+    msg.ui_loc_inlier_error = ui_loc_inlier_error;
+
+    msg.ui_mapping_inlier_ratio = ui_mapping_inlier_ratio;
+    msg.ui_mapping_inlier_error = ui_mapping_inlier_error;
+
+    msg.robot_pose[0] = cur_pose[0];
+    msg.robot_pose[1] = cur_pose[1];
+    msg.robot_pose[2] = cur_pose[2];
+
+    memcpy(msg.robot_scan, cur_scan_sampled.data(), sizeof(float)*360);
+
+    ipc.set_status(msg);
+}
+
+void MainWindow::publish_ipc_path()
+{
+    std::vector<PATH_POINT> path;
+    if(setting_config.robot_use_multi)
+    {
+        path = mctrl.get_cur_path();
+    }
+    else
+    {
+        path = ctrl.get_cur_path();
+    }
+
+    if(path.size() == 0)
+    {
+        return;
+    }
+
+    // path sampling, 0.5m
+    std::vector<PATH_POINT> sampled_path;
+    sampled_path.push_back(path[0]);
+    for(size_t p = 1; p < path.size()-1; p+=50)
+    {
+        sampled_path.push_back(path[p]);
+    }
+    sampled_path.push_back(path.back());
+
+    IPC::PATH msg;
+    msg.num = sampled_path.size();
+    for(int p = 0; p < msg.num; p++)
+    {
+        msg.x[p] = sampled_path[p].pt[0];
+        msg.y[p] = sampled_path[p].pt[1];
+    }
+
+    ipc.set_path(msg);
+}
+
+void MainWindow::publish_ipc_map()
+{
+    cv::Mat _map = unimap.get_map_raw();
+
+    cv::Mat map;
+    cv::resize(_map, map, cv::Size(1000,1000), 0, 0, cv::INTER_NEAREST);
+
+    IPC::MAP msg;
+    memcpy(msg.buf, map.data, map.rows*map.cols);
+
+    ipc.set_map(msg);
+}
+
+void MainWindow::publish_ipc_cam()
+{
+    cv::Mat _cam0 = cam.get_cur_img_l();
+    cv::Mat _cam1 = cam.get_cur_img_r();
+    if(_cam0.empty() || _cam1.empty())
+    {
+        return;
+    }
+
+    cv::Mat cam0;
+    cv::Mat cam1;
+
+    cv::resize(_cam0, cam0, cv::Size(480, 270));
+    cv::resize(_cam1, cam1, cv::Size(480, 270));
+
+    QString sn0 = cam.get_sn_l();
+    QString sn1 = cam.get_sn_r();
+
+    IPC::IMG msg0;
+    memcpy(msg0.serial, sn0.toUtf8().data(), 255);
+    memcpy(msg0.buf, cam0.data, 480*270);
+    ipc.set_cam0(msg0);
+
+    IPC::IMG msg1;
+    memcpy(msg1.serial, sn1.toUtf8().data(), 255);
+    memcpy(msg1.buf, cam1.data, 480*270);
+    ipc.set_cam1(msg1);
+}
+
+void MainWindow::publish_ipc_cam_color()
+{
+    cv::Mat _cam0 = cam.get_cur_img_l_color();
+    cv::Mat _cam1 = cam.get_cur_img_r_color();
+    if(_cam0.empty() || _cam1.empty())
+    {
+        return;
+    }
+
+    cv::Mat cam0;
+    cv::resize(_cam0, cam0, cv::Size(480, 270));
+
+    cv::Mat cam1;
+    cv::resize(_cam1, cam1, cv::Size(480, 270));
+
+    QString sn0 = cam.get_sn_l();
+    QString sn1 = cam.get_sn_r();
+
+    IPC::IMG_COLOR msg0;
+    memcpy(msg0.serial, sn0.toUtf8().data(), 255);
+    memcpy(msg0.buf, cam0.data, 480*270*3);
+    ipc.set_cam_color0(msg0);
+
+    IPC::IMG_COLOR msg1;
+    memcpy(msg1.serial, sn1.toUtf8().data(), 255);
+    memcpy(msg1.buf, cam1.data, 480*270*3);
+    ipc.set_cam_color1(msg1);
+}
+
+void MainWindow::plot_loop()
+{
+    // cmd info
+    if(last_accepted_cmd == CMD_MOVE_TARGET0)
+    {
+        ui->lb_CmdInfo->setText("CMD_MOVE_TARGET0");
+    }
+    else if(last_accepted_cmd == CMD_MOVE_TARGET)
+    {
+        ui->lb_CmdInfo->setText("CMD_MOVE_TARGET");
+    }
+    else if(last_accepted_cmd == CMD_MOVE_JOYSTICK)
+    {
+        ui->lb_CmdInfo->setText("CMD_MOVE_JOYSTICK");
+    }
+    else if(last_accepted_cmd == CMD_MOVE_MANUAL)
+    {
+        ui->lb_CmdInfo->setText("CMD_MOVE_MANUAL");
+    }
+    else if(last_accepted_cmd == CMD_MOVE_STOP)
+    {
+        ui->lb_CmdInfo->setText("CMD_MOVE_STOP");
+    }
+    else if(last_accepted_cmd == CMD_PAUSE)
+    {
+        ui->lb_CmdInfo->setText("CMD_PAUSE");
+    }
+    else if(last_accepted_cmd == CMD_RESUME)
+    {
+        ui->lb_CmdInfo->setText("CMD_RESUME");
+    }
+    else if(last_accepted_cmd == CMD_SET_VEL)
+    {
+        ui->lb_CmdInfo->setText("CMD_SET_VEL");
+    }
+    else if(last_accepted_cmd == CMD_RESTART)
+    {
+        ui->lb_CmdInfo->setText("CMD_RESTART");
+    }
+    else if(last_accepted_cmd == CMD_SET_INIT)
+    {
+        ui->lb_CmdInfo->setText("CMD_SET_INIT");
+    }
+    else if(last_accepted_cmd == CMD_LOC_RUN)
+    {
+        ui->lb_CmdInfo->setText("CMD_LOC_RUN");
+    }
+    else if(last_accepted_cmd == CMD_LOC_STOP)
+    {
+        ui->lb_CmdInfo->setText("CMD_LOC_STOP");
+    }
+    else if(last_accepted_cmd == CMD_LOC_AUTO)
+    {
+        ui->lb_CmdInfo->setText("CMD_LOC_AUTO");
+    }
+    else if(last_accepted_cmd == CMD_MAPPING_START)
+    {
+        ui->lb_CmdInfo->setText("CMD_MAPPING_START");
+    }
+    else if(last_accepted_cmd == CMD_MAPPING_STOP)
+    {
+        ui->lb_CmdInfo->setText("CMD_MAPPING_STOP");
+    }
+    else if(last_accepted_cmd == CMD_REQ_CAMERA)
+    {
+        ui->lb_CmdInfo->setText("CMD_REQ_CAMERA");
+    }
+    else if(last_accepted_cmd == CMD_MAP_SAVE)
+    {
+        ui->lb_CmdInfo->setText("CMD_MAP_SAVE");
+    }
+    else if(last_accepted_cmd == CMD_OBS_START)
+    {
+        ui->lb_CmdInfo->setText("CMD_OBS_START");
+    }
+    else if(last_accepted_cmd == CMD_OBS_STOP)
+    {
+        ui->lb_CmdInfo->setText("CMD_OBS_STOP");
+    }
+    else if(last_accepted_cmd == CMD_OBS_SAVE)
+    {
+        ui->lb_CmdInfo->setText("CMD_OBS_SAVE");
+    }
+    else if(last_accepted_cmd == CMD_MOTOR_LOCK_OFF)
+    {
+        ui->lb_CmdInfo->setText("CMD_MOTOR_LOCK_OFF");
+    }
+    else if(last_accepted_cmd == CMD_MOTOR_LOCK_ON)
+    {
+        ui->lb_CmdInfo->setText("CMD_MOTOR_LOCK_ON");
+    }
+    else if(last_accepted_cmd == CMD_DRAW_START)
+    {
+        ui->lb_CmdInfo->setText("CMD_DRAW_START");
+    }
+    else if(last_accepted_cmd == CMD_DRAW_STOP_SAVE)
+    {
+        ui->lb_CmdInfo->setText("CMD_DRAW_STOP_SAVE");
+    }
+    else if(last_accepted_cmd == CMD_ROBOT_MAP_HARD_RELOAD)
+    {
+        ui->lb_CmdInfo->setText("CMD_ROBOT_MAP_RELOAD");
+    }
+    else if(last_accepted_cmd == CMD_ROBOT_CONFIG_RELOAD)
+    {
+        ui->lb_CmdInfo->setText("CMD_ROBOT_CONFIG_RELOAD");
+    }
+    else if(last_accepted_cmd == CMD_FMS_SEND_MAP)
+    {
+        ui->lb_CmdInfo->setText("CMD_FMS_SEND_MAP");
+    }
+    else if(last_accepted_cmd == CMD_CHECK_TRAVEL)
+    {
+        ui->lb_CmdInfo->setText("CMD_CHECK_TRAVEL");
+    }
+
+    // autocontrol fsm state
+    if(setting_config.robot_use_multi)
+    {
+        if(mctrl.fsm_state == STATE_AUTO_PATH_FINDING)
+        {
+            ui->lb_AutoFsmState->setText("STATE_AUTO_PATH_FINDING");
+        }
+        else if(mctrl.fsm_state == STATE_AUTO_FIRST_ALIGN)
+        {
+            ui->lb_AutoFsmState->setText("STATE_AUTO_FIRST_ALIGN");
+        }
+        else if(mctrl.fsm_state == STATE_AUTO_PURE_PURSUIT)
+        {
+            ui->lb_AutoFsmState->setText("STATE_AUTO_PURE_PURSUIT");
+        }
+        else if(mctrl.fsm_state == STATE_AUTO_FINAL_ALIGN)
+        {
+            ui->lb_AutoFsmState->setText("STATE_AUTO_FINAL_ALIGN");
+        }
+        else if(mctrl.fsm_state == STATE_AUTO_GOAL_REACHED)
+        {
+            ui->lb_AutoFsmState->setText("STATE_AUTO_GOAL_REACHED");
+
+
+        }
+        else if(mctrl.fsm_state == STATE_AUTO_OBSTACLE)
+        {
+            ui->lb_AutoFsmState->setText("STATE_AUTO_OBSTACLE");
+        }
+        else if(mctrl.fsm_state == STATE_AUTO_PAUSE)
+        {
+            ui->lb_AutoFsmState->setText("STATE_AUTO_PAUSE");
+        }
+        else if(mctrl.fsm_state == STATE_AUTO_FAILED)
+        {
+            ui->lb_AutoFsmState->setText("STATE_AUTO_FAILED");
+        }
+    }
+    else
+    {
+        if(ctrl.fsm_state == STATE_AUTO_PATH_FINDING)
+        {
+            fsm_state=STATE_AUTO_PATH_FINDING;
+            ui->lb_AutoFsmState->setText("STATE_AUTO_PATH_FINDING");
+        }
+        else if(ctrl.fsm_state == STATE_AUTO_FIRST_ALIGN)
+        {
+            fsm_state=STATE_AUTO_FIRST_ALIGN;
+            ui->lb_AutoFsmState->setText("STATE_AUTO_FIRST_ALIGN");
+        }
+        else if(ctrl.fsm_state == STATE_AUTO_PURE_PURSUIT)
+        {
+            fsm_state=STATE_AUTO_PURE_PURSUIT;
+            ui->lb_AutoFsmState->setText("STATE_AUTO_PURE_PURSUIT");
+        }
+        else if(ctrl.fsm_state == STATE_AUTO_FINAL_ALIGN)
+        {
+            fsm_state=STATE_AUTO_FINAL_ALIGN;
+            ui->lb_AutoFsmState->setText("STATE_AUTO_FINAL_ALIGN");
+        }
+        else if(ctrl.fsm_state == STATE_AUTO_GOAL_REACHED)
+        {
+            fsm_state=STATE_AUTO_GOAL_REACHED;
+            ui->lb_AutoFsmState->setText("STATE_AUTO_GOAL_REACHED");
+        }
+        else if(ctrl.fsm_state == STATE_AUTO_OBSTACLE)
+        {
+            fsm_state=STATE_AUTO_OBSTACLE;
+            ui->lb_AutoFsmState->setText("STATE_AUTO_OBSTACLE");
+        }
+        else if(ctrl.fsm_state == STATE_AUTO_PAUSE)
+        {
+            fsm_state=STATE_AUTO_PAUSE;
+            ui->lb_AutoFsmState->setText("STATE_AUTO_PAUSE");
+        }
+        else if(ctrl.fsm_state == STATE_AUTO_FAILED)
+        {
+            fsm_state=STATE_AUTO_FAILED;
+            ui->lb_AutoFsmState->setText("STATE_AUTO_FAILED");
+        }
+
+        integrate_ui.mobile_moving_status = ctrl.fsm_state;
+    }
+
+    // plot state
+    if(ui_motor_state == UI_MOTOR_NOT_READY)
+    {
+        ui->lb_MotorState->setText("UI_MOTOR_NOT_READY");
+        //        integrate_status=UI_MOTOR_NOT_READY;
+    }
+    else if(ui_motor_state == UI_MOTOR_READY)
+    {
+        ui->lb_MotorState->setText("UI_MOTOR_READY");
+        //        integrate_status=UI_MOTOR_READY;
+    }
+    if(ui_loc_state == UI_LOC_NOT_READY)
+    {
+        ui->lb_LocState->setText("UI_LOC_NOT_READY");
+        integrate_status=UI_LOC_NOT_READY;
+    }
+    else if(ui_loc_state == UI_LOC_BUSY)
+    {
+        ui->lb_LocState->setText("UI_LOC_BUSY");
+        integrate_status=UI_LOC_FAIL;
+    }
+    else if(ui_loc_state == UI_LOC_GOOD)
+    {
+        ui->lb_LocState->setText("UI_LOC_GOOD");
+        integrate_status=UI_LOC_GOOD;
+    }
+    else if(ui_loc_state == UI_LOC_FAIL)
+    {
+        ui->lb_LocState->setText("UI_LOC_FAIL");
+        integrate_status=UI_LOC_FAIL;
+    }
+    if(ui_auto_state == UI_AUTO_NOT_READY)
+    {
+        ui->lb_AutoState->setText("UI_AUTO_NOT_READY");
+        //        integrate_status=UI_AUTO_NOT_READY;
+    }
+    else if(ui_auto_state == UI_AUTO_READY)
+    {
+        ui->lb_AutoState->setText("UI_AUTO_READY");
+        //        integrate_status=UI_AUTO_READY;
+    }
+    else if(ui_auto_state == UI_AUTO_MOVING)
+    {
+        ui->lb_AutoState->setText("UI_AUTO_MOVING");
+        //        integrate_status=UI_AUTO_MOVING;
+    }
+    else if(ui_auto_state == UI_AUTO_WAIT)
+    {
+        ui->lb_AutoState->setText("UI_AUTO_WAIT");
+        //        integrate_status=UI_AUTO_WAIT;
+    }
+    else if(ui_auto_state == UI_AUTO_PAUSE)
+    {
+        ui->lb_AutoState->setText("UI_AUTO_PAUSE");
+        //        integrate_status=UI_AUTO_PAUSE;
+    }
+
+    if(ui_face_state == UI_FACE_NORMAL)
+    {
+        ui->lb_FaceState->setText("UI_FACE_NORMAL");
+    }
+    else if(ui_face_state == UI_FACE_SURPRISE)
+    {
+        ui->lb_FaceState->setText("UI_FACE_SURPRISE");
+    }
+    else if(ui_face_state == UI_FACE_CRYING)
+    {
+        ui->lb_FaceState->setText("UI_FACE_CRYING");
+    }
+
+    if(ui_velocity_preset == PRESET_SPEED_NORMAL)
+    {
+        ui->lb_PresetState->setText("PRESET_SPEED_NORMAL");
+    }
+    else if(ui_velocity_preset == PRESET_SPEED_SLOWEST)
+    {
+        ui->lb_PresetState->setText("PRESET_SPEED_SLOWEST");
+    }
+    else if(ui_velocity_preset == PRESET_SPEED_SLOW)
+    {
+        ui->lb_PresetState->setText("PRESET_SPEED_SLOW");
+    }
+    else if(ui_velocity_preset == PRESET_SPEED_FAST)
+    {
+        ui->lb_PresetState->setText("PRESET_SPEED_FAST");
+    }
+    else if(ui_velocity_preset == PRESET_SPEED_FASTEST)
+    {
+        ui->lb_PresetState->setText("PRESET_SPEED_FASTEST");
+    }
+
+    if(ui_motor_lock_state == UI_MOTOR_LOCK_OFF)
+    {
+        ui->lb_MotorLockState->setText("UI_MOTOR_LOCK_OFF");
+    }
+    else if(ui_motor_lock_state == UI_MOTOR_LOCK_ON)
+    {
+        ui->lb_MotorLockState->setText("UI_MOTOR_LOCK_ON");
+    }
+
+    if(ui_draw_state == UI_DRAW_STOP)
+    {
+        ui->lb_DrawState->setText("UI_DRAW_STOP");
+    }
+    else if(ui_draw_state == UI_DRAW_START)
+    {
+        ui->lb_DrawState->setText("UI_DRAW_START");
+    }
+
+    if(ui_fail_state == UI_AUTO_NO_FAILED)
+    {
+        ui->lb_FailState->setText("UI_AUTO_NO_FAILED");
+    }
+    else if(ui_fail_state == UI_AUTO_FAILED)
+    {
+        ui->lb_FailState->setText("UI_AUTO_FAILED");
+    }
+
+#ifdef USE_SINGLE_S1
+    // plot que info
+    QString que_info_str;
+    que_info_str.sprintf("raw_q:%d, scan_q:%d, l2c_q:%d\npose_q:%d, status_q:%d", (int)lidar.raw_que.unsafe_size(), (int)lidar.scan_que.unsafe_size(), (int)mobile.l2c.msg_que.unsafe_size()
+                         , (int)mobile.l2c.pose_que.unsafe_size(), (int)mobile.l2c.status_que.unsafe_size());
+    ui->lb_QueInfo->setText(que_info_str);
+#endif
+
+#ifndef USE_SINGLE_S1
+    // plot que info
+    QString que_info_str;
+    que_info_str.sprintf("raw_q0:%d, raw_q1:%d, scan_q:%d, l2c_q:%d\npose_q:%d, status_q:%d", (int)lidar.raw_que.unsafe_size(), (int)lidar.raw_que1.unsafe_size(), (int)lidar.scan_que.unsafe_size(), (int)mobile.l2c.msg_que.unsafe_size()
+                         , (int)mobile.l2c.pose_que.unsafe_size(), (int)mobile.l2c.status_que.unsafe_size());
+    ui->lb_QueInfo->setText(que_info_str);
+#endif
+
+    // plot localization info
+    QString loc_info_str;
+    loc_info_str.sprintf("(loc) Inlier:%.3f, Err:%.3f", (double)slam.loc_inlier_ratio, (double)slam.loc_inlier_error);
+    ui->lb_LocInfo->setText(loc_info_str);
+
+    // plot mapping info
+    QString mapping_info_str;
+    mapping_info_str.sprintf("(map) Inlier:%.3f, Err:%.3f", (double)slam.mapping_inlier_ratio, (double)slam.mapping_inlier_error);
+    ui->lb_MappingInfo->setText(mapping_info_str);
+
+    // plot mobile pose
+    MOBILE_POSE mobile_pose = mobile.get_pose();
+
+    double mobile_dt = mobile_pose.t - pre_vwt[2];
+    double mobile_v_acc = (mobile_pose.vw[0]-pre_vwt[0])/mobile_dt;
+    double mobile_w_acc = (mobile_pose.vw[1]-pre_vwt[1])/mobile_dt;
+    pre_vwt = cv::Vec3d(mobile_pose.vw[0], mobile_pose.vw[1], mobile_pose.t);
+
+    QString mobile_pose_str;
+    mobile_pose_str.sprintf("t: %f\npos: %.2f, %.2f, %.2f\nvel: %.2f, %.2f, %.2f\nvw: %.2f, %.2f\nacc: %.2f, %.2f", mobile_pose.t,
+                            mobile_pose.pose[0], mobile_pose.pose[1], mobile_pose.pose[2]*R2D,
+            mobile_pose.vel[0], mobile_pose.vel[1], mobile_pose.vel[2]*R2D,
+            mobile_pose.vw[0], mobile_pose.vw[1]*R2D,
+            mobile_v_acc, mobile_w_acc*R2D);
+    ui->te_Pose->setText(mobile_pose_str);
+
+    // plot mobile status
+    MOBILE_STATUS mobile_status = mobile.get_status();
+    QString mobile_status_str;
+    mobile_status_str.sprintf("connection(m0, m1): %d, %d\nstatus(m0, m1): %d, %d\ntemperature(m0, m1): %d, %d\ncur(m0, m1):%.2f, %.2f\ncharge, power, emo, remote state: %d, %d, %d, %d\nBAT(in, out, cur):%.3f, %.3f, %.3f\npower: %.3f\ntotal power: %.3f",
+                              mobile_status.connection_m0, mobile_status.connection_m1, mobile_status.status_m0, mobile_status.status_m1, mobile_status.temp_m0, mobile_status.temp_m1,
+                              (double)mobile_status.cur_m0/10.0, (double)mobile_status.cur_m1/10.0,
+                              mobile_status.charge_state, mobile_status.power_state, mobile_status.emo_state, mobile_status.remote_state,
+                              mobile_status.bat_in, mobile_status.bat_out, mobile_status.bat_current,
+                              mobile_status.power, mobile_status.total_power);
+    ui->lb_RobotStatus->setText(mobile_status_str);
+
+    // plot robot id
+    QString fms_info_str;
+    fms_info_str.sprintf("id:%s, tick:%d", ws.id.toLocal8Bit().data(), (int)ws.fms_tick);
+    ui->lb_FmsInfo->setText(fms_info_str);
+
+    // plot pose
+    cv::Vec3d cur_pose = slam.get_cur_pose();
+    QString pose_str;
+    pose_str.sprintf("LOC: %.2f, %.2f, %.1f", cur_pose[0], cur_pose[1], cur_pose[2]*R2D);
+    ui->lb_Pose->setText(pose_str);
+
+    cv::Vec3d target_pose = ui->gv_Screen1->target_pose;
+    QString target_str;
+    target_str.sprintf("TARGET LOC: %.2f, %.2f, %.1f", target_pose[0], target_pose[1], target_pose[2]*R2D);
+    ui->lb_Target->setText(target_str);
+
+    QJsonObject json_output;
+    json_output["MSG_TYPE"] = "MOBILE_POSE";
+    UI_LOC_STATE status(integrate_status);
+    AUTO_FSM_STATE fsm_status(fsm_state);
+
+    json_output["STATUS"] = status;
+    json_output["Pose_x"] = cur_pose[0];
+    json_output["Pose_y"] = cur_pose[1];
+    json_output["Pose_th"] = cur_pose[2]*R2D;
+    json_output["battery"] = mobile_status.bat_in;
+    json_output["charge_state"] = mobile_status.charge_state;
+    json_output["FSM STATUS"] = fsm_status;
+    if(fsm_status==STATE_AUTO_GOAL_REACHED)
+    {
+        json_output["uuid"] = ctrl.uuid;
+        //        qDebug()<<"uuid: "<<ctrl.uuid;
+    }
+
+    QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
+    integrate_ui.mtx.lock();
+    integrate_ui.send_mobile_status.push(json_string);
+    integrate_ui.mtx.unlock();
+
+    //    /    integrate_ui.onMobileStatusSocketWrite(json_string);
+    //    integrate_ui.newk_AMR_status = json_string;
+
+    // image plot
+    cv::Mat plot_img;
+    if(plot_que.try_pop(plot_img))
+    {
+        ui->gv_Screen1->map.setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(plot_img)));
+        plot_que.clear();
+    }
+
+    // cam plot
+    if(ui->ckb_PlotEnable->isChecked())
+    {
+        cv::Mat img_l = cam.get_cur_img_l_color();
+        if(!img_l.empty())
+        {
+            ui->lb_ScreenL->setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(img_l)));
+        }
+
+        cv::Mat img_r = cam.get_cur_img_r_color();
+        if(!img_r.empty())
+        {
+            ui->lb_ScreenR->setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(img_r)));
+        }
+    }
+}
+
+void MainWindow::watchdog_loop()
+{
+    const double init_loc_dist = 1.0;
+
+    if(setting_config.robot_use_multi)
+    {
+        // check status
+        MOBILE_STATUS status = mobile.get_status();
+        if(status.is_ok && pre_status.is_ok)
+        {
+            // motor
+            if(status.status_m0 == 1 && status.status_m1 == 1 || is_received_motor_lock_off == true)
+            {
+                ui_motor_state = UI_MOTOR_READY;
+            }
+            else
+            {
+                ui_motor_state = UI_MOTOR_NOT_READY;
+            }
+
+            // emo release
+            if(pre_status.emo_state > 0 && status.emo_state == 0)
+            {
+                logger.write("[WATCHDOG] EMO pushed", true);
+            }
+            else if(pre_status.emo_state == 0 && status.emo_state > 0)
+            {
+                mobile.motor_init();
+                logger.write("[WATCHDOG] EMO released", true);
+            }
+        }
+        pre_status = status;
+
+        // ui icp params(ratio, error) update
+        ui_loc_inlier_ratio = (double)slam.loc_inlier_ratio;
+        ui_loc_inlier_error = (double)slam.loc_inlier_error;
+
+        ui_mapping_inlier_ratio = (double)slam.mapping_inlier_ratio;
+        ui_mapping_inlier_error = (double)slam.mapping_inlier_error;
+
+        // check init localization
+        if(slam.is_loc == false)
+        {
+            if(ui_loc_state != UI_LOC_BUSY && ui_loc_state != UI_LOC_MANUAL)
+            {
+                ui_loc_state = UI_LOC_NOT_READY;
+            }
+        }
+        else
+        {
+            if(ui_loc_state == UI_LOC_BUSY)
+            {
+                // check cur_pose val too far
+                bool is_close = false;
+                cv::Vec3d cur_pose = slam.cur_pose;
+                std::vector<cv::Vec3d> _locs = slam.locs;
+                for(size_t p=0; p<_locs.size(); p++)
                 {
-                    QStringList msg;
-                    for(int i=0;i<count;i++)
+                    cv::Vec2d dtdr = slam.dTdR(cur_pose, _locs[p]);
+                    if(dtdr[0] < init_loc_dist)
                     {
-                        msg+=order_msg;
+                        is_close = true;
+                        break;
                     }
-                    qDebug()<<"msg :"<<msg;
-                    order_msg=msg;
                 }
-            }
-            else //만약 정해진 위치가 아닌 다른 위치가 들어온다면.
-            {
-                qDebug()<<"위치 다름.";
-                QString lift_high = "lift_high,"+QString::number(shelve_height);
-                order_msg.append(lift_high);//리프트 이동
-                //                order_msg.append("scene done");//리프트 이동
-            }
 
-            for(auto& it: object_infos) // get propreate gripping position hands data
-            {
-                if(it.second == nullptr)
+                if(is_close == false)
                 {
-                    continue;
+                    mctrl.is_loc = false;
+                    ui_loc_state = UI_LOC_FAIL;
+                    loc_fail_cnt = 0;
+
+                    QString str;
+                    str.sprintf("[WATCHDOG] LOC init successed, ir:%f, ie:%f, but cur_pose is too far away", (double)slam.loc_inlier_ratio, (double)slam.loc_inlier_error);
+                    logger.write(str, true);
+                    return;
                 }
 
-                if (it.second->obj_id == json_destination_box["name"].toString())
+                if(slam.loc_inlier_ratio > setting_config.robot_icp_ratio0 && slam.loc_inlier_error < setting_config.robot_icp_error0)
                 {
+                    mctrl.is_loc = true;
+                    ui_loc_state = UI_LOC_GOOD;
+                    loc_fail_cnt = 0;
+                }
+                else
+                {
+                    if(loc_fail_cnt >= 500 && ui_loc_state != UI_LOC_FAIL)
+                    {
+                        mctrl.is_loc = false;
+                        ui_loc_state = UI_LOC_FAIL;
+                        loc_fail_cnt = 0;
 
-                    //                        std::cout<<it.second->RB_5_pose[0]<<std::endl;
-                    qDebug()<<"grap pose : "<<it.second->obj_grap_pose;
-                    qDebug()<<"ready grap pose :"<<it.second->obj_ready_grap_pose;
-                    //                        order_msg.append("");
-                    //                        order_msg.append("");
-                    QString grasp_ready = "grasp ready,"+it.second->obj_ready_grap_pose;
-                    //                qDebug()<<"robot moving :" <<robot_vision;
-                    order_msg.append(grasp_ready);
-                    order_msg.append("wait");
-                    order_msg.append("robot pump on");
-
-                    QString real_grasp = "grasp real,"+it.second->obj_grap_pose;
-                    //                qDebug()<<"robot moving :" <<robot_vision;
-                    order_msg.append(real_grasp);
-                    order_msg.append("robot pop");
-                    //                order_msg.append("robot pump on");
-                    order_msg.append("robot mid left");
-
-                    QString lift_down = "lift_high,5";
-                    order_msg.append(lift_down);//리프트 이동
-                    order_msg.append("robot pump off");
-                    order_msg.append("success");
+                        QString str;
+                        str.sprintf("[WATCHDOG] LOC init failed, ir:%f, ie:%f", (double)slam.loc_inlier_ratio, (double)slam.loc_inlier_error);
+                        logger.write(str, true);
+                    }
+                    loc_fail_cnt++;
                 }
             }
+            else
+            {
+                if(ui_loc_state == UI_LOC_GOOD || ui_loc_state == UI_LOC_MANUAL)
+                {
+                    if(slam.loc_inlier_ratio > update_config.robot_icp_ratio && slam.loc_inlier_error < update_config.robot_icp_error)
+                    {
+                        mctrl.is_loc = true;
+                        ui_loc_state = UI_LOC_GOOD;
 
-            //            qDebug()<<"order_msg :"<<order_msg;
-            mtx.lock();
-            order_list_msg.push(order_msg);
-            mtx.unlock();
-            //                qDebug()<<"나는 큐의 크기를 알고싶다 : "<<order_list_msg.size();
-            //                cur_step = ROBOT_STATE_START;
-            flag_circle = false;
-            old_msg_size = order_list_msg.size();
+                        loc_fail_cnt = 0;
+                    }
+                    else
+                    {
+                        if(loc_fail_cnt >= 300 && ui_loc_state != UI_LOC_FAIL)
+                        {
+                            mctrl.is_loc = false;
+                            ui_loc_state = UI_LOC_FAIL;
 
+                            QString str;
+                            str.sprintf("[WATCHDOG] LOC failed, ir:%f, ie:%f", (double)slam.loc_inlier_ratio, (double)slam.loc_inlier_error);
+                            logger.write(str, true);
+
+                            loc_fail_cnt = 0;
+                        }
+                        loc_fail_cnt++;
+                    }
+                }
+            }
         }
-    }
-    order_json_msg.pop();// loop 안에서 pop해야함.
-}
 
-void MainWindow::BTN_GRIPPER_recog_WRITE()
-{
-    QString txt = ui->CB_GRIPPER_recog->currentText();
-    qDebug()<<"txt : "<<txt;
-    gripper.Kitech_Client->write(txt.toStdString().c_str());
+        // set velocity preset idx
+        ui_velocity_preset = (int)mctrl.preset_idx;
 
-}
+        // set face state
+        ui_face_state = (int)mctrl.cur_face_state;
 
-void MainWindow::on_BTN_MOVE_JOINT_POP_clicked()
-{
-    //    cobot.MoveJoint(ui->LE_JNT_ENC_1->text().toFloat()-30,ui->LE_JNT_ENC_2->text().toFloat()+30,ui->LE_JNT_ENC_3->text().toFloat()
-    //                    ,ui->LE_JNT_ENC_4->text().toFloat(),ui->LE_JNT_ENC_5->text().toFloat(),ui->LE_JNT_ENC_6->text().toFloat(), 0.2, 0.2);
-
-
-    if (lift_pos>500)
-    {
-        cobot.MoveTCP(ui->LE_TCP_REF_X->text().toFloat()+300,ui->LE_TCP_REF_Y->text().toFloat(),ui->LE_TCP_REF_Z->text().toFloat(),
-                      ui->LE_TCP_REF_RX->text().toFloat(), ui->LE_TCP_REF_RY->text().toFloat(), ui->LE_TCP_REF_RZ->text().toFloat(), 2, -1);
-    }
-    else
-    {
-        cobot.MoveTCP(ui->LE_TCP_REF_X->text().toFloat()+100,ui->LE_TCP_REF_Y->text().toFloat(),ui->LE_TCP_REF_Z->text().toFloat()+300,
-                      ui->LE_TCP_REF_RX->text().toFloat(), ui->LE_TCP_REF_RY->text().toFloat(), ui->LE_TCP_REF_RZ->text().toFloat(), 2, -1);
-    }
-}
-
-void MainWindow::on_BTN_MOVE_JOINT_BOX_CENTER_clicked()
-{
-    qDebug()<<"go to Center";
-    IPC::BOX_CENTER_POSE box_center_pose = ipc.get_box_center();
-
-    ui -> spb_Tx->setValue(ui->LE_TCP_REF_X->text().toFloat()/1000);
-    ui -> spb_Ty->setValue(ui->LE_TCP_REF_Y->text().toFloat()/1000);
-    ui -> spb_Tz->setValue(ui->LE_TCP_REF_Z->text().toFloat()/1000);
-
-    ui -> spb_Rx->setValue(ui->LE_TCP_REF_RX->text().toFloat());
-    ui -> spb_Ry->setValue(ui->LE_TCP_REF_RY->text().toFloat());
-    ui -> spb_Rz->setValue(ui->LE_TCP_REF_RZ->text().toFloat());
-
-    double tx = ui->spb_Tx->value(); // m
-    double ty = ui->spb_Ty->value();
-    double tz = ui->spb_Tz->value();
-
-    double rz = ui->spb_Rz->value(); // deg
-    double ry = ui->spb_Ry->value();
-    double rx = ui->spb_Rx->value();
-
-    QString str; //qstring에 sprintf 로 한방에 집어넣을 수 있음.
-    str.sprintf("%f,%f,%f,%f,%f,%f", tx, ty, tz, rx, ry, rz);
-    qDebug()<<str;
-
-    T_sensor = string_to_TF(str); //translate matrix
-
-    Eigen::Vector3d P(box_center_pose.x, box_center_pose.y, box_center_pose.z);
-    //        std::cout<<"box : "<<P<<std::endl;
-    //        std::cout <<"t_sensor : "<<T_sensor<<std::endl;
-    Eigen::Vector3d _P = T_sensor.block(0,0,3,3)*P+T_sensor.block(0,3,3,1);
-
-    //    std::cout<<_P[0]<<_P[1]<<_P[2]<<std::endl;
-    QString res_x,res_y,res_z;
-    res_x.sprintf("%.f",(_P[0])*1000);
-    res_y.sprintf("%.f",(_P[1])*1000);
-    res_z.sprintf("%.f",(_P[2])*1000);
-
-    ui->move_x_val->setText(res_x);
-    ui->move_y_val->setText(res_y);
-    ui->move_z_val->setText(res_z);
-
-    float move_rx_valo = ui->LE_TCP_REF_RX->text().toFloat();
-    //    float move_ry_valo = ui->LE_TCP_REF_RY->text().toFloat();
-    //    float move_ry_valo = ui->LE_TCP_REF_RY->text().toFloat();
-    float move_ry_valo = -21;
-    //    float move_ry_valo = -(90-35);
-    float move_rz_valo = ui->LE_TCP_REF_RZ->text().toFloat();
-
-    cobot.MoveTCP(res_x.toFloat(),res_y.toFloat(),res_z.toFloat(), move_rx_valo, move_ry_valo, move_rz_valo, 2, -1);
-}
-
-void MainWindow::on_BTN_TCP_MOTION_TEST_clicked()
-{
-    QString LE_TCP_LIST = ui->LE_TCP_LIST->text();
-    if (LE_TCP_LIST.size()==0)
-    {
-        qDebug()<<"로봇이 움직일 수 없습니다.";
-    }
-    else
-    {
-        qDebug()<<"TCP 좌표계로 이동합니다.";
-
-        QStringList list = LE_TCP_LIST.split(",");
-        if(list.size()==6)
+        // set fail state
+        if(mctrl.fsm_state == STATE_AUTO_FAILED)
         {
-            double tx = list[0].toDouble();
-            double ty = list[1].toDouble();
-            double tz = list[2].toDouble();
+            ui_fail_state = UI_AUTO_FAILED;
+        }
+        else if(mctrl.fsm_state == STATE_AUTO_GOAL_REACHED)
+        {
+            ui_fail_state = UI_AUTO_NO_FAILED;
+        }
 
-            double rx = list[3].toDouble();
-            double ry = list[4].toDouble();
-            double rz = list[5].toDouble();
-
-            cobot.MoveTCP(tx,ty,tz,rx,ry,rz,2,-1);
+        // check running
+        bool is_charging = (status.is_ok == true && status.charge_state == 1);
+        if(ui_motor_state == UI_MOTOR_READY && ui_loc_state == UI_LOC_GOOD && is_charging == false)
+        {
+            if(mctrl.fsm_state == STATE_AUTO_GOAL_REACHED)
+            {
+                ui_auto_state = UI_AUTO_READY;
+            }
+            else if(mctrl.fsm_state == STATE_AUTO_OBSTACLE)
+            {
+                ui_auto_state = UI_AUTO_WAIT;
+            }
+            else if(mctrl.fsm_state == STATE_AUTO_PAUSE)
+            {
+                ui_auto_state = UI_AUTO_PAUSE;
+            }
+            else if(mctrl.fsm_state == STATE_AUTO_PATH_FINDING ||
+                    mctrl.fsm_state == STATE_AUTO_FIRST_ALIGN  ||
+                    mctrl.fsm_state == STATE_AUTO_PURE_PURSUIT ||
+                    mctrl.fsm_state == STATE_AUTO_FINAL_ALIGN )
+            {
+                ui_auto_state = UI_AUTO_MOVING;
+            }
         }
         else
         {
-            qDebug()<<"이동 좌표 개수 확인";
-        }
-    }
-}
-
-void MainWindow::on_BTN_JOINT_MOTION_TEST_clicked()
-{
-    qDebug()<<"Joint 좌표계로 이동합니다.";
-    QString LE_JOINT_LIST = ui->LE_JOINT_LIST->text();
-    if (LE_JOINT_LIST.size()==0)
-    {
-        qDebug()<<"로봇이 움직일 수 없습니다.";
-    }
-    else
-    {
-        QStringList list = LE_JOINT_LIST.split(",");
-        if(list.size() == 6)
-        {
-            double r1 = list[0].toDouble();
-            double r2 = list[1].toDouble();
-            double r3 = list[2].toDouble();
-            double r4 = list[3].toDouble();
-            double r5 = list[4].toDouble();
-            double r6 = list[5].toDouble();
-
-            cobot.MoveJoint(r1,r2,r3,r4,r5,r6,2,-1);
-        }
-        else
-        {
-            qDebug()<<"이동 좌표 개수 확인";
-        }
-    }
-}
-
-void MainWindow::on_pb_reload_clicked()
-{
-    //    qDebug()<<"reload rb_5 joint value";
-
-    float j1 = cobot.systemStat.sdata.jnt_ang[0];
-    float j2 = cobot.systemStat.sdata.jnt_ang[1];
-    float j3 = cobot.systemStat.sdata.jnt_ang[2];
-    float j4 = cobot.systemStat.sdata.jnt_ang[3];
-    float j5 = cobot.systemStat.sdata.jnt_ang[4];
-    float j6 = cobot.systemStat.sdata.jnt_ang[5];
-
-    QString LE_JOINT_LIST = QString::number(j1)+","+QString::number(j2)+","+QString::number(j3)+","+QString::number(j4)+","+QString::number(j5)+","+QString::number(j6);
-
-    float tcp_x = cobot.systemStat.sdata.tcp_ref[0];
-    float tcp_y = cobot.systemStat.sdata.tcp_ref[1];
-    float tcp_z = cobot.systemStat.sdata.tcp_ref[2];
-    float tcp_rx = cobot.systemStat.sdata.tcp_ref[3];
-    float tcp_ry = cobot.systemStat.sdata.tcp_ref[4];
-    float tcp_rz = cobot.systemStat.sdata.tcp_ref[5];
-    //LE_TCP_LIST
-    QString LE_TCP_LIST = QString::number(tcp_x)+","+QString::number(tcp_y)+","+QString::number(tcp_z)+","+QString::number(tcp_rx)+","+QString::number(tcp_ry)+","+QString::number(tcp_rz);
-
-
-    //    qDebug()<<LE_TCP_LIST;
-    ui -> LE_TCP_LIST -> setText(LE_TCP_LIST);
-    ui -> LE_JOINT_LIST -> setText(LE_JOINT_LIST);
-}
-
-void MainWindow::on_bt_scen_resume_clicked()
-{
-    scene.clear();
-    scene.append("robot pump off");
-    scene.append("scene done");
-    cur_step = ROBOT_STATE_CHECK_SCENE;
-
-    //    yujin_scene.clear();
-    //    yujin_scene.append("robot pump off");
-    //    yujin_scene.append("SCENE DONE");
-    //    cur_step_yj = FMS_ROBOT_STATE_CHECK_SCENE;
-}
-
-void MainWindow::lb_keti_point(QString msg)
-{
-
-    if(msg!="OBJ_NONE")
-    {
-        ui -> spb_Tx->setValue(ui->LE_TCP_REF_X->text().toFloat()/1000);
-        ui -> spb_Ty->setValue(ui->LE_TCP_REF_Y->text().toFloat()/1000);
-        ui -> spb_Tz->setValue(ui->LE_TCP_REF_Z->text().toFloat()/1000);
-
-        ui -> spb_Rx->setValue(ui->LE_TCP_REF_RX->text().toFloat());
-        ui -> spb_Ry->setValue(ui->LE_TCP_REF_RY->text().toFloat());
-        ui -> spb_Rz->setValue(ui->LE_TCP_REF_RZ->text().toFloat());
-
-        ui->lb_keti_point->setText(msg);
-
-        keti_x = vision.keti_x;
-        keti_y = vision.keti_y;
-        keti_z = vision.keti_z;
-
-        //        std::cout<<"keti : "<<keti_x<<","<<keti_y<<","<<keti_z<<","<<std::endl;
-
-        Eigen::Vector3d P(keti_x, keti_y, keti_z);
-        Eigen::Vector3d _P = T_sensor.block(0,0,3,3)*P+T_sensor.block(0,3,3,1);
-
-        QString res_x,res_y,res_z;
-        res_x.sprintf("%.3f",(_P[0])*1000);
-        res_y.sprintf("%.3f",(_P[1])*1000);
-        res_z.sprintf("%.3f",(_P[2])*1000);
-
-        ui->move_x_val->setText(res_x);
-        ui->move_y_val->setText(res_y);
-        ui->move_z_val->setText(res_z);
-
-        //////////////////////////////////////////////////////
-
-        //for approach
-
-        Eigen::Vector3d app_P(vision.keti_app_x, vision.keti_app_y, vision.keti_app_z);
-        Eigen::Vector3d app_trance_P = T_sensor.block(0,0,3,3)*app_P+T_sensor.block(0,3,3,1);
-
-        app_x = app_trance_P[0]*1000;
-        app_y = app_trance_P[1]*1000;
-        app_z = app_trance_P[2]*1000;
-
-        //////////////////////////////////////////////////////
-
-        if(vision.box_cent_value)
-        {
-            cent_res_x = res_x;
-            cent_res_y = res_y;
-            cent_res_z = res_z;
-
-            float move_rx_valo = ui->LE_TCP_REF_RX->text().toFloat();
-            float move_ry_valo = ui->LE_TCP_REF_RY->text().toFloat();
-            float move_rz_valo = ui->LE_TCP_REF_RZ->text().toFloat();
-
-            ui->move_rx_val->setText(QString::number(move_rx_valo));
-            ui->move_ry_val->setText(QString::number(move_ry_valo));
-            ui->move_rz_val->setText(QString::number(move_rz_valo));
-
-            bt_cobot_move2object();
-
-            //            vision.box_cent_value = false;
-        }
-        else
-        {
-            //for normal check
-
-            QString tcp_rot_mat = mat_zyxzy();
-            QStringList val_list = tcp_rot_mat.split(",");
-            //            qDebug()<<"sssssssssss:"<<tcp_rot_mat;
-
-            ui->move_rx_val->setText(val_list[0]);
-            ui->move_ry_val->setText(val_list[1]);
-            ui->move_rz_val->setText(val_list[2]);
-
-            QString res_rx,res_ry,res_rz;
-            res_rx.sprintf("%.3f",val_list[0].toFloat());
-            res_ry.sprintf("%.3f",val_list[1].toFloat());
-            res_rz.sprintf("%.3f",val_list[2].toFloat());
-
-            ui->move_rx_val->setText(res_rx);
-            ui->move_ry_val->setText(res_ry);
-            ui->move_rz_val->setText(res_rz);
-
-            //            ui->move_rx_val->setText("89");
-            //            ui->move_ry_val->setText("-45");
-            //            ui->move_rz_val->setText("-179");
+            ui_auto_state = UI_AUTO_NOT_READY;
         }
     }
     else
     {
-        ui->lb_keti_point->setText(msg);
-    }
-}
-
-void MainWindow::on_BTN_MOVE_JOINT_BOX_CENTER_KETI_clicked()
-{
-    //    IPC::BOX_CENTER_POSE box_center_pose = ipc.get_box_center();
-    //    vision.Keti_Client->write("REQ,VISION,BOX_CENT");
-    //    shutter_clicked = vison_cap_gripper_cmd;
-    shutter_clicked = vison_cap_gripper_cmd;
-    keti_box_request = true;
-}
-
-QString MainWindow::mat_zyxzy()
-{
-    // rz1, ry1, rx1 -> base 기준으로 tcp 의 회전각
-    keti_rx = vision.keti_rx;
-    keti_ry = vision.keti_ry;
-    keti_rz = vision.keti_rz;
-
-    double rz1 = ui->LE_TCP_REF_RZ->text().toFloat()*D2R;
-    double ry1 = ui->LE_TCP_REF_RY->text().toFloat()*D2R;
-    double rx1 = ui->LE_TCP_REF_RX->text().toFloat()*D2R;
-
-    int rot_sign = -1;
-    double rz2,rx2;
-
-    float dist_a = sqrt(pow(keti_rz,2)+pow(keti_ry,2)+pow(keti_rx,2));
-    float dist_b = keti_rz;
-    float dist_c = sqrt(pow(keti_ry,2)+pow(keti_rx,2));
-    float x_rot = acos((pow(dist_b,2)-(pow(dist_a,2)+pow(dist_c,2)))/(-2*dist_a*dist_c));
-
-    //    qDebug()<<"x_rot : "<<x_rot;
-
-    if(keti_rx>0 && keti_rz>0)
-    {
-        rz2 = rot_sign*atan(keti_rx/keti_ry);
-        rx2 = abs(x_rot);
-    }
-    else  if(keti_rx>0&& keti_rz<0)
-    {
-        rz2 = rot_sign*atan(keti_rx/keti_ry);
-        rx2 = rot_sign*x_rot;
-    }
-    else if(keti_rx<0 && keti_rz<0)
-    {
-        rz2 = abs(atan(keti_rx/keti_ry));
-        rx2 = rot_sign*x_rot;
-    }
-    else if(keti_rx<0 && keti_rz>0)
-    {
-        rz2 = abs(atan(keti_rx/keti_ry));
-        rx2 = x_rot;
-    }
-    double ry2 = vision.res_wrist_rot.toFloat()*D2R;
-    //        double ry2 = 0.0*D2R;
-
-    //    // 리프트 위치로 손목 관절 각도 회전시킴.
-    ////    int pos = ui->sb_lift_pos->value();
-
-    //    double ry2 = vision.res_wrist_rot.toFloat()*D2R;
-    //    qDebug()<<"wrist angle : "<<ry2;
-
-    // rx, ry, rz must be radian
-    Eigen::AngleAxisd Rz1(rz1, Eigen::Vector3d::UnitZ());
-    Eigen::AngleAxisd Ry1(ry1, Eigen::Vector3d::UnitY());
-    Eigen::AngleAxisd Rx1(rx1, Eigen::Vector3d::UnitX());
-
-    Eigen::AngleAxisd Rz2(rz2, Eigen::Vector3d::UnitZ());
-    Eigen::AngleAxisd Ry2(ry2, Eigen::Vector3d::UnitY());
-    Eigen::AngleAxisd Rx2(rx2, Eigen::Vector3d::UnitX());
-
-    Eigen::Quaternion<double> base2tcp_rot = Rz1 * Ry1 * Rx1;
-    Eigen::Matrix4d res1;
-    res1.setIdentity();
-    res1.block(0,0,3,3) = base2tcp_rot.matrix();
-    res1(0,3) = 0;
-    res1(1,3) = 0;
-    res1(2,3) = 0;
-    res1(3,3) = 1;
-
-    Eigen::Quaternion<double> tcp2obj_rot = Rz2 * Rx2 * Ry2;
-    Eigen::Matrix4d res2;
-    res2.setIdentity();
-    res2.block(0,0,3,3) = tcp2obj_rot.matrix();
-    res2(0,3) = 0;
-    res2(1,3) = 0;
-    res2(2,3) = 0;
-    res2(3,3) = 1;
-
-    Eigen::Matrix4d resres = res1*res2;
-
-    Eigen::Vector6d euler = TF_to_ZYX(resres);
-
-    double euler_rx = euler[3]*R2D;
-    double euler_ry = euler[4]*R2D;
-    double euler_rz = euler[5]*R2D;
-
-    QString euler_val;
-    euler_val.sprintf(" %f,%f,%f",euler_rx,euler_ry,euler_rz);
-    qDebug()<<euler_val;
-
-    //    Eigen::Quaternion<double> q = Rz1 * Ry1 * Rx1 * Rz2 * Ry2 * Rx2;
-
-    //    Eigen::Matrix3d res;
-    //    res.setIdentity();
-    //    res.block(0,0,3,3) = q.matrix();
-
-    //and must be compare with Euler angle.
-
-    return euler_val;
-}
-
-void MainWindow::on_bt_cobot_move2object_approach_clicked()
-{
-
-    //    on_BTN_GRIPPER_SUCTION_clicked();
-
-    ui -> spb_Tx->setValue(ui->LE_TCP_REF_X->text().toFloat()/1000);
-    ui -> spb_Ty->setValue(ui->LE_TCP_REF_Y->text().toFloat()/1000);
-    ui -> spb_Tz->setValue(ui->LE_TCP_REF_Z->text().toFloat()/1000);
-
-    ui -> spb_Rx->setValue(ui->LE_TCP_REF_RX->text().toFloat());
-    ui -> spb_Ry->setValue(ui->LE_TCP_REF_RY->text().toFloat());
-    ui -> spb_Rz->setValue(ui->LE_TCP_REF_RZ->text().toFloat());
-
-    QString color = ui->le_vision_connection->styleSheet();
-    QStringList color_list = color.split(":");
-    if(color_list[1] == "green")
-    {
-        float move_rx_valo = ui->move_rx_val->text().toFloat();
-        float move_ry_valo = ui->move_ry_val->text().toFloat();
-        float move_rz_valo = ui->move_rz_val->text().toFloat();
-
-        if(abs(abs(ui->LE_TCP_REF_X->text().toFloat())-abs(app_x))<250)
+        // check status
+        MOBILE_STATUS status = mobile.get_status();
+        //        qDebug()<<"status.is_ok : "<<status.is_ok;
+        //        qDebug()<<"pre_status.is_ok :"<<pre_status.is_ok;
+        if(status.is_ok && pre_status.is_ok)
         {
-            caution_flag = false;
-            ui -> la_caution->setText("");
-            cobot.MoveTCP(app_x,app_y,app_z, move_rx_valo, move_ry_valo, move_rz_valo, 0.5, -1);
+            // motor
+            if(status.status_m0 == 1 && status.status_m1 == 1 || is_received_motor_lock_off == true)
+            {
+                ui_motor_state = UI_MOTOR_READY;
+            }
+            else
+            {
+                ui_motor_state = UI_MOTOR_NOT_READY;
+            }
+
+            // emo release
+            if(pre_status.emo_state > 0 && status.emo_state == 0)
+            {
+                logger.write("[WATCHDOG] EMO pushed", true);
+            }
+            else if(pre_status.emo_state == 0 && status.emo_state > 0)
+            {
+                mobile.motor_init();
+                logger.write("[WATCHDOG] EMO released", true);
+            }
+        }
+        pre_status = status;
+
+        // ui icp params(ratio, error) update
+        ui_loc_inlier_ratio = (double)slam.loc_inlier_ratio;
+        ui_loc_inlier_error = (double)slam.loc_inlier_error;
+
+        ui_mapping_inlier_ratio = (double)slam.mapping_inlier_ratio;
+        ui_mapping_inlier_error = (double)slam.mapping_inlier_error;
+
+        // check init localization
+        if(slam.is_loc == false)
+        {
+            if(ui_loc_state != UI_LOC_BUSY && ui_loc_state != UI_LOC_MANUAL)
+            {
+                ui_loc_state = UI_LOC_NOT_READY;
+            }
         }
         else
         {
-            caution_flag = true;
-            ui -> la_caution->setText("prohibited area!");
+            if(ui_loc_state == UI_LOC_BUSY)
+            {
+                // check cur_pose val too far
+                bool is_close = false;
+
+                cv::Vec3d cur_pose = slam.cur_pose;
+                std::vector<cv::Vec3d> _locs = slam.locs;
+                for(size_t p=0; p<_locs.size(); p++)
+                {
+                    cv::Vec2d dtdr = slam.dTdR(cur_pose, _locs[p]);
+                    if(dtdr[0] < init_loc_dist)
+                    {
+                        is_close = true;
+                        break;
+                    }
+                }
+
+                if(is_close == false)
+                {
+                    ctrl.is_loc = false;
+                    ui_loc_state = UI_LOC_FAIL;
+                    loc_fail_cnt = 0;
+
+                    QString str;
+                    str.sprintf("[WATCHDOG] LOC init successed, ir:%f, ie:%f, but cur_pose is too far away", (double)slam.loc_inlier_ratio, (double)slam.loc_inlier_error);
+                    logger.write(str, true);
+                    return;
+                }
+
+                if(slam.loc_inlier_ratio > setting_config.robot_icp_ratio0 && slam.loc_inlier_error < setting_config.robot_icp_error0)
+                {
+                    ctrl.is_loc = true;
+                    ui_loc_state = UI_LOC_GOOD;
+                    loc_fail_cnt = 0;
+                }
+                else
+                {
+                    if(loc_fail_cnt >= 500 && ui_loc_state != UI_LOC_FAIL)
+                    {
+                        ctrl.is_loc = false;
+                        ui_loc_state = UI_LOC_FAIL;
+                        loc_fail_cnt = 0;
+
+                        QString str;
+                        str.sprintf("[WATCHDOG] LOC init failed, ir:%f, ie:%f", (double)slam.loc_inlier_ratio, (double)slam.loc_inlier_error);
+                        logger.write(str, true);
+                    }
+                    loc_fail_cnt++;
+                }
+            }
+            else
+            {
+                if(ui_loc_state == UI_LOC_GOOD || ui_loc_state == UI_LOC_MANUAL)
+                {
+                    if(slam.loc_inlier_ratio > update_config.robot_icp_ratio && slam.loc_inlier_error < update_config.robot_icp_error)
+                    {
+                        ctrl.is_loc = true;
+                        ui_loc_state = UI_LOC_GOOD;
+
+                        loc_fail_cnt = 0;
+                    }
+                    else
+                    {
+                        if(loc_fail_cnt >= 300 && ui_loc_state != UI_LOC_FAIL)
+                        {
+                            ctrl.is_loc = false;
+                            ui_loc_state = UI_LOC_FAIL;
+
+                            QString str;
+                            str.sprintf("[WATCHDOG] LOC failed, ir:%f, ie:%f", (double)slam.loc_inlier_ratio, (double)slam.loc_inlier_error);
+                            logger.write(str, true);
+
+                            loc_fail_cnt = 0;
+                        }
+                        loc_fail_cnt++;
+                    }
+                }
+            }
         }
-        //        ui -> la_caution->setText("");
-        //        cobot.MoveTCP(app_x,app_y,app_z, move_rx_valo, move_ry_valo, move_rz_valo, 0.5, -1);
+
+        // set velocity preset idx
+        ui_velocity_preset = (int)ctrl.preset_idx;
+
+        // set face state
+        ui_face_state = (int)ctrl.cur_face_state;
+
+        // set fail state
+        if(ctrl.fsm_state == STATE_AUTO_FAILED)
+        {
+            ui_fail_state = UI_AUTO_FAILED;
+        }
+        else if(ctrl.fsm_state == STATE_AUTO_GOAL_REACHED)
+        {
+            ui_fail_state = UI_AUTO_NO_FAILED;
+        }
+
+        // check running
+        bool is_charging = (status.is_ok == true && status.charge_state == 1);
+        if(ui_motor_state == UI_MOTOR_READY && ui_loc_state == UI_LOC_GOOD && is_charging == false)
+        {
+            if(ctrl.fsm_state == STATE_AUTO_GOAL_REACHED)
+            {
+                ui_auto_state = UI_AUTO_READY;
+            }
+            else if(ctrl.fsm_state == STATE_AUTO_OBSTACLE)
+            {
+                ui_auto_state = UI_AUTO_WAIT;
+            }
+            else if(ctrl.fsm_state == STATE_AUTO_PAUSE)
+            {
+                ui_auto_state = UI_AUTO_PAUSE;
+            }
+            else if(ctrl.fsm_state == STATE_AUTO_PATH_FINDING ||
+                    ctrl.fsm_state == STATE_AUTO_FIRST_ALIGN  ||
+                    ctrl.fsm_state == STATE_AUTO_PURE_PURSUIT ||
+                    ctrl.fsm_state == STATE_AUTO_FINAL_ALIGN )
+            {
+                ui_auto_state = UI_AUTO_MOVING;
+            }
+        }
+        else
+        {
+            ui_auto_state = UI_AUTO_NOT_READY;
+        }
+        //        qDebug()<<"ui_auto_state : "<<ui_auto_state;
     }
-    else if(color_list[1] == "red")
+
+    integrate_ui.mobile_moving_status = (int)ui_auto_state;
+}
+
+void MainWindow::backLoop()
+{
+    double dt = 0.1;
+    double pre_loop_time = get_time();
+    double last_pub_time = get_time();
+
+    while(backFlag)
     {
-        float move_rx_valo = ui->move_rx_val->text().toFloat();
-        float move_ry_valo = ui->move_ry_val->text().toFloat();
-        float move_rz_valo = ui->move_rz_val->text().toFloat();
+        double cur_time = get_time();
 
-        cobot.MoveTCP(app_x,app_y,app_z, move_rx_valo, move_ry_valo, move_rz_valo, 0.5, -1);
+        // publish status for ui
+        publish_ipc_status();
 
+        if(cur_time - last_pub_time >= 1.0)
+        {
+            // publish path for ui
+            publish_ipc_path();
+
+            // publish map for ui
+            if(slam.is_slam)
+            {
+                publish_ipc_map();
+            }
+
+            // publish cam for ui
+            publish_ipc_cam_color();
+
+            // write last pose
+            write_last_pose();
+
+            last_pub_time = cur_time;
+        }
+
+        // make plot image
+        if(ui->ckb_PlotEnable->isChecked())
+        {
+            // plot map info
+            cv::Mat plot_img = unimap.get_map_plot();
+            if(!plot_img.empty())
+            {
+                cv::Vec3d cur_pose(0,0,0);
+                cv::Vec2d cur_vw(0,0);
+                std::vector<cv::Vec2d> cur_scan;
+                std::vector<cv::Vec2d> cam_scan_l;
+                std::vector<cv::Vec2d> cam_scan_r;
+
+                if(slam.is_slam)
+                {
+                    // has location info
+                    cur_pose = slam.get_cur_pose();
+                    cur_scan = slam.get_cur_scan_global();
+                    cur_vw = mobile.get_pose().vw;
+
+#ifdef USE_SIM
+                    cur_pose = mobile.get_pose().pose;
+#endif
+                }
+                else if(slam.is_loc)
+                {
+                    // has location info
+                    cur_pose = slam.get_cur_pose();
+                    cur_scan = slam.get_cur_scan_global();
+                    cam_scan_l = cam.get_cur_scan_l();
+                    cam_scan_r = cam.get_cur_scan_r();
+                    cur_vw = mobile.get_pose().vw;
+                }
+                else
+                {
+                    // no location info
+                    cur_scan = lidar.get_cur_scan();
+                    cam_scan_l = cam.get_cur_scan_l();
+                    cam_scan_r = cam.get_cur_scan_r();
+                    cur_vw = mobile.get_pose().vw;
+                }
+
+                // map data loaded
+                if(unimap.is_loaded)
+                {
+                    // draw locations
+                    for(size_t p = 0; p < unimap.charging_locs.size(); p++)
+                    {
+                        unimap.draw_robot(plot_img, unimap.charging_locs[p], cv::Scalar(0,0,128), 1);
+                    }
+
+                    for(size_t p = 0; p < unimap.resting_locs.size(); p++)
+                    {
+                        unimap.draw_robot(plot_img, unimap.resting_locs[p], cv::Scalar(255,255,255), 1);
+                    }
+
+                    for(size_t p = 0; p < unimap.cleaning_locs.size(); p++)
+                    {
+                        unimap.draw_robot(plot_img, unimap.cleaning_locs[p], cv::Scalar(0,128,0), 1);
+                    }
+
+                    for(size_t p = 0; p < unimap.serving_locs.size(); p++)
+                    {
+                        for(size_t q = 0; q < unimap.serving_locs[p].size(); q++)
+                        {
+                            unimap.draw_robot(plot_img, unimap.serving_locs[p][q], cv::Scalar(0,255,0), 1);
+                        }
+                    }
+                }
+
+                // get path
+                std::vector<PATH_POINT> cur_path;
+                if(setting_config.robot_use_multi)
+                {
+                    cur_path = mctrl.get_cur_path();
+                }
+                else
+                {
+                    cur_path = ctrl.get_cur_path();
+                }
+
+
+                // draw current sensing data
+                if(cur_path.size() !=0)
+                {
+                    cv::Vec2d cur_pos = cv::Vec2d(cur_pose[0], cur_pose[1]);
+                    int cur_idx = ctrl.get_cur_idx(cur_pos, cur_path);
+
+                    std::vector<PATH_POINT> sampled_path;
+                    for(size_t p = cur_idx; p < cur_path.size(); p++)
+                    {
+                        sampled_path.push_back(cur_path[p]);
+                    }
+                    unimap.draw_path(plot_img, sampled_path, cv::Scalar(0,sampled_path.size(),0));
+                }
+                else
+                {
+                    unimap.draw_path(plot_img, cur_path, cv::Scalar(0,255,0));
+                }
+
+                unimap.draw_travel_map(plot_img);
+                unimap.draw_lidar(plot_img, cur_pose, cam_scan_l, cv::Scalar(255,0,0));
+                unimap.draw_lidar(plot_img, cur_pose, cam_scan_r, cv::Scalar(255,0,0));
+                unimap.draw_lidar(plot_img, cv::Vec3d(0,0,0), cur_scan, cv::Scalar(0,0,255));
+                unimap.draw_obs_map(plot_img);
+                //                unimap.draw_path(plot_img, cur_path, cv::Scalar(0,255,0));
+                unimap.draw_robot(plot_img, ui->gv_Screen1->target_pose, cv::Scalar(255, 255, 0), 1);
+                unimap.draw_robot(plot_img, cur_pose, cv::Scalar(0,255,255), 1);
+
+                // draw feedback trajectory
+                std::vector<cv::Vec6d> traj_feed = ctrl.calc_trajectory(cur_vw, 2.0, 0.2, cur_pose, cur_vw);
+                unimap.draw_trajectory(plot_img, traj_feed, cv::Scalar(255,255,255), 1);
+
+                // draw input trajectory
+                cv::Vec2d input_vw(mobile.last_v, mobile.last_w);
+                std::vector<cv::Vec6d> traj_input = ctrl.calc_trajectory(input_vw, 2.0, 0.2, cur_pose, input_vw);
+                unimap.draw_trajectory(plot_img, traj_input, cv::Scalar(100,150,255), 1);
+
+                // preview trajectory
+                cv::Vec2d prev_vw(mobile.last_v, 0);
+                std::vector<cv::Vec6d> traj_prev = ctrl.calc_trajectory(prev_vw, setting_config.robot_obs_preview_time, 0.3, cur_pose, prev_vw);
+                unimap.draw_trajectory(plot_img, traj_prev, cv::Scalar(255,0,255), 1);
+
+                // plot image
+                cv::flip(plot_img, plot_img, 0);
+                cv::rotate(plot_img, plot_img, cv::ROTATE_90_COUNTERCLOCKWISE); // image north is +x axis
+
+                // draw table name
+                int r = static_config.robot_radius/unimap.map_grid_width;
+                if(ui->ckb_TableName->isChecked())
+                {
+                    for(size_t p = 0; p < unimap.serving_names.size(); p++)
+                    {
+                        for(size_t q = 0; q < unimap.serving_names[p].size(); q++)
+                        {
+                            QString name = unimap.serving_names[p][q];
+                            cv::Vec3d loc = unimap.serving_locs[p][q];
+                            cv::Vec2i uv = unimap.xy_uv2(cv::Vec2d(loc[0], loc[1]));
+                            cv::putText(plot_img, name.toStdString(), cv::Point(uv[0]+r, uv[1]-r), cv::FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(0, 255, 0), 1, cv::LineTypes::LINE_AA);
+                        }
+                    }
+                }
+
+                // robot vel plot
+                cv::Vec2i cur_uv = unimap.xy_uv2(cv::Vec2d(cur_pose[0], cur_pose[1]));
+                QString cur_v_str;
+                cur_v_str.sprintf("%.2f, %.1f", cur_vw[0], cur_vw[1]*R2D);
+                cv::putText(plot_img, cur_v_str.toStdString(), cv::Point(cur_uv[0]-r, cur_uv[1]-2*r), cv::FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(0, 255, 255), 1, cv::LineTypes::LINE_AA);
+
+                plot_que.push(plot_img);
+
+                cv::Mat map;
+                cv::resize(plot_img,map,cv::Size(1000,1000),0,0,cv::INTER_NEAREST);
+                QByteArray IMGByte((char*)(map.data),1000*1000*3);//숫자확
+                // latter mutex add
+                mtx.lock();
+                IMGByte2 = IMGByte;
+                mtx.unlock();
+            }
+        }
+
+        // for real time loop
+        double cur_loop_time = get_time();
+        double delta_loop_time = cur_loop_time - pre_loop_time;
+        if(delta_loop_time < dt)
+        {
+            int sleep_ms = (dt-delta_loop_time)*1000;
+            std::this_thread::sleep_for(std::chrono::milliseconds(sleep_ms));
+        }
+        else
+        {
+            printf("[PLOT] loop time drift, dt:%f\n", delta_loop_time);
+        }
+        pre_loop_time = get_time();
     }
 }
 
-void MainWindow::on_BTN_MOVEL_rel_clicked()
+void MainWindow::bt_TestMoveExt()
 {
-    QString LE_TCP_LIST = ui->LE_TCP_LIST->text();
+    // waypoints
+    std::vector<cv::Vec3d> waypoints;
+    waypoints.push_back(cv::Vec3d(1.45, 3.96, -90*D2R));
+    waypoints.push_back(cv::Vec3d(1.53, 3.67, -90*D2R));
 
-    QStringList list = LE_TCP_LIST.split(",");
-    if(list.size()==6)
+    waypoints.push_back(cv::Vec3d(-0.46, 3.60, -90*D2R));
+    waypoints.push_back(cv::Vec3d(-0.16, 4.25, -90*D2R));
+
+    waypoints.push_back(cv::Vec3d(-0.31, 2.09, 0*D2R));
+    waypoints.push_back(cv::Vec3d(1.17, 5.01, -90*D2R));
+    //waypoints.push_back(cv::Vec3d(10.7, 0, 90*D2R));
+    ctrl.run_ext(waypoints);
+}
+
+void MainWindow::bt_TestMovePick()
+{
+    int preset_idx = ui->cb_preset->currentIndex() + 1;
+    ctrl.run_pick(ui->gv_Screen1->target_pose, preset_idx);
+}
+
+void MainWindow::websocket_map_changed(QString map_name)
+{
+    // dataset load
+    QString path = QDir::homePath()+"/RB_MOBILE/maps/" + map_name;
+    if (!path.isNull())
     {
-        double tx = list[0].toDouble();
-        double ty = list[1].toDouble();
-        double tz = list[2].toDouble();
+        // new map load
+        slam.stop();
+        slam.stop_loc();
+        unimap.load_map(path);
+        if(unimap.is_loaded)
+        {
+            slam.set_map();
+            unimap.load_locations();
+            set_ui_items_from_unimap();
 
-        double rx = list[3].toDouble();
-        double ry = list[4].toDouble();
-        double rz = list[5].toDouble();
+            ui->gv_Screen1->map_size = unimap.map_w;
+            ui->gv_Screen1->grid_size = unimap.map_grid_width;
+            ui->gv_Screen1->reload_gv_screen();
+            ui->lb_MapName->setText(path);
 
-        cobot.MoveL_rel(tx,ty,tz,rx,ry,rz,2,-1);
+            QString config_path = QDir::homePath()+"/RB_MOBILE/config/setting_config.ini";
+            QFileInfo config_info(config_path);
+            if(config_info.exists() && config_info.isFile())
+            {
+                // set valueis_normal
+                QSettings settings(config_path, QSettings::IniFormat);
+                settings.setValue("MAP/map_name", map_name);
+                settings.setValue("MAP/map_path", path);
+            }
+
+            /*float x = -0.65;
+            float y = -0.07;
+            float th = -2.4*D2R;
+
+            yujin_pose = (cv::Vec3d(x,y,th));
+            loc_manual_init(yujin_pose);*/
+
+//            If the robot in the resting position changes the map because of yujin, it can be located automatically
+            loc_auto_init_semi();
+
+            QJsonObject json_output;
+
+            json_output["MSG_TYPE"] = "MOBILE_MAP_CHANGE";
+            QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
+
+            integrate_ui.mtx.lock();
+            integrate_ui.send_mobile_status.push(json_string);
+            integrate_ui.mtx.unlock();
+        }
     }
-
 }
 
-void MainWindow::on_BTN_quick_return_clicked()
+void MainWindow::IntegrateUILoop()
 {
-    cobot.MoveJoint(0.228,19.684,-73.543,-15.062,-89.891,-89.646, 2, -1);
+    mtx.lock();
+    QByteArray header = "map";
+    header.append(IMGByte2);
+    mtx.unlock();
+    integrate_ui.onMapImageSocketWrite(header);
 }
 
-void MainWindow::on_BTN_GRIPPER_SUCTION_clicked()
+void MainWindow::bt_SetMap()
 {
-    if(Integrated_info.init_gripper == true)
+    QString setting_path = QDir::homePath()+"/RB_MOBILE/config/setting_config.ini";
+    QFileInfo setting_path_info(setting_path);
+    if(setting_path_info.exists() && setting_path_info.isFile())
     {
-        QString text = "Rs";
-        QByteArray br = text.toUtf8();
-        gripper.Kitech_Client->write(br);
+        QSettings settings(setting_path, QSettings::IniFormat);
+
+        QString map_path = ui -> lb_MapName -> text();
+        settings.setValue("MAP/map_path",map_path);
+
+        QStringList map_name = map_path.split("/");
+        settings.setValue("MAP/map_name",map_name[5]);
     }
-    else{
-
-    }
-}
-
-void MainWindow::on_BTN_GRIPPER_OPEN_clicked()
-{
-    if(Integrated_info.init_gripper == true)
-    {
-        QString text = "Rg5";
-        QByteArray br = text.toUtf8();
-        gripper.Kitech_Client->write(br);
-    }
-    else
-    {
-
-    }
-}
-
-
-void MainWindow::save_log(QString log)
-{
-    //    shelf_infomation
-
-
-    //    QTime time = QTime::QDateTime();
-    QString time_Format = "yyyy-MM-dd";
-    QDateTime a = QDateTime::currentDateTime();
-    QString as = a.toString(time_Format);
-    //    QString timeString = time.toString();
-
-    QString annot_path = QDir::homePath() + "/order_log/"+as+ ".ini";
-    QFile file(annot_path);
-    if(file.open(QIODevice::Append))
-    {
-        QTextStream out(&file);
-        out << log<< "\n";
-
-        //        file.write(out);
-        file.close();
-    }
-}
-
-
-void MainWindow::on_BTN_MOVE_JOINT_LOW_LEFT_clicked()
-{
-    cobot.MoveJointBlend_Clear();
-    cobot.MoveJointBlend_AddPoint(99.666,3.839,-71.312,-20.712,-94.225,-88.891, 0.5, 0.5);
-    //    cobot.MoveJointBlend_AddPoint(130.194,9.992,-83.168,-4.382,-89.682,-88.651, 0.5, 0.5);
-    //    cobot.MoveJointBlend_AddPoint(130.192,0.146,-83.160,-4.391,-89.678,-88.649, 0.2, 0.2);
-    cobot.MoveJointBlend_AddPoint(150.207,-3.357,-64.440,-19.582,-89.706,-88.582, 0.2, 0.2);
-    //    cobot.MoveJointBlend_AddPoint(150.682,0.000,-97.412,9.989,-90.000,-88.900 , 0.2, 0.2);
-    cobot.MoveJointBlend_MovePoint();
-}
-
-void MainWindow::on_BTN_RETURN_MOVE_JOINT_BOX_CENTER_clicked()
-{
-    float move_x_valo = cent_res_x.toFloat();
-    float move_y_valo = cent_res_y.toFloat();
-    float move_z_valo = cent_res_z.toFloat();
-
-    float move_rx_valo = ui->move_rx_val->text().toFloat();
-    float move_ry_valo = ui->move_ry_val->text().toFloat();
-    float move_rz_valo = ui->move_rz_val->text().toFloat();
-    cobot.MoveTCP(move_x_valo,move_y_valo,move_z_valo, move_rx_valo, move_ry_valo, move_rz_valo, 0.5, -1);
-}
-
-
-void MainWindow::vision_trigger(){
-    on_pb_shutter_clicked();
 }
