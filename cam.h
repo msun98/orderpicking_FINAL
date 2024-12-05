@@ -2,7 +2,7 @@
 #define CAM_H
 
 #include "global_defines.h"
-#include <libobsensor/ObSensor.hpp>
+//#include <libobsensor/ObSensor.hpp>
 #include <QObject>
 
 class CAM : public QObject

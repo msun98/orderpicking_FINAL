@@ -101,16 +101,6 @@ void INTEGRATE_UI::init(MOBILE *_mobile, AUTOCONTROL *_ctrl, SLAM_2D *_slam)
     mobile = _mobile;
     ctrl = _ctrl;
     slam = _slam;
-
-    //    QJsonObject json_output;
-
-    //    json_output["MSG_TYPE"]="MOBILE_STATUS";
-    //    json_output["STATUS"]=mobile_status;
-    //    //            //        json_output["buf length"]=len;//vector 로 담아서 보내기
-    //    QByteArray json_string = QJsonDocument(json_output).toJson(QJsonDocument::Compact);
-    //    onMobileStatusSocketWrite(json_string);
-    //    qDebug()<<mobile_status;
-
 }
 
 void INTEGRATE_UI::onUIdisConnected()
@@ -211,15 +201,6 @@ void INTEGRATE_UI::publish_path()
         onSocketWrite(QString(json_string));
     }
 }
-
-
-
-//void INTEGRATE_UI::onMapIMGCmdRead() //map data 줄 때 사용하는 함수.
-//{
-//    QByteArray Read_Data = map_socket -> readAll();
-//    qDebug()<<Read_Data;
-//    QJsonObject json_input;4
-//}
 
 void INTEGRATE_UI::onMobileStatusCmdRead() //map data 달라고 할 때 사용하는 함수.
 {
@@ -372,9 +353,6 @@ void INTEGRATE_UI::onReadyCmdRead() //nuc 에게 로봇 상태를 시간에 맞�
 
             ctrl->uuid = json_input["uuid"].toString();
 
-
-            //            qDebug()<<path[0];
-            //            command_path_que.push(path);
             waypoints.push_back(cv::Vec3d(path[0],path[1],path[2]));
             std::cout<<path[0]<<","<<path[1]<<","<<path[2]<<std::endl;
         }

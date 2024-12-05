@@ -209,6 +209,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -361,6 +362,7 @@ Makefile: SLAMNAV.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -458,6 +460,7 @@ Makefile: SLAMNAV.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -564,20 +567,6 @@ moc_autocontrol.cpp: autocontrol.h \
 		submap.h \
 		unimap.h \
 		cam.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp \
 		spline.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
@@ -588,20 +577,6 @@ moc_cam.cpp: cam.h \
 		cv_to_qt.h \
 		nanoflann.hpp \
 		Logger.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/rainbow/code/SLAMNAV_order/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/rainbow/code/SLAMNAV_order -I/usr/include/opencv4 -I/usr/include/rapidjson -I/usr/include/boost -I/usr/include/boost/beast -I/usr/include/eigen3 -I/usr/local/include/sophus -I/home/rainbow/rplidar_sdk/sdk/include -I/usr/local/include/sick_safetyscanners_base -I/home/rainbow/OrbbecSDK/build/install/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include cam.h -o moc_cam.cpp
@@ -636,20 +611,6 @@ moc_integrate_ui.cpp: integrate_ui.h \
 		submap.h \
 		unimap.h \
 		cam.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp \
 		spline.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
@@ -697,20 +658,6 @@ moc_mainwindow.cpp: mainwindow.h \
 		submap.h \
 		topomap.h \
 		cam.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp \
 		lidar_2d.h \
 		../../rplidar_sdk/sdk/include/sl_lidar.h \
 		../../rplidar_sdk/sdk/include/sl_lidar_driver.h \
@@ -764,20 +711,6 @@ moc_multicontrol.cpp: multicontrol.h \
 		submap.h \
 		unimap.h \
 		cam.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp \
 		ws_client.h \
 		spline.h \
 		moc_predefs.h \
@@ -809,20 +742,6 @@ moc_sim.cpp: sim.h \
 		LakiBeamHTTP.h \
 		LakiBeamUDP.h \
 		cam.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/rainbow/code/SLAMNAV_order/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/rainbow/code/SLAMNAV_order -I/usr/include/opencv4 -I/usr/include/rapidjson -I/usr/include/boost -I/usr/include/boost/beast -I/usr/include/eigen3 -I/usr/local/include/sophus -I/home/rainbow/rplidar_sdk/sdk/include -I/usr/local/include/sick_safetyscanners_base -I/home/rainbow/OrbbecSDK/build/install/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include sim.h -o moc_sim.cpp
@@ -846,20 +765,6 @@ moc_slam_2d.cpp: slam_2d.h \
 		submap.h \
 		unimap.h \
 		cam.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/rainbow/code/SLAMNAV_order/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/rainbow/code/SLAMNAV_order -I/usr/include/opencv4 -I/usr/include/rapidjson -I/usr/include/boost -I/usr/include/boost/beast -I/usr/include/eigen3 -I/usr/local/include/sophus -I/home/rainbow/rplidar_sdk/sdk/include -I/usr/local/include/sick_safetyscanners_base -I/home/rainbow/OrbbecSDK/build/install/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtWebSockets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include slam_2d.h -o moc_slam_2d.cpp
@@ -958,20 +863,6 @@ autocontrol.o: autocontrol.cpp autocontrol.h \
 		submap.h \
 		unimap.h \
 		cam.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp \
 		spline.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o autocontrol.o autocontrol.cpp
 
@@ -979,21 +870,7 @@ cam.o: cam.cpp cam.h \
 		global_defines.h \
 		cv_to_qt.h \
 		nanoflann.hpp \
-		Logger.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp
+		Logger.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cam.o cam.cpp
 
 cmd_server.o: cmd_server.cpp cmd_server.h \
@@ -1027,20 +904,6 @@ integrate_ui.o: integrate_ui.cpp integrate_ui.h \
 		submap.h \
 		unimap.h \
 		cam.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp \
 		spline.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o integrate_ui.o integrate_ui.cpp
 
@@ -1080,20 +943,6 @@ main.o: main.cpp mainwindow.h \
 		submap.h \
 		topomap.h \
 		cam.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp \
 		lidar_2d.h \
 		../../rplidar_sdk/sdk/include/sl_lidar.h \
 		../../rplidar_sdk/sdk/include/sl_lidar_driver.h \
@@ -1125,20 +974,6 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		submap.h \
 		topomap.h \
 		cam.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp \
 		lidar_2d.h \
 		../../rplidar_sdk/sdk/include/sl_lidar.h \
 		../../rplidar_sdk/sdk/include/sl_lidar_driver.h \
@@ -1190,20 +1025,6 @@ multicontrol.o: multicontrol.cpp multicontrol.h \
 		submap.h \
 		unimap.h \
 		cam.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp \
 		ws_client.h \
 		spline.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o multicontrol.o multicontrol.cpp
@@ -1233,21 +1054,7 @@ sim.o: sim.cpp sim.h \
 		../../rplidar_sdk/sdk/include/sl_types.h \
 		LakiBeamHTTP.h \
 		LakiBeamUDP.h \
-		cam.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp
+		cam.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o sim.o sim.cpp
 
 slam_2d.o: slam_2d.cpp slam_2d.h \
@@ -1268,21 +1075,7 @@ slam_2d.o: slam_2d.cpp slam_2d.h \
 		l2c.h \
 		submap.h \
 		unimap.h \
-		cam.h \
-		../../OrbbecSDK/build/install/include/libobsensor/ObSensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Context.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Types.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/ObTypes.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Device.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/h/Property.h \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Filter.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Error.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Frame.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Pipeline.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/RecordPlayback.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Sensor.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/StreamProfile.hpp \
-		../../OrbbecSDK/build/install/include/libobsensor/hpp/Version.hpp
+		cam.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o slam_2d.o slam_2d.cpp
 
 submap.o: submap.cpp submap.h \
